@@ -12,20 +12,20 @@
     <header>
         <nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4">
             <div class="container">
-                <div class="d-flex align-items-center gap-2 me-lg-3">
-                    <a class="navbar-brand fw-semibold mb-0" asp-page="/Index">Horizon ISP</a>
-                    <a asp-page="/Portal/Login" class="btn btn-light btn-sm fw-semibold text-primary px-3 btn-area-cliente">
-                        Área do Cliente
-                    </a>
-                </div>
+                <a class="navbar-brand fw-semibold" asp-page="/Index">Horizon ISP</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain"
                         aria-controls="navbarMain" aria-expanded="false" aria-label="Alternar navegação">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarMain">
+                    <ul class="navbar-nav me-auto align-items-lg-center">
+                        <li class="nav-item py-lg-0 py-2">
+                            <a asp-page="/Portal/Login" class="btn btn-success btn-sm fw-semibold btn-area-cliente">
+                                Área do Cliente
+                            </a>
+                        </li>
                     @if (User.Identity?.IsAuthenticated ?? false)
                     {
-                        <ul class="navbar-nav me-auto">
                             <li class="nav-item">
                                 <a class="nav-link" asp-page="/Index">Painel</a>
                             </li>
@@ -68,7 +68,10 @@
                                     <a class="nav-link" asp-page="/Usuarios/Index">Usuários</a>
                                 </li>
                             }
-                        </ul>
+                    }
+                    </ul>
+                    @if (User.Identity?.IsAuthenticated ?? false)
+                    {
                         <ul class="navbar-nav">
                             <li class="nav-item">
                                 <span class="navbar-text text-white-50 me-3">@User.Identity?.Name</span>
