@@ -15,6 +15,8 @@ namespace horizonisp.Data
         {
             await db.Database.MigrateAsync();
 
+            await GarantirColunasOltAsync(db);
+
             if (!await db.Usuarios.AnyAsync())
             {
                 await SeedDadosIniciaisAsync(db, passwordHasher, clientePasswordHasher);
@@ -214,6 +216,21 @@ namespace horizonisp.Data
             }
 
             await db.SaveChangesAsync();
+        }
+
+        private static async Task GarantirColunasOltAsync(AppDbContext db)
+        {
+            await db.Database.ExecuteSqlRawAsync("""
+                IF NOT EXISTS (
+                    SELECT 1 FROM sys.columns
+                    WHERE object_id = OBJECT_ID(N'Olts') AND name = N'PortaApi')
+                BEGIN
+                    ALTER TABLE Olts ADD PortaApi int NOT NULL CONSTRAINT DF_Olts_PortaApi DEFAULT 80;
+                    ALTER TABLE Olts ADD SenhaApi nvarchar(100) NOT NULL CONSTRAINT DF_Olts_SenhaApi DEFAULT N'';
+                    ALTER TABLE Olts ADD UltimaSincronizacao datetime2 NULL;
+                    ALTER TABLE Olts ADD UsuarioApi nvarchar(50) NOT NULL CONSTRAINT DF_Olts_UsuarioApi DEFAULT N'';
+                END
+                """);
         }
 
         private static async Task GarantirChamadoTecnicoDemoAsync(AppDbContext db)
