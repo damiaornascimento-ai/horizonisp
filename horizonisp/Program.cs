@@ -102,6 +102,7 @@ builder.Services.AddScoped<IRelatorioService, RelatorioService>();
 builder.Services.AddScoped<IWhatsAppService, WhatsAppService>();
 builder.Services.AddScoped<IRedeService, RedeService>();
 builder.Services.AddScoped<IOltIntegracaoService, OltIntegracaoService>();
+builder.Services.AddScoped<IRedeSincronizacaoService, RedeSincronizacaoService>();
 builder.Services.AddScoped<IBoletoService, BoletoService>();
 builder.Services.AddScoped<IOrdemServicoService, OrdemServicoService>();
 builder.Services.AddHostedService<FaturamentoBackgroundService>();
