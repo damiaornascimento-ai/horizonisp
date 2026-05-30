@@ -43,7 +43,20 @@ builder.Services.AddAuthentication(options =>
         options.Cookie.Name = "HorizonISP.Cliente";
     });
 
-builder.Services.AddAuthorization();
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy(AuthSchemes.Admin, policy =>
+    {
+        policy.AddAuthenticationSchemes(AuthSchemes.Admin);
+        policy.RequireAuthenticatedUser();
+    });
+
+    options.AddPolicy(AuthSchemes.Cliente, policy =>
+    {
+        policy.AddAuthenticationSchemes(AuthSchemes.Cliente);
+        policy.RequireAuthenticatedUser();
+    });
+});
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<PasswordHasher<Usuario>>();
 builder.Services.AddScoped<PasswordHasher<Cliente>>();
@@ -58,8 +71,14 @@ builder.Services.AddScoped<IFaturamentoService, FaturamentoService>();
 builder.Services.AddHostedService<FaturamentoBackgroundService>();
 builder.Services.AddRazorPages(options =>
 {
-    options.Conventions.AuthorizeFolder("/", AuthSchemes.Admin);
+    options.Conventions.AuthorizePage("/Index", AuthSchemes.Admin);
+    options.Conventions.AuthorizeFolder("/Clientes", AuthSchemes.Admin);
+    options.Conventions.AuthorizeFolder("/Planos", AuthSchemes.Admin);
+    options.Conventions.AuthorizeFolder("/Assinaturas", AuthSchemes.Admin);
+    options.Conventions.AuthorizeFolder("/Faturas", AuthSchemes.Admin);
+    options.Conventions.AuthorizeFolder("/Faturamento", AuthSchemes.Admin);
     options.Conventions.AuthorizeFolder("/Portal", AuthSchemes.Cliente);
+
     options.Conventions.AllowAnonymousToPage("/Login");
     options.Conventions.AllowAnonymousToPage("/Portal/Login");
     options.Conventions.AllowAnonymousToPage("/Error");
