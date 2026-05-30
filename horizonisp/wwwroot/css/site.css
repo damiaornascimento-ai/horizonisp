@@ -21,6 +21,19 @@ body {
   margin-bottom: 60px;
 }
 
+.btn-area-cliente {
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  white-space: nowrap;
+}
+
+.navbar .btn-area-cliente {
+  border: 2px solid rgba(255, 255, 255, 0.85);
+}
+
+.btn-area-cliente:hover {
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+}
+
 .form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
   color: var(--bs-secondary-color);
   text-align: end;

@@ -15,6 +15,11 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
 <body class="bg-light">
+    <div class="container-fluid px-4 pt-3">
+        <a asp-page="/Portal/Login" class="btn btn-primary fw-semibold px-4 btn-area-cliente">
+            Área do Cliente
+        </a>
+    </div>
     <div class="container">
         <div class="row justify-content-center align-items-center min-vh-100">
             <div class="col-md-5">
@@ -43,11 +48,8 @@
                             <button type="submit" class="btn btn-primary w-100">Entrar</button>
                         </form>
 
-                        <p class="text-muted small mt-4 mb-2 text-center">
+                        <p class="text-muted small mt-4 mb-0 text-center">
                             Acesso inicial: admin@horizonisp.local / admin123
-                        </p>
-                        <p class="text-center mb-0">
-                            <a asp-page="/Portal/Login" class="small">Área do cliente</a>
                         </p>
                     </div>
                 </div>
