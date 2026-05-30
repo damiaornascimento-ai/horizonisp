@@ -1,0 +1,60 @@
+# .gitignore para projetos C# / .NET / Visual Studio
+
+## Criado por gitignore.io e adaptado
+
+### Visual Studio
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.userprefs
+
+### .NET Core / .NET 5+
+bin/
+obj/
+*.csproj.user
+*.dbmdl
+*.jfm
+*.rsuser
+*.ssmssln
+
+### NuGet
+*/[Pp]ackages/
+!**/[Pp]ackages/build/
+*.nupkg
+**/packages.lock.json
+
+### Build results
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Ww][Ii][Nn]32/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+
+### Visual Studio Code
+.vscode/
+
+### JetBrains Rider
+.idea/
+*.sln.iml
+
+### Secrets (não subir configurações com senhas)
+appsettings.*.local.json
+secrets.json
+*.Development.json
+appsettings.Development.json
+
+### User‑specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
