@@ -1,0 +1,135 @@
+@page "{id:int}"
+@model horizonisp.Pages.Portal.Faturas.DetalheModel
+@{
+    ViewData["Title"] = "2ª via da fatura";
+    var fatura = Model.Fatura;
+    var assinatura = fatura.Assinatura;
+    var cliente = assinatura.Cliente;
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 mb-0">2ª via da fatura</h1>
+    <button type="button" class="btn btn-outline-dark btn-sm d-none d-print-inline" onclick="window.print()">Imprimir</button>
+</div>
+
+<div class="card border-0 shadow-sm">
+    <div class="card-body p-4">
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <div class="text-muted small">Provedor</div>
+                <strong>Horizon ISP</strong>
+            </div>
+            <div class="col-md-6 text-md-end">
+                <div class="text-muted small">Fatura</div>
+                <strong>#@fatura.Id.ToString("D6")</strong>
+            </div>
+        </div>
+
+        <hr />
+
+        <div class="row g-3 mb-4">
+            <div class="col-md-6">
+                <div class="text-muted small">Cliente</div>
+                <div>@cliente.Nome</div>
+                <div class="text-muted small">@cliente.Documento</div>
+                <div class="text-muted small">@cliente.Email</div>
+            </div>
+            <div class="col-md-6">
+                <div class="text-muted small">Referência</div>
+                <div>@fatura.Referencia</div>
+                <div class="text-muted small mt-2">Vencimento</div>
+                <div>@fatura.DataVencimento.ToLocalTime().ToString("dd/MM/yyyy")</div>
+            </div>
+        </div>
+
+        <div class="table-responsive mb-4">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Descrição</th>
+                        <th class="text-end">Valor</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            Mensalidade @assinatura.Plano.Nome
+                            (@assinatura.Plano.VelocidadeDownloadMbps/@assinatura.Plano.VelocidadeUploadMbps Mbps)
+                        </td>
+                        <td class="text-end">@EnumHelper.Moeda(fatura.Valor)</td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th>Total</th>
+                        <th class="text-end">@EnumHelper.Moeda(fatura.Valor)</th>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <span class="badge text-bg-@(fatura.Status == StatusFatura.Paga ? "success" : fatura.Status == StatusFatura.Atrasada ? "danger" : "warning")">
+                @EnumHelper.ObterStatusFatura(fatura.Status)
+            </span>
+            @if (fatura.DataPagamento.HasValue)
+            {
+                <span class="text-muted small">
+                    Pago em @fatura.DataPagamento.Value.ToLocalTime().ToString("dd/MM/yyyy")
+                </span>
+            }
+        </div>
+
+        @if (fatura.Status is StatusFatura.Pendente or StatusFatura.Atrasada)
+        {
+            @if (!string.IsNullOrWhiteSpace(fatura.PixCopiaCola))
+            {
+                var qrUrl = $"https://api.qrserver.com/v1/create-qr-code/?size=220x220&data={Uri.EscapeDataString(fatura.PixCopiaCola)}";
+                <div class="border rounded p-4 mt-4 bg-light">
+                    <h2 class="h5 mb-3">Pague com Pix</h2>
+                    <div class="row g-4 align-items-center">
+                        <div class="col-md-4 text-center">
+                            <img src="@qrUrl" alt="QR Code Pix" class="img-fluid border bg-white p-2" width="220" height="220" />
+                        </div>
+                        <div class="col-md-8">
+                            <p class="mb-2">Valor: <strong>@EnumHelper.Moeda(fatura.Valor)</strong></p>
+                            <label class="form-label small text-muted">Pix copia e cola</label>
+                            <textarea id="pixCopiaCola" class="form-control font-monospace small" rows="4" readonly>@fatura.PixCopiaCola</textarea>
+                            <button type="button" class="btn btn-dark btn-sm mt-2" onclick="copiarPix()">Copiar código Pix</button>
+                            <div id="pixCopiado" class="text-success small mt-2 d-none">Código copiado!</div>
+                        </div>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-info mt-4 mb-0">
+                    Pix indisponível no momento. Entre em contato com o suporte para quitar esta fatura.
+                </div>
+            }
+        }
+    </div>
+</div>
+
+<div class="mt-3 d-print-none">
+    <a asp-page="Index" class="btn btn-link">Voltar para faturas</a>
+    <button type="button" class="btn btn-dark btn-sm" onclick="window.print()">Imprimir</button>
+</div>
+
+@section Scripts {
+    <style>
+        @@media print {
+            header, footer, .d-print-none { display: none !important; }
+            body { background: white !important; }
+        }
+    </style>
+    <script>
+        function copiarPix() {
+            const campo = document.getElementById('pixCopiaCola');
+            campo.select();
+            navigator.clipboard.writeText(campo.value).then(() => {
+                document.getElementById('pixCopiado').classList.remove('d-none');
+            });
+        }
+    </script>
+}

@@ -1,13 +1,15 @@
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using horizonisp.Services;
 
 namespace horizonisp.Pages
 {
-    public class IndexModel : PageModel
+    public class IndexModel(IDashboardService dashboardService) : PageModel
     {
-        public void OnGet()
-        {
+        public DashboardResumo Resumo { get; private set; } = null!;
 
+        public async Task OnGetAsync()
+        {
+            Resumo = await dashboardService.ObterResumoAsync();
         }
     }
 }

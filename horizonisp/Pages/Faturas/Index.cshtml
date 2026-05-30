@@ -1,0 +1,52 @@
+@page
+@model horizonisp.Pages.Faturas.IndexModel
+@{
+    ViewData["Title"] = "Faturas";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 mb-0">Faturas</h1>
+</div>
+
+<div class="card border-0 shadow-sm">
+    <div class="table-responsive">
+        <table class="table table-hover mb-0">
+            <thead>
+                <tr>
+                    <th>Referência</th>
+                    <th>Cliente</th>
+                    <th>Plano</th>
+                    <th>Valor</th>
+                    <th>Vencimento</th>
+                    <th>Status</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var fatura in Model.Faturas)
+            {
+                <tr>
+                    <td>@fatura.Referencia</td>
+                    <td>@fatura.Assinatura.Cliente.Nome</td>
+                    <td>@fatura.Assinatura.Plano.Nome</td>
+                    <td>@EnumHelper.Moeda(fatura.Valor)</td>
+                    <td>@fatura.DataVencimento.ToLocalTime().ToString("dd/MM/yyyy")</td>
+                    <td>@EnumHelper.ObterStatusFatura(fatura.Status)</td>
+                    <td class="text-end">
+                        @if (fatura.Status is StatusFatura.Pendente or StatusFatura.Atrasada)
+                        {
+                            <form method="post" asp-page-handler="Pagar" asp-route-id="@fatura.Id" class="d-inline">
+                                <button type="submit" class="btn btn-sm btn-success">Marcar paga</button>
+                            </form>
+                        }
+                        else if (fatura.DataPagamento.HasValue)
+                        {
+                            <span class="text-muted small">Paga em @fatura.DataPagamento.Value.ToLocalTime().ToString("dd/MM/yyyy")</span>
+                        }
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</div>

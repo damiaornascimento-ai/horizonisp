@@ -1,0 +1,41 @@
+@model horizonisp.Models.Assinatura
+
+<div class="row g-3">
+    <div class="col-md-6">
+        <label asp-for="ClienteId" class="form-label">Cliente</label>
+        <select asp-for="ClienteId" class="form-select" asp-items="@(ViewData["Clientes"] as SelectList)"></select>
+        <span asp-validation-for="ClienteId" class="text-danger"></span>
+    </div>
+    <div class="col-md-6">
+        <label asp-for="PlanoId" class="form-label">Plano</label>
+        <select asp-for="PlanoId" class="form-select" asp-items="@(ViewData["Planos"] as SelectList)"></select>
+        <span asp-validation-for="PlanoId" class="text-danger"></span>
+    </div>
+    <div class="col-md-6">
+        <label asp-for="LoginPppoe" class="form-label">Login PPPoE</label>
+        <input asp-for="LoginPppoe" class="form-control" />
+        <span asp-validation-for="LoginPppoe" class="text-danger"></span>
+    </div>
+    <div class="col-md-6">
+        <label asp-for="SenhaPppoe" class="form-label">Senha PPPoE</label>
+        <input asp-for="SenhaPppoe" class="form-control" />
+        <span asp-validation-for="SenhaPppoe" class="text-danger"></span>
+    </div>
+    <div class="col-md-8">
+        <label asp-for="EnderecoInstalacao" class="form-label">Endereço de instalação</label>
+        <input asp-for="EnderecoInstalacao" class="form-control" />
+    </div>
+    <div class="col-md-4">
+        <label asp-for="Status" class="form-label"></label>
+        <select asp-for="Status" class="form-select" asp-items="Html.GetEnumSelectList<StatusAssinatura>()"></select>
+    </div>
+    <div class="col-md-4">
+        <label asp-for="DataInicio" class="form-label">Data de início</label>
+        <input asp-for="DataInicio" class="form-control" type="date"
+               value="@Model.DataInicio.ToLocalTime().ToString("yyyy-MM-dd")" />
+    </div>
+    <div class="col-12">
+        <label asp-for="Observacoes" class="form-label"></label>
+        <textarea asp-for="Observacoes" class="form-control" rows="3"></textarea>
+    </div>
+</div>

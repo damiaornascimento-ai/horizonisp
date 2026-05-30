@@ -1,0 +1,24 @@
+@page "{id:int}"
+@model horizonisp.Pages.Clientes.EditModel
+@{
+    ViewData["Title"] = "Editar cliente";
+}
+
+<h1 class="h3 mb-4">Editar cliente</h1>
+
+<div class="card border-0 shadow-sm">
+    <div class="card-body">
+        <form method="post">
+            <input type="hidden" asp-for="Cliente.Id" />
+            <input type="hidden" asp-for="Cliente.DataCadastro" />
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+            <partial name="_Form" model="Model.Cliente" />
+            <button type="submit" class="btn btn-primary">Salvar</button>
+            <a asp-page="Index" class="btn btn-link">Cancelar</a>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

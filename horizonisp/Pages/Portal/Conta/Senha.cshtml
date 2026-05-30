@@ -1,0 +1,88 @@
+@page
+@model horizonisp.Pages.Portal.Conta.SenhaModel
+@{
+    ViewData["Title"] = "Minha conta";
+}
+
+<h1 class="h3 mb-4">Minha conta</h1>
+
+@if (!string.IsNullOrEmpty(Model.MensagemSucesso))
+{
+    <div class="alert alert-success">@Model.MensagemSucesso</div>
+}
+
+@if (!string.IsNullOrEmpty(Model.MensagemErro))
+{
+    <div class="alert alert-danger">@Model.MensagemErro</div>
+}
+
+<div class="row g-4">
+    <div class="col-lg-6">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body">
+                <h2 class="h5">Alterar senha do portal</h2>
+                <form method="post" asp-page-handler="AlterarSenhaPortal">
+                    <div class="mb-3">
+                        <label asp-for="SenhaPortal.Atual" class="form-label"></label>
+                        <input asp-for="SenhaPortal.Atual" class="form-control" />
+                        <span asp-validation-for="SenhaPortal.Atual" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="SenhaPortal.Nova" class="form-label"></label>
+                        <input asp-for="SenhaPortal.Nova" class="form-control" />
+                        <span asp-validation-for="SenhaPortal.Nova" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="SenhaPortal.Confirmacao" class="form-label"></label>
+                        <input asp-for="SenhaPortal.Confirmacao" class="form-control" />
+                        <span asp-validation-for="SenhaPortal.Confirmacao" class="text-danger"></span>
+                    </div>
+                    <button type="submit" class="btn btn-dark">Salvar senha do portal</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body">
+                <h2 class="h5">Alterar senha PPPoE</h2>
+                <p class="text-muted small">Use a senha atual da conexão para autorizar a troca.</p>
+                <form method="post" asp-page-handler="AlterarSenhaPppoe">
+                    <div class="mb-3">
+                        <label asp-for="SenhaPppoe.AssinaturaId" class="form-label"></label>
+                        <select asp-for="SenhaPppoe.AssinaturaId" class="form-select">
+                            @foreach (var assinatura in Model.Assinaturas)
+                            {
+                                <option value="@assinatura.Id">
+                                    @assinatura.Plano.Nome (@assinatura.LoginPppoe)
+                                </option>
+                            }
+                        </select>
+                        <span asp-validation-for="SenhaPppoe.AssinaturaId" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="SenhaPppoe.Atual" class="form-label"></label>
+                        <input asp-for="SenhaPppoe.Atual" class="form-control" />
+                        <span asp-validation-for="SenhaPppoe.Atual" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="SenhaPppoe.Nova" class="form-label"></label>
+                        <input asp-for="SenhaPppoe.Nova" class="form-control" />
+                        <span asp-validation-for="SenhaPppoe.Nova" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="SenhaPppoe.Confirmacao" class="form-label"></label>
+                        <input asp-for="SenhaPppoe.Confirmacao" class="form-control" />
+                        <span asp-validation-for="SenhaPppoe.Confirmacao" class="text-danger"></span>
+                    </div>
+                    <button type="submit" class="btn btn-dark">Salvar senha PPPoE</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,41 @@
+@page
+@model horizonisp.Pages.Portal.Faturas.IndexModel
+@{
+    ViewData["Title"] = "Minhas faturas";
+}
+
+<h1 class="h3 mb-4">Minhas faturas</h1>
+
+<div class="card border-0 shadow-sm">
+    <div class="table-responsive">
+        <table class="table table-hover mb-0 align-middle">
+            <thead>
+                <tr>
+                    <th>Referência</th>
+                    <th>Plano</th>
+                    <th>Valor</th>
+                    <th>Vencimento</th>
+                    <th>Status</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var fatura in Model.Faturas)
+            {
+                <tr>
+                    <td>@fatura.Referencia</td>
+                    <td>@fatura.Assinatura.Plano.Nome</td>
+                    <td>@EnumHelper.Moeda(fatura.Valor)</td>
+                    <td>@fatura.DataVencimento.ToLocalTime().ToString("dd/MM/yyyy")</td>
+                    <td>@EnumHelper.ObterStatusFatura(fatura.Status)</td>
+                    <td class="text-end">
+                        <a asp-page="Detalhe" asp-route-id="@fatura.Id" class="btn btn-sm btn-outline-dark">
+                            2ª via
+                        </a>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</div>

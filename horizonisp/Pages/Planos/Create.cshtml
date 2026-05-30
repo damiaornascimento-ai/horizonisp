@@ -1,0 +1,22 @@
+@page
+@model horizonisp.Pages.Planos.CreateModel
+@{
+    ViewData["Title"] = "Novo plano";
+}
+
+<h1 class="h3 mb-4">Novo plano</h1>
+
+<div class="card border-0 shadow-sm">
+    <div class="card-body">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+            <partial name="_Form" model="Model.Plano" />
+            <button type="submit" class="btn btn-primary">Salvar</button>
+            <a asp-page="Index" class="btn btn-link">Cancelar</a>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

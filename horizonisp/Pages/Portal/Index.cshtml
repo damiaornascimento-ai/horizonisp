@@ -1,0 +1,82 @@
+@page
+@model horizonisp.Pages.Portal.IndexModel
+@{
+    ViewData["Title"] = "Início";
+}
+
+<div class="mb-4">
+    <h1 class="h3">Olá, @Model.Resumo.Cliente.Nome</h1>
+    <p class="text-muted mb-0">Bem-vindo à sua área do assinante.</p>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body">
+                <div class="text-muted small">Assinaturas</div>
+                <div class="display-6">@Model.Resumo.Assinaturas.Count</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body">
+                <div class="text-muted small">Faturas pendentes</div>
+                <div class="display-6">@Model.Resumo.FaturasPendentes</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body">
+                <div class="text-muted small">Faturas atrasadas</div>
+                <div class="display-6 text-danger">@Model.Resumo.FaturasAtrasadas</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (Model.Resumo.ProximaFatura is not null)
+{
+    var fatura = Model.Resumo.ProximaFatura;
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body">
+            <h2 class="h5">Próximo vencimento</h2>
+            <p class="mb-1">
+                Referência <strong>@fatura.Referencia</strong> —
+                @EnumHelper.Moeda(fatura.Valor)
+            </p>
+            <p class="text-muted mb-3">
+                Vence em @fatura.DataVencimento.ToLocalTime().ToString("dd/MM/yyyy")
+                (@EnumHelper.ObterStatusFatura(fatura.Status))
+            </p>
+            <a asp-page="/Portal/Faturas/Detalhe" asp-route-id="@fatura.Id" class="btn btn-dark btn-sm">
+                Ver 2ª via
+            </a>
+        </div>
+    </div>
+}
+
+<div class="card border-0 shadow-sm">
+    <div class="card-body">
+        <h2 class="h5 mb-3">Suas assinaturas</h2>
+        @foreach (var assinatura in Model.Resumo.Assinaturas)
+        {
+            <div class="border rounded p-3 mb-3">
+                <div class="d-flex justify-content-between flex-wrap gap-2">
+                    <div>
+                        <strong>@assinatura.Plano.Nome</strong>
+                        <div class="text-muted small">
+                            @assinatura.Plano.VelocidadeDownloadMbps/@assinatura.Plano.VelocidadeUploadMbps Mbps
+                            · @EnumHelper.ObterTipoPlano(assinatura.Plano.Tipo)
+                        </div>
+                    </div>
+                    <span class="badge text-bg-secondary">@EnumHelper.ObterStatusAssinatura(assinatura.Status)</span>
+                </div>
+                <div class="small mt-2">
+                    Login: <code>@assinatura.LoginPppoe</code>
+                </div>
+            </div>
+        }
+    </div>
+</div>

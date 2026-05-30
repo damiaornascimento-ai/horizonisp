@@ -1,0 +1,42 @@
+@page
+@model horizonisp.Pages.Assinaturas.IndexModel
+@{
+    ViewData["Title"] = "Assinaturas";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 mb-0">Assinaturas</h1>
+    <a asp-page="Create" class="btn btn-primary">Nova assinatura</a>
+</div>
+
+<div class="card border-0 shadow-sm">
+    <div class="table-responsive">
+        <table class="table table-hover mb-0">
+            <thead>
+                <tr>
+                    <th>Cliente</th>
+                    <th>Plano</th>
+                    <th>Login PPPoE</th>
+                    <th>Início</th>
+                    <th>Status</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var assinatura in Model.Assinaturas)
+            {
+                <tr>
+                    <td>@assinatura.Cliente.Nome</td>
+                    <td>@assinatura.Plano.Nome</td>
+                    <td>@assinatura.LoginPppoe</td>
+                    <td>@assinatura.DataInicio.ToLocalTime().ToString("dd/MM/yyyy")</td>
+                    <td>@EnumHelper.ObterStatusAssinatura(assinatura.Status)</td>
+                    <td class="text-end">
+                        <a asp-page="Edit" asp-route-id="@assinatura.Id" class="btn btn-sm btn-outline-secondary">Editar</a>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</div>

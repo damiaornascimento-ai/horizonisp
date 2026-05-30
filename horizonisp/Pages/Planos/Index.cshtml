@@ -1,0 +1,42 @@
+@page
+@model horizonisp.Pages.Planos.IndexModel
+@{
+    ViewData["Title"] = "Planos";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 mb-0">Planos</h1>
+    <a asp-page="Create" class="btn btn-primary">Novo plano</a>
+</div>
+
+<div class="card border-0 shadow-sm">
+    <div class="table-responsive">
+        <table class="table table-hover mb-0">
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Velocidade</th>
+                    <th>Tipo</th>
+                    <th>Preço</th>
+                    <th>Ativo</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var plano in Model.Planos)
+            {
+                <tr>
+                    <td>@plano.Nome</td>
+                    <td>@plano.VelocidadeDownloadMbps/@plano.VelocidadeUploadMbps Mbps</td>
+                    <td>@EnumHelper.ObterTipoPlano(plano.Tipo)</td>
+                    <td>@EnumHelper.Moeda(plano.PrecoMensal)</td>
+                    <td>@(plano.Ativo ? "Sim" : "Não")</td>
+                    <td class="text-end">
+                        <a asp-page="Edit" asp-route-id="@plano.Id" class="btn btn-sm btn-outline-secondary">Editar</a>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -1,0 +1,38 @@
+@model horizonisp.Models.Plano
+
+<div class="row g-3">
+    <div class="col-md-6">
+        <label asp-for="Nome" class="form-label"></label>
+        <input asp-for="Nome" class="form-control" />
+        <span asp-validation-for="Nome" class="text-danger"></span>
+    </div>
+    <div class="col-md-3">
+        <label asp-for="VelocidadeDownloadMbps" class="form-label">Download (Mbps)</label>
+        <input asp-for="VelocidadeDownloadMbps" class="form-control" />
+        <span asp-validation-for="VelocidadeDownloadMbps" class="text-danger"></span>
+    </div>
+    <div class="col-md-3">
+        <label asp-for="VelocidadeUploadMbps" class="form-label">Upload (Mbps)</label>
+        <input asp-for="VelocidadeUploadMbps" class="form-control" />
+        <span asp-validation-for="VelocidadeUploadMbps" class="text-danger"></span>
+    </div>
+    <div class="col-md-4">
+        <label asp-for="PrecoMensal" class="form-label">Preço mensal</label>
+        <input asp-for="PrecoMensal" class="form-control" />
+        <span asp-validation-for="PrecoMensal" class="text-danger"></span>
+    </div>
+    <div class="col-md-4">
+        <label asp-for="Tipo" class="form-label"></label>
+        <select asp-for="Tipo" class="form-select" asp-items="Html.GetEnumSelectList<TipoPlano>()"></select>
+    </div>
+    <div class="col-md-4 d-flex align-items-end">
+        <div class="form-check">
+            <input asp-for="Ativo" class="form-check-input" />
+            <label asp-for="Ativo" class="form-check-label"></label>
+        </div>
+    </div>
+    <div class="col-12">
+        <label asp-for="Descricao" class="form-label"></label>
+        <textarea asp-for="Descricao" class="form-control" rows="3"></textarea>
+    </div>
+</div>

@@ -1,0 +1,63 @@
+@page
+@model horizonisp.Pages.Faturamento.IndexModel
+@{
+    ViewData["Title"] = "Faturamento automático";
+    var cfg = Model.Configuracao;
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="h3 mb-1">Faturamento automático</h1>
+        <p class="text-muted mb-0">Geração de faturas, inadimplência, e-mails e integração Mikrotik.</p>
+    </div>
+    <form method="post" asp-page-handler="Executar">
+        <button type="submit" class="btn btn-primary">Executar rotina agora</button>
+    </form>
+</div>
+
+@if (!string.IsNullOrEmpty(Model.Mensagem) && Model.UltimoResultado is not null)
+{
+    var r = Model.UltimoResultado;
+    <div class="alert alert-success">
+        @Model.Mensagem
+        <ul class="mb-0 mt-2">
+            <li>@r.FaturasGeradas fatura(s) gerada(s)</li>
+            <li>@r.FaturasMarcadasAtrasadas marcada(s) como atrasada(s)</li>
+            <li>@r.LembretesEnviados lembrete(s) de vencimento</li>
+            <li>@r.AvisosAtrasoEnviados aviso(s) de atraso</li>
+            <li>@r.ClientesSuspensos cliente(s) suspenso(s)</li>
+            <li>@r.ClientesReativados cliente(s) reativado(s)</li>
+        </ul>
+    </div>
+}
+
+<div class="row g-3">
+    <div class="col-md-6">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body">
+                <h2 class="h5">Regras de cobrança</h2>
+                <ul class="mb-0">
+                    <li>Vencimento: dia @cfg.Faturamento.DiaVencimento de cada mês</li>
+                    <li>Suspensão após @cfg.Faturamento.DiasParaSuspensao dia(s) de atraso</li>
+                    <li>Lembrete @cfg.Faturamento.DiasLembreteVencimento dia(s) antes do vencimento</li>
+                    <li>Rotina automática a cada @cfg.Faturamento.IntervaloRotinaHoras hora(s)</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body">
+                <h2 class="h5">Integrações</h2>
+                <ul class="mb-0">
+                    <li>Pix: @(cfg.Pix.Habilitado ? "ativo" : "inativo") — chave @cfg.Pix.Chave</li>
+                    <li>E-mail: @(cfg.Email.Habilitado ? "SMTP configurado" : "modo simulado (log)")</li>
+                    <li>Mikrotik: @(cfg.Mikrotik.Habilitado ? cfg.Mikrotik.Host : "desabilitado (simulado)")</li>
+                </ul>
+                <p class="text-muted small mt-3 mb-0">
+                    Ajuste em <code>appsettings.json</code> na seção <code>HorizonIsp</code>.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
