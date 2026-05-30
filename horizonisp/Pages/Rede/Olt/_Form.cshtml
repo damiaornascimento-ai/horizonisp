@@ -1,0 +1,11 @@
+@model horizonisp.Models.Olt
+<div class="row g-3">
+    <div class="col-md-6"><label asp-for="Nome" class="form-label"></label><input asp-for="Nome" class="form-control" /><span asp-validation-for="Nome" class="text-danger"></span></div>
+    <div class="col-md-6"><label asp-for="Host" class="form-label"></label><input asp-for="Host" class="form-control" /><span asp-validation-for="Host" class="text-danger"></span></div>
+    <div class="col-md-6"><label asp-for="Fabricante" class="form-label"></label><input asp-for="Fabricante" class="form-control" /></div>
+    <div class="col-md-6"><label asp-for="Localizacao" class="form-label"></label><input asp-for="Localizacao" class="form-control" /></div>
+    <div class="col-md-6"><label asp-for="UsuarioApi" class="form-label">Usuário API</label><input asp-for="UsuarioApi" class="form-control" /></div>
+    <div class="col-md-6"><label asp-for="SenhaApi" class="form-label">Senha API</label><input asp-for="SenhaApi" class="form-control" type="password" autocomplete="new-password" /></div>
+    <div class="col-md-6"><label asp-for="PortaApi" class="form-label">Porta API</label><input asp-for="PortaApi" class="form-control" /></div>
+    <div class="col-12"><div class="form-check"><input asp-for="Ativo" class="form-check-input" /><label asp-for="Ativo" class="form-check-label"></label></div></div>
+</div>

@@ -1,0 +1,13 @@
+@page "{id:int}"
+@model horizonisp.Pages.Rede.Onu.EditModel
+@{ ViewData["Title"] = "Editar ONU"; }
+<h1 class="h3 mb-4">Editar ONU</h1>
+<div class="card border-0 shadow-sm"><div class="card-body">
+<form method="post">
+    <input type="hidden" asp-for="Onu.Id" />
+    <partial name="_Form" model="Model.Onu" />
+    <button type="submit" class="btn btn-primary">Salvar</button>
+    <a asp-page="/Rede/Index" class="btn btn-link">Cancelar</a>
+</form>
+</div></div>
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

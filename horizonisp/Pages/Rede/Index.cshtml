@@ -1,0 +1,89 @@
+@page
+@model horizonisp.Pages.Rede.IndexModel
+@{
+    ViewData["Title"] = "Rede FTTH";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <div>
+        <h1 class="h3 mb-1">Rede FTTH</h1>
+        <p class="text-muted mb-0">@Model.Olts.Count OLT(s) · @Model.Onus.Count ONU(s) · @Model.OnusOffline offline</p>
+    </div>
+    <div class="d-flex gap-2">
+        <form method="post" asp-page-handler="Sincronizar" class="d-inline">
+            <button type="submit" class="btn btn-outline-secondary btn-sm">Sincronizar OLTs</button>
+        </form>
+        <a asp-page="/Rede/Olt/Create" class="btn btn-outline-primary btn-sm">Nova OLT</a>
+        <a asp-page="/Rede/Onu/Create" class="btn btn-primary btn-sm">Nova ONU</a>
+    </div>
+</div>
+
+@if (TempData["SyncOk"] is string ok)
+{
+    <div class="alert alert-success">@ok</div>
+}
+@if (TempData["SyncErro"] is string erro)
+{
+    <div class="alert alert-warning">@erro</div>
+}
+
+<div class="row g-4">
+    <div class="col-lg-5">
+        <h2 class="h5">OLTs</h2>
+        <div class="card border-0 shadow-sm">
+            <div class="list-group list-group-flush">
+            @foreach (var olt in Model.Olts)
+            {
+                <div class="list-group-item">
+                    <div class="d-flex justify-content-between">
+                        <strong>@olt.Nome</strong>
+                        <a asp-page="/Rede/Olt/Edit" asp-route-id="@olt.Id" class="small">Editar</a>
+                    </div>
+                    <div class="small text-muted">@olt.Host · @olt.Fabricante</div>
+                    <div class="small">@olt.Localizacao · @olt.Onus.Count ONU(s)</div>
+                    @if (olt.UltimaSincronizacao.HasValue)
+                    {
+                        <div class="small text-muted">Sync: @olt.UltimaSincronizacao.Value.ToLocalTime().ToString("g")</div>
+                    }
+                </div>
+            }
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-7">
+        <h2 class="h5">ONUs</h2>
+        <div class="card border-0 shadow-sm">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>Serial</th>
+                            <th>OLT</th>
+                            <th>PON</th>
+                            <th>Cliente</th>
+                            <th>Sinal</th>
+                            <th>Status</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var onu in Model.Onus)
+                    {
+                        <tr>
+                            <td>@onu.Serial</td>
+                            <td>@onu.Olt.Nome</td>
+                            <td>@onu.PonPorta</td>
+                            <td>@(onu.Assinatura?.Cliente.Nome ?? "—")</td>
+                            <td>@(onu.SinalDbm.HasValue ? $"{onu.SinalDbm} dBm" : "—")</td>
+                            <td>@EnumHelper.ObterStatusOnu(onu.Status)</td>
+                            <td class="text-end">
+                                <a asp-page="/Rede/Onu/Edit" asp-route-id="@onu.Id" class="btn btn-sm btn-outline-secondary">Editar</a>
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

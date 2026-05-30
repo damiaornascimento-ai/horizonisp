@@ -192,7 +192,162 @@ namespace horizonisp.Migrations
                     b.HasIndex("AssinaturaId", "Referencia")
                         .IsUnique();
 
+                    b.HasIndex("PixTxId");
+
                     b.ToTable("Faturas");
+                });
+
+            modelBuilder.Entity("horizonisp.Models.Chamado", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Assunto")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.Property<int>("Categoria")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ClienteId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("DataAbertura")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DataAtualizacao")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Prioridade")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ClienteId");
+
+                    b.HasIndex("Status");
+
+                    b.ToTable("Chamados");
+                });
+
+            modelBuilder.Entity("horizonisp.Models.ChamadoMensagem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AutorNome")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int>("AutorTipo")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ChamadoId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Conteudo")
+                        .IsRequired()
+                        .HasMaxLength(4000)
+                        .HasColumnType("nvarchar(4000)");
+
+                    b.Property<DateTime>("DataEnvio")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ChamadoId");
+
+                    b.ToTable("ChamadoMensagens");
+                });
+
+            modelBuilder.Entity("horizonisp.Models.PagamentoPix", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("EndToEndId")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int>("FaturaId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Origem")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<DateTime>("RecebidoEm")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("TxId")
+                        .IsRequired()
+                        .HasMaxLength(25)
+                        .HasColumnType("nvarchar(25)");
+
+                    b.Property<decimal>("Valor")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EndToEndId");
+
+                    b.HasIndex("FaturaId");
+
+                    b.HasIndex("TxId");
+
+                    b.ToTable("PagamentosPix");
+                });
+
+            modelBuilder.Entity("horizonisp.Models.Olt", b =>
+                {
+                    b.Property<int>("Id").ValueGeneratedOnAdd().HasColumnType("int");
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<bool>("Ativo").HasColumnType("bit");
+                    b.Property<string>("Fabricante").IsRequired().HasMaxLength(50).HasColumnType("nvarchar(50)");
+                    b.Property<string>("Host").IsRequired().HasMaxLength(100).HasColumnType("nvarchar(100)");
+                    b.Property<string>("Localizacao").IsRequired().HasMaxLength(150).HasColumnType("nvarchar(150)");
+                    b.Property<string>("Nome").IsRequired().HasMaxLength(100).HasColumnType("nvarchar(100)");
+                    b.Property<int>("PortaApi").HasColumnType("int");
+                    b.Property<string>("SenhaApi").IsRequired().HasMaxLength(100).HasColumnType("nvarchar(100)");
+                    b.Property<DateTime?>("UltimaSincronizacao").HasColumnType("datetime2");
+                    b.Property<string>("UsuarioApi").IsRequired().HasMaxLength(50).HasColumnType("nvarchar(50)");
+                    b.HasKey("Id");
+                    b.HasIndex("Nome");
+                    b.ToTable("Olts");
+                });
+
+            modelBuilder.Entity("horizonisp.Models.Onu", b =>
+                {
+                    b.Property<int>("Id").ValueGeneratedOnAdd().HasColumnType("int");
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<int?>("AssinaturaId").HasColumnType("int");
+                    b.Property<string>("Mac").HasMaxLength(20).HasColumnType("nvarchar(20)");
+                    b.Property<int>("OltId").HasColumnType("int");
+                    b.Property<string>("PonPorta").IsRequired().HasMaxLength(30).HasColumnType("nvarchar(30)");
+                    b.Property<string>("Serial").IsRequired().HasMaxLength(50).HasColumnType("nvarchar(50)");
+                    b.Property<int?>("SinalDbm").HasColumnType("int");
+                    b.Property<int>("Status").HasColumnType("int");
+                    b.Property<DateTime?>("UltimaAtualizacao").HasColumnType("datetime2");
+                    b.HasKey("Id");
+                    b.HasIndex("AssinaturaId");
+                    b.HasIndex("OltId");
+                    b.HasIndex("Serial").IsUnique();
+                    b.ToTable("Onus");
                 });
 
             modelBuilder.Entity("horizonisp.Models.Plano", b =>
@@ -290,6 +445,28 @@ namespace horizonisp.Migrations
                     b.Navigation("Plano");
                 });
 
+            modelBuilder.Entity("horizonisp.Models.Chamado", b =>
+                {
+                    b.HasOne("horizonisp.Models.Cliente", "Cliente")
+                        .WithMany("Chamados")
+                        .HasForeignKey("ClienteId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Cliente");
+                });
+
+            modelBuilder.Entity("horizonisp.Models.ChamadoMensagem", b =>
+                {
+                    b.HasOne("horizonisp.Models.Chamado", "Chamado")
+                        .WithMany("Mensagens")
+                        .HasForeignKey("ChamadoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Chamado");
+                });
+
             modelBuilder.Entity("horizonisp.Models.Fatura", b =>
                 {
                     b.HasOne("horizonisp.Models.Assinatura", "Assinatura")
@@ -301,14 +478,59 @@ namespace horizonisp.Migrations
                     b.Navigation("Assinatura");
                 });
 
+            modelBuilder.Entity("horizonisp.Models.PagamentoPix", b =>
+                {
+                    b.HasOne("horizonisp.Models.Fatura", "Fatura")
+                        .WithMany("PagamentosPix")
+                        .HasForeignKey("FaturaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Fatura");
+                });
+
+            modelBuilder.Entity("horizonisp.Models.Onu", b =>
+                {
+                    b.HasOne("horizonisp.Models.Assinatura", "Assinatura")
+                        .WithMany()
+                        .HasForeignKey("AssinaturaId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("horizonisp.Models.Olt", "Olt")
+                        .WithMany("Onus")
+                        .HasForeignKey("OltId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Assinatura");
+                    b.Navigation("Olt");
+                });
+
             modelBuilder.Entity("horizonisp.Models.Assinatura", b =>
                 {
                     b.Navigation("Faturas");
                 });
 
+            modelBuilder.Entity("horizonisp.Models.Chamado", b =>
+                {
+                    b.Navigation("Mensagens");
+                });
+
             modelBuilder.Entity("horizonisp.Models.Cliente", b =>
                 {
                     b.Navigation("Assinaturas");
+
+                    b.Navigation("Chamados");
+                });
+
+            modelBuilder.Entity("horizonisp.Models.Fatura", b =>
+                {
+                    b.Navigation("PagamentosPix");
+                });
+
+            modelBuilder.Entity("horizonisp.Models.Olt", b =>
+                {
+                    b.Navigation("Onus");
                 });
 
             modelBuilder.Entity("horizonisp.Models.Plano", b =>

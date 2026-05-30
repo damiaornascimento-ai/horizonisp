@@ -1,0 +1,18 @@
+@model horizonisp.Models.Onu
+<div class="row g-3">
+    <div class="col-md-6">
+        <label asp-for="OltId" class="form-label">OLT</label>
+        <select asp-for="OltId" class="form-select" asp-items="@(ViewData["Olts"] as SelectList)"></select>
+    </div>
+    <div class="col-md-6">
+        <label asp-for="AssinaturaId" class="form-label">Assinatura (opcional)</label>
+        <select asp-for="AssinaturaId" class="form-select" asp-items="@(ViewData["Assinaturas"] as SelectList)">
+            <option value="">— Sem vínculo —</option>
+        </select>
+    </div>
+    <div class="col-md-6"><label asp-for="Serial" class="form-label"></label><input asp-for="Serial" class="form-control" /><span asp-validation-for="Serial" class="text-danger"></span></div>
+    <div class="col-md-6"><label asp-for="Mac" class="form-label"></label><input asp-for="Mac" class="form-control" /></div>
+    <div class="col-md-4"><label asp-for="PonPorta" class="form-label">Porta PON</label><input asp-for="PonPorta" class="form-control" /></div>
+    <div class="col-md-4"><label asp-for="SinalDbm" class="form-label">Sinal (dBm)</label><input asp-for="SinalDbm" class="form-control" /></div>
+    <div class="col-md-4"><label asp-for="Status" class="form-label"></label><select asp-for="Status" class="form-select" asp-items="Html.GetEnumSelectList<StatusOnu>()"></select></div>
+</div>

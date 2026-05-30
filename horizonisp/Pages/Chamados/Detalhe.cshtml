@@ -1,0 +1,55 @@
+@page "{id:int}"
+@model horizonisp.Pages.Chamados.DetalheModel
+@{
+    ViewData["Title"] = $"Chamado #{Model.Chamado.Id}";
+}
+
+<div class="d-flex justify-content-between align-items-start mb-4 flex-wrap gap-2">
+    <div>
+        <a asp-page="Index" class="btn btn-link ps-0">← Voltar</a>
+        <h1 class="h3 mb-1">@Model.Chamado.Assunto</h1>
+        <p class="text-muted mb-0">
+            Cliente: <strong>@Model.Chamado.Cliente.Nome</strong> (@Model.Chamado.Cliente.Email)
+        </p>
+    </div>
+    <form method="post" asp-page-handler="AtualizarStatus" class="d-flex gap-2 align-items-end">
+        <div>
+            <label class="form-label small">Status</label>
+            <select asp-for="NovoStatus" class="form-select form-select-sm" asp-items="Html.GetEnumSelectList<StatusChamado>()"></select>
+        </div>
+        <button type="submit" class="btn btn-sm btn-outline-primary">Atualizar</button>
+    </form>
+</div>
+
+<div class="card border-0 shadow-sm mb-4">
+    <div class="card-body">
+        @foreach (var msg in Model.Chamado.Mensagens)
+        {
+            var isOperador = msg.AutorTipo == AutorMensagemChamado.Operador;
+            <div class="mb-3 p-3 rounded @(isOperador ? "bg-primary bg-opacity-10 border border-primary border-opacity-25" : "bg-light border")">
+                <div class="d-flex justify-content-between small text-muted mb-1">
+                    <span>@msg.AutorNome @(isOperador ? "(suporte)" : "(cliente)")</span>
+                    <span>@msg.DataEnvio.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</span>
+                </div>
+                <div>@msg.Conteudo</div>
+            </div>
+        }
+    </div>
+</div>
+
+@if (Model.Chamado.Status != StatusChamado.Fechado)
+{
+    @if (!string.IsNullOrEmpty(Model.Erro))
+    {
+        <div class="alert alert-danger">@Model.Erro</div>
+    }
+    <div class="card border-0 shadow-sm">
+        <div class="card-body">
+            <form method="post" asp-page-handler="Responder">
+                <label class="form-label">Responder ao cliente</label>
+                <textarea asp-for="NovaMensagem" class="form-control mb-3" rows="4"></textarea>
+                <button type="submit" class="btn btn-primary btn-sm">Enviar resposta</button>
+            </form>
+        </div>
+    </div>
+}

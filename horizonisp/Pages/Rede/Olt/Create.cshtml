@@ -1,0 +1,12 @@
+@page
+@model horizonisp.Pages.Rede.Olt.CreateModel
+@{ ViewData["Title"] = "Nova OLT"; }
+<h1 class="h3 mb-4">Nova OLT</h1>
+<div class="card border-0 shadow-sm"><div class="card-body">
+<form method="post">
+    <partial name="_Form" model="Model.Olt" />
+    <button type="submit" class="btn btn-primary">Salvar</button>
+    <a asp-page="/Rede/Index" class="btn btn-link">Cancelar</a>
+</form>
+</div></div>
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

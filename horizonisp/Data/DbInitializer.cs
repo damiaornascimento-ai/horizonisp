@@ -21,6 +21,7 @@ namespace horizonisp.Data
             }
 
             await GarantirSenhasPortalDemoAsync(db, clientePasswordHasher);
+            await GarantirChamadoTecnicoDemoAsync(db);
         }
 
         private static async Task SeedDadosIniciaisAsync(
@@ -128,6 +129,42 @@ namespace horizonisp.Data
                 });
 
             await db.SaveChangesAsync();
+
+            var olt = new Olt
+            {
+                Nome = "OLT Central",
+                Host = "10.0.0.1",
+                Fabricante = "Huawei",
+                Localizacao = "POP Principal",
+                Ativo = true
+            };
+            db.Olts.Add(olt);
+            await db.SaveChangesAsync();
+
+            db.Onus.AddRange(
+                new Onu
+                {
+                    OltId = olt.Id,
+                    AssinaturaId = assinaturas[0].Id,
+                    Serial = "HWTC12345678",
+                    Mac = "AA:BB:CC:DD:EE:01",
+                    PonPorta = "0/1/1",
+                    Status = StatusOnu.Online,
+                    SinalDbm = -22,
+                    UltimaAtualizacao = DateTime.UtcNow
+                },
+                new Onu
+                {
+                    OltId = olt.Id,
+                    AssinaturaId = assinaturas[1].Id,
+                    Serial = "HWTC87654321",
+                    Mac = "AA:BB:CC:DD:EE:02",
+                    PonPorta = "0/1/2",
+                    Status = StatusOnu.Offline,
+                    SinalDbm = -28,
+                    UltimaAtualizacao = DateTime.UtcNow
+                });
+            await db.SaveChangesAsync();
         }
 
         private static Cliente CriarClienteDemo(
@@ -175,6 +212,44 @@ namespace horizonisp.Data
                 cliente.PortalAtivo = true;
                 cliente.SenhaPortalHash = clientePasswordHasher.HashPassword(cliente, senha);
             }
+
+            await db.SaveChangesAsync();
+        }
+
+        private static async Task GarantirChamadoTecnicoDemoAsync(AppDbContext db)
+        {
+            var existeTecnico = await db.Chamados.AnyAsync(c => c.Categoria == CategoriaChamado.Tecnico);
+            if (existeTecnico)
+            {
+                return;
+            }
+
+            var cliente = await db.Clientes.FirstOrDefaultAsync(c => c.Email == "maria.oliveira@email.com");
+            if (cliente is null)
+            {
+                return;
+            }
+
+            db.Chamados.Add(new Chamado
+            {
+                ClienteId = cliente.Id,
+                Assunto = "Sem conexão — ONU offline",
+                Categoria = CategoriaChamado.Tecnico,
+                Prioridade = PrioridadeChamado.Alta,
+                Status = StatusChamado.Aberto,
+                DataAbertura = DateTime.UtcNow.AddHours(-2),
+                DataAtualizacao = DateTime.UtcNow.AddHours(-2),
+                Mensagens =
+                [
+                    new ChamadoMensagem
+                    {
+                        AutorTipo = AutorMensagemChamado.Cliente,
+                        AutorNome = cliente.Nome,
+                        Conteudo = "A internet caiu desde ontem à noite. Luz vermelha na ONU.",
+                        DataEnvio = DateTime.UtcNow.AddHours(-2)
+                    }
+                ]
+            });
 
             await db.SaveChangesAsync();
         }

@@ -1,0 +1,12 @@
+@page
+@model horizonisp.Pages.Rede.Onu.CreateModel
+@{ ViewData["Title"] = "Nova ONU"; }
+<h1 class="h3 mb-4">Nova ONU</h1>
+<div class="card border-0 shadow-sm"><div class="card-body">
+<form method="post">
+    <partial name="_Form" model="Model.Onu" />
+    <button type="submit" class="btn btn-primary">Salvar</button>
+    <a asp-page="/Rede/Index" class="btn btn-link">Cancelar</a>
+</form>
+</div></div>
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

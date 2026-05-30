@@ -1,0 +1,50 @@
+@page
+@model horizonisp.Pages.Chamados.IndexModel
+@{
+    ViewData["Title"] = "Chamados";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 mb-0">Chamados de suporte</h1>
+    <div class="btn-group">
+        <a asp-page="Index" class="btn btn-sm @(Model.FiltroStatus is null ? "btn-primary" : "btn-outline-primary")">Todos</a>
+        <a asp-page="Index" asp-route-status="@StatusChamado.Aberto" class="btn btn-sm @(Model.FiltroStatus == StatusChamado.Aberto ? "btn-primary" : "btn-outline-primary")">Abertos</a>
+        <a asp-page="Index" asp-route-status="@StatusChamado.EmAndamento" class="btn btn-sm @(Model.FiltroStatus == StatusChamado.EmAndamento ? "btn-primary" : "btn-outline-primary")">Em andamento</a>
+    </div>
+</div>
+
+<div class="card border-0 shadow-sm">
+    <div class="table-responsive">
+        <table class="table table-hover mb-0">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Cliente</th>
+                    <th>Assunto</th>
+                    <th>Categoria</th>
+                    <th>Prioridade</th>
+                    <th>Status</th>
+                    <th>Atualizado</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var chamado in Model.Chamados)
+            {
+                <tr>
+                    <td>@chamado.Id</td>
+                    <td>@chamado.Cliente.Nome</td>
+                    <td>@chamado.Assunto</td>
+                    <td>@EnumHelper.ObterCategoriaChamado(chamado.Categoria)</td>
+                    <td>@EnumHelper.ObterPrioridadeChamado(chamado.Prioridade)</td>
+                    <td>@EnumHelper.ObterStatusChamado(chamado.Status)</td>
+                    <td>@chamado.DataAtualizacao.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</td>
+                    <td class="text-end">
+                        <a asp-page="Detalhe" asp-route-id="@chamado.Id" class="btn btn-sm btn-outline-secondary">Atender</a>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</div>

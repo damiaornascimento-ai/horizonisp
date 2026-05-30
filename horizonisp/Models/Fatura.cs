@@ -33,5 +33,7 @@ namespace horizonisp.Models
         public DateTime? AvisoAtrasoEnviadoEm { get; set; }
 
         public Assinatura Assinatura { get; set; } = null!;
+
+        public ICollection<PagamentoPix> PagamentosPix { get; set; } = [];
     }
 }

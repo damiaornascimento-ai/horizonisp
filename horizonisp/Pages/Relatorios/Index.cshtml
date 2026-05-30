@@ -1,0 +1,112 @@
+@page
+@model horizonisp.Pages.Relatorios.IndexModel
+@{
+    ViewData["Title"] = "Relatórios";
+    var r = Model.Resumo;
+    var variacao = r.ReceitaMesAnterior > 0
+        ? ((r.ReceitaMesAtual - r.ReceitaMesAnterior) / r.ReceitaMesAnterior) * 100
+        : 0;
+}
+
+<h1 class="h3 mb-4">Relatórios</h1>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body">
+                <div class="text-muted small">Receita do mês</div>
+                <div class="h4">@EnumHelper.Moeda(r.ReceitaMesAtual)</div>
+                <div class="small @(variacao >= 0 ? "text-success" : "text-danger")">
+                    @(variacao >= 0 ? "+" : "")@variacao.ToString("F1")% vs mês anterior
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body">
+                <div class="text-muted small">MRR estimado</div>
+                <div class="h4">@EnumHelper.Moeda(r.MrrEstimado)</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body">
+                <div class="text-muted small">Inadimplência</div>
+                <div class="h4 text-danger">@EnumHelper.Moeda(r.TotalInadimplente)</div>
+                <div class="small text-muted">@r.FaturasAtrasadas fatura(s)</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body">
+                <div class="text-muted small">Chamados abertos</div>
+                <div class="h4">@r.ChamadosAbertos</div>
+                <div class="small text-muted">@r.AssinaturasAtivas assinaturas ativas</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body">
+                <div class="text-muted small">Clientes ativos</div>
+                <div class="display-6">@r.ClientesAtivos</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body">
+                <div class="text-muted small">Clientes suspensos/inadimplentes</div>
+                <div class="display-6 text-danger">@r.ClientesSuspensos</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body">
+                <div class="text-muted small">Receita mês anterior</div>
+                <div class="display-6">@EnumHelper.Moeda(r.ReceitaMesAnterior)</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<h2 class="h5 mb-3">Clientes inadimplentes</h2>
+<div class="card border-0 shadow-sm">
+    <div class="table-responsive">
+        <table class="table table-hover mb-0">
+            <thead>
+                <tr>
+                    <th>Cliente</th>
+                    <th>E-mail</th>
+                    <th>Faturas</th>
+                    <th>Valor devido</th>
+                    <th>Vencimento mais antigo</th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var item in Model.Inadimplentes)
+            {
+                <tr>
+                    <td>@item.Nome</td>
+                    <td>@item.Email</td>
+                    <td>@item.FaturasAtrasadas</td>
+                    <td>@EnumHelper.Moeda(item.ValorDevido)</td>
+                    <td>@item.VencimentoMaisAntigo.ToLocalTime().ToString("dd/MM/yyyy")</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@if (!Model.Inadimplentes.Any())
+{
+    <p class="text-muted mt-3">Nenhum cliente inadimplente no momento.</p>
+}

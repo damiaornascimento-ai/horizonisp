@@ -41,5 +41,6 @@ namespace horizonisp.Models
         public bool PortalAtivo { get; set; } = true;
 
         public ICollection<Assinatura> Assinaturas { get; set; } = [];
+        public ICollection<Chamado> Chamados { get; set; } = [];
     }
 }

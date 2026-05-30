@@ -2,11 +2,14 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using horizonisp.Api;
 using horizonisp.Auth;
 using horizonisp.Configuration;
 using horizonisp.Context;
 using horizonisp.Data;
 using horizonisp.Models;
+using Microsoft.Extensions.Options;
+
 using horizonisp.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,6 +21,14 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddHttpClient("Mikrotik")
+    .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+    {
+        ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+    });
+
+builder.Services.AddHttpClient("WhatsApp");
+
+builder.Services.AddHttpClient("Olt")
     .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
     {
         ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
@@ -68,7 +79,14 @@ builder.Services.AddScoped<IPixService, PixService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IMikrotikService, MikrotikService>();
 builder.Services.AddScoped<IFaturamentoService, FaturamentoService>();
+builder.Services.AddScoped<IChamadoService, ChamadoService>();
+builder.Services.AddScoped<IRelatorioService, RelatorioService>();
+builder.Services.AddScoped<IWhatsAppService, WhatsAppService>();
+builder.Services.AddScoped<IRedeService, RedeService>();
+builder.Services.AddScoped<IOltIntegracaoService, OltIntegracaoService>();
+builder.Services.AddScoped<IRedeSincronizacaoService, RedeSincronizacaoService>();
 builder.Services.AddHostedService<FaturamentoBackgroundService>();
+builder.Services.AddHostedService<RedeBackgroundService>();
 builder.Services.AddRazorPages(options =>
 {
     options.Conventions.AuthorizePage("/Index", AuthSchemes.Admin);
@@ -77,6 +95,10 @@ builder.Services.AddRazorPages(options =>
     options.Conventions.AuthorizeFolder("/Assinaturas", AuthSchemes.Admin);
     options.Conventions.AuthorizeFolder("/Faturas", AuthSchemes.Admin);
     options.Conventions.AuthorizeFolder("/Faturamento", AuthSchemes.Admin);
+    options.Conventions.AuthorizeFolder("/Chamados", AuthSchemes.Admin);
+    options.Conventions.AuthorizeFolder("/Relatorios", AuthSchemes.Admin);
+    options.Conventions.AuthorizeFolder("/Rede", AuthSchemes.Admin);
+    options.Conventions.AuthorizeFolder("/Integracoes", AuthSchemes.Admin);
     options.Conventions.AuthorizeFolder("/Portal", AuthSchemes.Cliente);
 
     options.Conventions.AllowAnonymousToPage("/Login");
@@ -96,6 +118,7 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
+app.UseMiddleware<ApiKeyMiddleware>();
 app.UseAuthentication();
 app.UseAuthorization();
 
@@ -107,5 +130,29 @@ using (var scope = app.Services.CreateScope())
     await DbInitializer.SeedAsync(db, passwordHasher, clientePasswordHasher);
 }
 
+app.MapPost("/api/pix/webhook", async (
+    PixWebhookRequest request,
+    HttpRequest httpRequest,
+    IFaturamentoService faturamentoService,
+    IOptions<HorizonIspOptions> options) =>
+{
+    var token = httpRequest.Headers["X-Webhook-Token"].FirstOrDefault();
+    if (!string.Equals(token, options.Value.Pix.WebhookToken, StringComparison.Ordinal))
+    {
+        return Results.Unauthorized();
+    }
+
+    var resultado = await faturamentoService.ConfirmarPagamentoPixAsync(
+        request.TxId,
+        request.Valor,
+        "Webhook",
+        request.EndToEndId);
+
+    return resultado.Sucesso
+        ? Results.Ok(resultado)
+        : Results.BadRequest(resultado);
+}).AllowAnonymous();
+
+app.MapV1Endpoints();
 app.MapRazorPages();
 app.Run();

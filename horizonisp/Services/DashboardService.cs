@@ -10,7 +10,9 @@ namespace horizonisp.Services
         int AssinaturasAtivas,
         int FaturasPendentes,
         int FaturasAtrasadas,
-        decimal ReceitaMesAtual);
+        decimal ReceitaMesAtual,
+        int ChamadosAbertos,
+        int OnusOffline);
 
     public interface IDashboardService
     {
@@ -37,13 +39,20 @@ namespace horizonisp.Services
                     && f.DataPagamento < inicioMes.AddMonths(1))
                 .SumAsync(f => (decimal?)f.Valor) ?? 0;
 
+            var chamadosAbertos = await db.Chamados.CountAsync(c =>
+                c.Status == StatusChamado.Aberto || c.Status == StatusChamado.EmAndamento);
+
+            var onusOffline = await db.Onus.CountAsync(o => o.Status == StatusOnu.Offline);
+
             return new DashboardResumo(
                 totalClientes,
                 clientesAtivos,
                 assinaturasAtivas,
                 faturasPendentes,
                 faturasAtrasadas,
-                receitaMesAtual);
+                receitaMesAtual,
+                chamadosAbertos,
+                onusOffline);
         }
     }
 }

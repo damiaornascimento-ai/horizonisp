@@ -8,6 +8,9 @@ namespace horizonisp.Configuration
         public PixOptions Pix { get; set; } = new();
         public EmailOptions Email { get; set; } = new();
         public MikrotikOptions Mikrotik { get; set; } = new();
+        public ApiOptions Api { get; set; } = new();
+        public WhatsAppOptions WhatsApp { get; set; } = new();
+        public RedeOptions Rede { get; set; } = new();
     }
 
     public class FaturamentoOptions
@@ -24,6 +27,7 @@ namespace horizonisp.Configuration
         public string Chave { get; set; } = "horizonisp@email.com";
         public string NomeRecebedor { get; set; } = "Horizon ISP";
         public string Cidade { get; set; } = "SAO PAULO";
+        public string WebhookToken { get; set; } = "altere-este-token";
     }
 
     public class EmailOptions
@@ -46,5 +50,27 @@ namespace horizonisp.Configuration
         public string Senha { get; set; } = string.Empty;
         public bool UsarSsl { get; set; } = true;
         public string PerfilPppoe { get; set; } = "default";
+    }
+
+    public class ApiOptions
+    {
+        public bool Habilitado { get; set; } = true;
+        public string Chave { get; set; } = "altere-esta-api-key";
+    }
+
+    public class WhatsAppOptions
+    {
+        public bool Habilitado { get; set; }
+        public string Provedor { get; set; } = "Evolution";
+        public string BaseUrl { get; set; } = string.Empty;
+        public string Instancia { get; set; } = string.Empty;
+        public string Token { get; set; } = string.Empty;
+    }
+
+    public class RedeOptions
+    {
+        public bool Habilitado { get; set; }
+        public int IntervaloSincronizacaoMinutos { get; set; } = 15;
+        public string CaminhoOnus { get; set; } = "/api/onus";
     }
 }

@@ -61,3 +61,24 @@
         </div>
     </div>
 </div>
+
+<div class="card border-0 shadow-sm mt-4">
+    <div class="card-body">
+        <h2 class="h5">Webhook Pix (conciliação automática)</h2>
+        <p class="text-muted">
+            Configure seu gateway/banco para enviar confirmações de pagamento para:
+        </p>
+        <pre class="bg-light p-3 rounded mb-3"><code>POST /api/pix/webhook
+Header: X-Webhook-Token: @cfg.Pix.WebhookToken
+Content-Type: application/json
+
+{
+  "txId": "FAT000001202605",
+  "valor": 79.90,
+  "endToEndId": "E12345678920260530123456789012345"
+}</code></pre>
+        <p class="text-muted small mb-0">
+            O <code>txId</code> deve corresponder ao campo Pix da fatura. Ao confirmar, o cliente é reativado automaticamente.
+        </p>
+    </div>
+</div>

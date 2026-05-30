@@ -41,5 +41,40 @@ namespace horizonisp.Helpers
 
         public static string Moeda(decimal valor) =>
             valor.ToString("C", new CultureInfo("pt-BR"));
+
+        public static string ObterStatusChamado(StatusChamado status) => status switch
+        {
+            StatusChamado.Aberto => "Aberto",
+            StatusChamado.EmAndamento => "Em andamento",
+            StatusChamado.Resolvido => "Resolvido",
+            StatusChamado.Fechado => "Fechado",
+            _ => status.ToString()
+        };
+
+        public static string ObterPrioridadeChamado(PrioridadeChamado prioridade) => prioridade switch
+        {
+            PrioridadeChamado.Baixa => "Baixa",
+            PrioridadeChamado.Normal => "Normal",
+            PrioridadeChamado.Alta => "Alta",
+            PrioridadeChamado.Urgente => "Urgente",
+            _ => prioridade.ToString()
+        };
+
+        public static string ObterCategoriaChamado(CategoriaChamado categoria) => categoria switch
+        {
+            CategoriaChamado.Financeiro => "Financeiro",
+            CategoriaChamado.Tecnico => "Técnico",
+            CategoriaChamado.Comercial => "Comercial",
+            CategoriaChamado.Outros => "Outros",
+            _ => categoria.ToString()
+        };
+
+        public static string ObterStatusOnu(StatusOnu status) => status switch
+        {
+            StatusOnu.Online => "Online",
+            StatusOnu.Offline => "Offline",
+            StatusOnu.Desconhecido => "Desconhecido",
+            _ => status.ToString()
+        };
     }
 }

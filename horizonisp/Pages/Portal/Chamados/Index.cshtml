@@ -1,0 +1,47 @@
+@page
+@model horizonisp.Pages.Portal.Chamados.IndexModel
+@{
+    ViewData["Title"] = "Meus chamados";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 mb-0">Meus chamados</h1>
+    <a asp-page="Create" class="btn btn-dark">Abrir chamado</a>
+</div>
+
+<div class="card border-0 shadow-sm">
+    <div class="table-responsive">
+        <table class="table table-hover mb-0">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Assunto</th>
+                    <th>Categoria</th>
+                    <th>Status</th>
+                    <th>Atualizado</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var chamado in Model.Chamados)
+            {
+                <tr>
+                    <td>@chamado.Id</td>
+                    <td>@chamado.Assunto</td>
+                    <td>@EnumHelper.ObterCategoriaChamado(chamado.Categoria)</td>
+                    <td>@EnumHelper.ObterStatusChamado(chamado.Status)</td>
+                    <td>@chamado.DataAtualizacao.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</td>
+                    <td class="text-end">
+                        <a asp-page="Detalhe" asp-route-id="@chamado.Id" class="btn btn-sm btn-outline-dark">Ver</a>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@if (!Model.Chamados.Any())
+{
+    <p class="text-muted mt-3">Nenhum chamado aberto ainda.</p>
+}

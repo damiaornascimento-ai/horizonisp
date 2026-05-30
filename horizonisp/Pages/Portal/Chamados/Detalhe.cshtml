@@ -1,0 +1,47 @@
+@page "{id:int}"
+@model horizonisp.Pages.Portal.Chamados.DetalheModel
+@{
+    ViewData["Title"] = $"Chamado #{Model.Chamado.Id}";
+}
+
+<div class="mb-4">
+    <a asp-page="Index" class="btn btn-link ps-0">← Voltar</a>
+    <h1 class="h3">@Model.Chamado.Assunto</h1>
+    <p class="text-muted mb-0">
+        @EnumHelper.ObterCategoriaChamado(Model.Chamado.Categoria) ·
+        @EnumHelper.ObterStatusChamado(Model.Chamado.Status)
+    </p>
+</div>
+
+<div class="card border-0 shadow-sm mb-4">
+    <div class="card-body">
+        @foreach (var msg in Model.Chamado.Mensagens)
+        {
+            var isOperador = msg.AutorTipo == AutorMensagemChamado.Operador;
+            <div class="mb-3 p-3 rounded @(isOperador ? "bg-light border" : "bg-white border")">
+                <div class="d-flex justify-content-between small text-muted mb-1">
+                    <span>@(isOperador ? "Suporte" : "Você") — @msg.AutorNome</span>
+                    <span>@msg.DataEnvio.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</span>
+                </div>
+                <div>@msg.Conteudo</div>
+            </div>
+        }
+    </div>
+</div>
+
+@if (Model.Chamado.Status != StatusChamado.Fechado)
+{
+    @if (!string.IsNullOrEmpty(Model.Erro))
+    {
+        <div class="alert alert-danger">@Model.Erro</div>
+    }
+    <div class="card border-0 shadow-sm">
+        <div class="card-body">
+            <form method="post">
+                <label class="form-label">Nova mensagem</label>
+                <textarea name="NovaMensagem" class="form-control mb-3" rows="3">@Model.NovaMensagem</textarea>
+                <button type="submit" class="btn btn-dark btn-sm">Enviar</button>
+            </form>
+        </div>
+    </div>
+}
