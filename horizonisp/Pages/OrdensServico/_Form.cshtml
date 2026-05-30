@@ -1,0 +1,43 @@
+@model horizonisp.Models.OrdemServico
+
+<div class="row g-3">
+    <div class="col-md-6">
+        <label asp-for="ClienteId" class="form-label">Cliente</label>
+        <select asp-for="ClienteId" class="form-select" asp-items="@((SelectList)ViewData["Clientes"]!)"></select>
+    </div>
+    <div class="col-md-6">
+        <label asp-for="AssinaturaId" class="form-label">Assinatura</label>
+        <select asp-for="AssinaturaId" class="form-select" asp-items="@((SelectList)ViewData["Assinaturas"]!)">
+            <option value="">— Opcional —</option>
+        </select>
+    </div>
+    <div class="col-md-8">
+        <label asp-for="Titulo" class="form-label"></label>
+        <input asp-for="Titulo" class="form-control" />
+        <span asp-validation-for="Titulo" class="text-danger"></span>
+    </div>
+    <div class="col-md-4">
+        <label asp-for="Tipo" class="form-label"></label>
+        <select asp-for="Tipo" class="form-select" asp-items="Html.GetEnumSelectList<TipoOrdemServico>()"></select>
+    </div>
+    <div class="col-12">
+        <label asp-for="Descricao" class="form-label"></label>
+        <textarea asp-for="Descricao" class="form-control" rows="3"></textarea>
+    </div>
+    <div class="col-12">
+        <label asp-for="Endereco" class="form-label"></label>
+        <input asp-for="Endereco" class="form-control" />
+    </div>
+    <div class="col-md-4">
+        <label asp-for="TecnicoResponsavel" class="form-label">Técnico responsável</label>
+        <input asp-for="TecnicoResponsavel" class="form-control" />
+    </div>
+    <div class="col-md-4">
+        <label asp-for="DataAgendada" class="form-label">Data agendada</label>
+        <input asp-for="DataAgendada" class="form-control" type="datetime-local" />
+    </div>
+    <div class="col-md-4">
+        <label asp-for="Status" class="form-label"></label>
+        <select asp-for="Status" class="form-select" asp-items="Html.GetEnumSelectList<StatusOrdemServico>()"></select>
+    </div>
+</div>

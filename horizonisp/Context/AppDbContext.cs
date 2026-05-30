@@ -20,6 +20,8 @@ namespace horizonisp.Context
         public DbSet<PagamentoPix> PagamentosPix => Set<PagamentoPix>();
         public DbSet<Olt> Olts => Set<Olt>();
         public DbSet<Onu> Onus => Set<Onu>();
+        public DbSet<OrdemServico> OrdensServico => Set<OrdemServico>();
+        public DbSet<NotaFiscalServico> NotasFiscaisServico => Set<NotaFiscalServico>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -107,6 +109,40 @@ namespace horizonisp.Context
                 .WithMany()
                 .HasForeignKey(o => o.AssinaturaId)
                 .OnDelete(DeleteBehavior.SetNull);
+
+            modelBuilder.Entity<OrdemServico>()
+                .HasOne(o => o.Cliente)
+                .WithMany()
+                .HasForeignKey(o => o.ClienteId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<OrdemServico>()
+                .HasOne(o => o.Assinatura)
+                .WithMany()
+                .HasForeignKey(o => o.AssinaturaId)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            modelBuilder.Entity<OrdemServico>()
+                .HasOne(o => o.Chamado)
+                .WithMany()
+                .HasForeignKey(o => o.ChamadoId)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            modelBuilder.Entity<OrdemServico>()
+                .HasIndex(o => o.Status);
+
+            modelBuilder.Entity<NotaFiscalServico>()
+                .HasOne(n => n.Fatura)
+                .WithOne(f => f.NotaFiscalServico)
+                .HasForeignKey<NotaFiscalServico>(n => n.FaturaId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<NotaFiscalServico>()
+                .HasIndex(n => n.FaturaId)
+                .IsUnique();
+
+            modelBuilder.Entity<NotaFiscalServico>()
+                .HasIndex(n => n.Status);
 
             modelBuilder.Entity<Usuario>()
                 .HasIndex(u => u.Email)

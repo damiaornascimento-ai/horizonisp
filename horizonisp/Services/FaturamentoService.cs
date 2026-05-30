@@ -27,6 +27,7 @@ namespace horizonisp.Services
             string? endToEndId = null,
             CancellationToken cancellationToken = default);
         Task GarantirPixAsync(Fatura fatura, CancellationToken cancellationToken = default);
+        Task GarantirBoletoAsync(Fatura fatura, CancellationToken cancellationToken = default);
     }
 
     public record PixConfirmacaoResult(bool Sucesso, string Mensagem, int? FaturaId = null);
@@ -34,6 +35,8 @@ namespace horizonisp.Services
     public class FaturamentoService(
         AppDbContext db,
         IPixService pixService,
+        IBoletoService boletoService,
+        INfseService nfseService,
         IEmailService emailService,
         IWhatsAppService whatsAppService,
         IMikrotikService mikrotikService,
@@ -45,6 +48,7 @@ namespace horizonisp.Services
         public async Task<FaturamentoResult> ExecutarRotinaDiariaAsync(CancellationToken cancellationToken = default)
         {
             await PreencherPixPendentesAsync(cancellationToken);
+            await PreencherBoletosPendentesAsync(cancellationToken);
             var faturasGeradas = await GerarFaturasMensaisAsync(cancellationToken);
             var faturasMarcadasAtrasadas = await MarcarFaturasAtrasadasAsync(cancellationToken);
             var lembretesEnviados = await EnviarLembretesVencimentoAsync(cancellationToken);
@@ -84,15 +88,18 @@ namespace horizonisp.Services
                 Valor = plano.PrecoMensal,
                 DataVencimento = vencimento,
                 Status = StatusFatura.Pendente,
-                PixTxId = $"FAT{assinatura.Id:D6}{referenciaAtual.Replace("-", "")}"[..25]
+                PixTxId = GerarPixTxId(assinatura.Id, referenciaAtual)
             };
-
-            fatura.PixCopiaCola = pixService.GerarCopiaCola(fatura.Valor, fatura.PixTxId);
 
             db.Faturas.Add(fatura);
             await db.SaveChangesAsync(cancellationToken);
 
             var cliente = await db.Clientes.FindAsync([assinatura.ClienteId], cancellationToken);
+            await pixService.AplicarCobrancaAsync(fatura, cliente, fatura.PixTxId!, cancellationToken);
+
+            AplicarBoleto(fatura);
+            await db.SaveChangesAsync(cancellationToken);
+
             if (cliente is not null)
             {
                 await NotificarClienteAsync(
@@ -125,11 +132,32 @@ namespace horizonisp.Services
                 return;
             }
 
+            if (fatura.Status == StatusFatura.Paga)
+            {
+                return;
+            }
+
+            var txId = GerarPixTxId(fatura.AssinaturaId, fatura.Referencia);
+            if (!string.IsNullOrWhiteSpace(fatura.PixTxId))
+            {
+                txId = fatura.PixTxId.Trim().ToUpperInvariant();
+            }
+
+            db.PagamentosPix.Add(new PagamentoPix
+            {
+                FaturaId = fatura.Id,
+                TxId = txId.Length <= 25 ? txId : txId[..25],
+                Valor = fatura.Valor,
+                Origem = "Manual",
+                RecebidoEm = DateTime.UtcNow
+            });
+
             fatura.Status = StatusFatura.Paga;
             fatura.DataPagamento = DateTime.UtcNow;
 
             await db.SaveChangesAsync(cancellationToken);
             await ReativarClienteSeNecessarioAsync(fatura.Assinatura.Cliente, cancellationToken);
+            await nfseService.EmitirAposPagamentoAsync(fatura.Id, cancellationToken);
         }
 
         public async Task<PixConfirmacaoResult> ConfirmarPagamentoPixAsync(
@@ -191,19 +219,60 @@ namespace horizonisp.Services
             await db.SaveChangesAsync(cancellationToken);
             await ReativarClienteSeNecessarioAsync(fatura.Assinatura.Cliente, cancellationToken);
 
+            await nfseService.EmitirAposPagamentoAsync(fatura.Id, cancellationToken);
+
             return new PixConfirmacaoResult(true, "Pagamento Pix confirmado.", fatura.Id);
         }
 
-        public Task GarantirPixAsync(Fatura fatura, CancellationToken cancellationToken = default)
+        public async Task GarantirPixAsync(Fatura fatura, CancellationToken cancellationToken = default)
         {
             if (!string.IsNullOrWhiteSpace(fatura.PixCopiaCola) || !pixService.EstaHabilitado)
+            {
+                return;
+            }
+
+            var txId = string.IsNullOrWhiteSpace(fatura.PixTxId)
+                ? GerarPixTxId(fatura.AssinaturaId, fatura.Referencia)
+                : fatura.PixTxId;
+
+            var cliente = await db.Assinaturas
+                .Where(a => a.Id == fatura.AssinaturaId)
+                .Select(a => a.Cliente)
+                .FirstOrDefaultAsync(cancellationToken);
+
+            await pixService.AplicarCobrancaAsync(fatura, cliente, txId!, cancellationToken);
+            await db.SaveChangesAsync(cancellationToken);
+        }
+
+        private void AplicarBoleto(Fatura fatura)
+        {
+            if (!boletoService.EstaHabilitado || !string.IsNullOrWhiteSpace(fatura.BoletoLinhaDigitavel))
+            {
+                return;
+            }
+
+            var boleto = boletoService.Gerar(fatura);
+            fatura.BoletoNossoNumero = boleto.NossoNumero;
+            fatura.BoletoCodigoBarras = boleto.CodigoBarras;
+            fatura.BoletoLinhaDigitavel = boleto.LinhaDigitavel;
+        }
+
+        public Task GarantirBoletoAsync(Fatura fatura, CancellationToken cancellationToken = default)
+        {
+            if (!boletoService.EstaHabilitado || !string.IsNullOrWhiteSpace(fatura.BoletoLinhaDigitavel))
             {
                 return Task.CompletedTask;
             }
 
-            fatura.PixTxId ??= $"FAT{fatura.AssinaturaId:D6}{fatura.Referencia.Replace("-", "")}"[..25];
-            fatura.PixCopiaCola = pixService.GerarCopiaCola(fatura.Valor, fatura.PixTxId);
+            AplicarBoleto(fatura);
             return db.SaveChangesAsync(cancellationToken);
+        }
+
+        private static string GerarPixTxId(int assinaturaId, string? referencia)
+        {
+            var refNorm = (referencia ?? DateTime.UtcNow.ToString("yyyy-MM")).Replace("-", string.Empty);
+            var txId = $"FAT{assinaturaId:D6}{refNorm}";
+            return txId.Length <= 25 ? txId : txId[..25];
         }
 
         private async Task<int> GerarFaturasMensaisAsync(CancellationToken cancellationToken)
@@ -469,7 +538,35 @@ namespace horizonisp.Services
 
             foreach (var fatura in faturas)
             {
-                await GarantirPixAsync(fatura, cancellationToken);
+                try
+                {
+                    await GarantirPixAsync(fatura, cancellationToken);
+                }
+                catch (Exception ex)
+                {
+                    logger.LogWarning(ex, "Falha ao gerar Pix para fatura {FaturaId}.", fatura.Id);
+                }
+            }
+        }
+
+        private async Task PreencherBoletosPendentesAsync(CancellationToken cancellationToken)
+        {
+            var faturas = await db.Faturas
+                .Where(f =>
+                    string.IsNullOrEmpty(f.BoletoLinhaDigitavel)
+                    && (f.Status == StatusFatura.Pendente || f.Status == StatusFatura.Atrasada))
+                .ToListAsync(cancellationToken);
+
+            foreach (var fatura in faturas)
+            {
+                try
+                {
+                    await GarantirBoletoAsync(fatura, cancellationToken);
+                }
+                catch (Exception ex)
+                {
+                    logger.LogWarning(ex, "Falha ao gerar boleto para fatura {FaturaId}.", fatura.Id);
+                }
             }
         }
     }

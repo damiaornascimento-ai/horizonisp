@@ -50,7 +50,8 @@
             <div class="card-body">
                 <h2 class="h5">Integrações</h2>
                 <ul class="mb-0">
-                    <li>Pix: @(cfg.Pix.Habilitado ? "ativo" : "inativo") — chave @cfg.Pix.Chave</li>
+                    <li>Pix: @(cfg.Pix.Habilitado ? $"{cfg.Pix.Modo} ({cfg.Pix.Provedor})" : "inativo")</li>
+                    <li>NFS-e: @(cfg.Nfse.Habilitado ? cfg.Nfse.Provedor : "desabilitada")</li>
                     <li>E-mail: @(cfg.Email.Habilitado ? "SMTP configurado" : "modo simulado (log)")</li>
                     <li>Mikrotik: @(cfg.Mikrotik.Habilitado ? cfg.Mikrotik.Host : "desabilitado (simulado)")</li>
                 </ul>
@@ -68,7 +69,8 @@
         <p class="text-muted">
             Configure seu gateway/banco para enviar confirmações de pagamento para:
         </p>
-        <pre class="bg-light p-3 rounded mb-3"><code>POST /api/pix/webhook
+        <pre class="bg-light p-3 rounded mb-2"><code>POST /api/pix/webhook
+POST /api/pix/gateway/webhook  (Efi, Asaas, payload JSON)
 Header: X-Webhook-Token: @cfg.Pix.WebhookToken
 Content-Type: application/json
 

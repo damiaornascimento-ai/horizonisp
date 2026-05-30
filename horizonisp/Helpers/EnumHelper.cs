@@ -76,5 +76,41 @@ namespace horizonisp.Helpers
             StatusOnu.Desconhecido => "Desconhecido",
             _ => status.ToString()
         };
+
+        public static string ObterPerfilUsuario(PerfilUsuario perfil) => perfil switch
+        {
+            PerfilUsuario.Admin => "Administrador",
+            PerfilUsuario.Operador => "Operador",
+            _ => perfil.ToString()
+        };
+
+        public static string ObterStatusOrdemServico(StatusOrdemServico status) => status switch
+        {
+            StatusOrdemServico.Aberta => "Aberta",
+            StatusOrdemServico.Agendada => "Agendada",
+            StatusOrdemServico.EmCampo => "Em campo",
+            StatusOrdemServico.Concluida => "Concluída",
+            StatusOrdemServico.Cancelada => "Cancelada",
+            _ => status.ToString()
+        };
+
+        public static string ObterTipoOrdemServico(TipoOrdemServico tipo) => tipo switch
+        {
+            TipoOrdemServico.Instalacao => "Instalação",
+            TipoOrdemServico.Manutencao => "Manutenção",
+            TipoOrdemServico.Retirada => "Retirada",
+            TipoOrdemServico.Vistoria => "Vistoria",
+            _ => tipo.ToString()
+        };
+
+        public static string ObterStatusNfse(StatusNfse status) => status switch
+        {
+            StatusNfse.Pendente => "Pendente",
+            StatusNfse.Processando => "Processando",
+            StatusNfse.Autorizada => "Autorizada",
+            StatusNfse.Rejeitada => "Rejeitada",
+            StatusNfse.Cancelada => "Cancelada",
+            _ => status.ToString()
+        };
     }
 }

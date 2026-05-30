@@ -168,9 +168,28 @@ namespace horizonisp.Migrations
                     b.Property<DateTime?>("AvisoAtrasoEnviadoEm")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("BoletoCodigoBarras")
+                        .HasMaxLength(44)
+                        .HasColumnType("nvarchar(44)");
+
+                    b.Property<string>("BoletoLinhaDigitavel")
+                        .HasMaxLength(54)
+                        .HasColumnType("nvarchar(54)");
+
+                    b.Property<string>("BoletoNossoNumero")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
                     b.Property<string>("PixCopiaCola")
                         .HasMaxLength(512)
                         .HasColumnType("nvarchar(512)");
+
+                    b.Property<DateTime?>("PixExpiracaoEm")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("PixGatewayRef")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("PixTxId")
                         .HasMaxLength(25)
@@ -350,6 +369,51 @@ namespace horizonisp.Migrations
                     b.ToTable("Onus");
                 });
 
+            modelBuilder.Entity("horizonisp.Models.OrdemServico", b =>
+                {
+                    b.Property<int>("Id").ValueGeneratedOnAdd().HasColumnType("int");
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<int?>("AssinaturaId").HasColumnType("int");
+                    b.Property<int?>("ChamadoId").HasColumnType("int");
+                    b.Property<int>("ClienteId").HasColumnType("int");
+                    b.Property<DateTime?>("DataAgendada").HasColumnType("datetime2");
+                    b.Property<DateTime>("DataAbertura").HasColumnType("datetime2");
+                    b.Property<DateTime?>("DataConclusao").HasColumnType("datetime2");
+                    b.Property<DateTime>("DataAtualizacao").HasColumnType("datetime2");
+                    b.Property<string>("Descricao").IsRequired().HasMaxLength(2000).HasColumnType("nvarchar(2000)");
+                    b.Property<string>("Endereco").IsRequired().HasMaxLength(250).HasColumnType("nvarchar(250)");
+                    b.Property<string>("ObservacaoConclusao").HasMaxLength(2000).HasColumnType("nvarchar(2000)");
+                    b.Property<int>("Status").HasColumnType("int");
+                    b.Property<string>("TecnicoResponsavel").HasMaxLength(100).HasColumnType("nvarchar(100)");
+                    b.Property<string>("Titulo").IsRequired().HasMaxLength(150).HasColumnType("nvarchar(150)");
+                    b.Property<int>("Tipo").HasColumnType("int");
+                    b.HasKey("Id");
+                    b.HasIndex("AssinaturaId");
+                    b.HasIndex("ChamadoId");
+                    b.HasIndex("ClienteId");
+                    b.HasIndex("Status");
+                    b.ToTable("OrdensServico");
+                });
+
+            modelBuilder.Entity("horizonisp.Models.NotaFiscalServico", b =>
+                {
+                    b.Property<int>("Id").ValueGeneratedOnAdd().HasColumnType("int");
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<string>("CodigoVerificacao").IsRequired().HasMaxLength(50).HasColumnType("nvarchar(50)");
+                    b.Property<DateTime?>("DataEmissao").HasColumnType("datetime2");
+                    b.Property<string>("Discriminacao").IsRequired().HasMaxLength(500).HasColumnType("nvarchar(500)");
+                    b.Property<int>("FaturaId").HasColumnType("int");
+                    b.Property<string>("LinkPdf").HasMaxLength(300).HasColumnType("nvarchar(300)");
+                    b.Property<string>("MensagemErro").HasMaxLength(500).HasColumnType("nvarchar(500)");
+                    b.Property<string>("Numero").IsRequired().HasMaxLength(20).HasColumnType("nvarchar(20)");
+                    b.Property<int>("Status").HasColumnType("int");
+                    b.Property<decimal>("Valor").HasColumnType("decimal(18,2)");
+                    b.HasKey("Id");
+                    b.HasIndex("FaturaId").IsUnique();
+                    b.HasIndex("Status");
+                    b.ToTable("NotasFiscaisServico");
+                });
+
             modelBuilder.Entity("horizonisp.Models.Plano", b =>
                 {
                     b.Property<int>("Id")
@@ -506,6 +570,40 @@ namespace horizonisp.Migrations
                     b.Navigation("Olt");
                 });
 
+            modelBuilder.Entity("horizonisp.Models.OrdemServico", b =>
+                {
+                    b.HasOne("horizonisp.Models.Assinatura", "Assinatura")
+                        .WithMany()
+                        .HasForeignKey("AssinaturaId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("horizonisp.Models.Chamado", "Chamado")
+                        .WithMany()
+                        .HasForeignKey("ChamadoId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("horizonisp.Models.Cliente", "Cliente")
+                        .WithMany()
+                        .HasForeignKey("ClienteId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Assinatura");
+                    b.Navigation("Chamado");
+                    b.Navigation("Cliente");
+                });
+
+            modelBuilder.Entity("horizonisp.Models.NotaFiscalServico", b =>
+                {
+                    b.HasOne("horizonisp.Models.Fatura", "Fatura")
+                        .WithOne("NotaFiscalServico")
+                        .HasForeignKey("horizonisp.Models.NotaFiscalServico", "FaturaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Fatura");
+                });
+
             modelBuilder.Entity("horizonisp.Models.Assinatura", b =>
                 {
                     b.Navigation("Faturas");
@@ -525,6 +623,7 @@ namespace horizonisp.Migrations
 
             modelBuilder.Entity("horizonisp.Models.Fatura", b =>
                 {
+                    b.Navigation("NotaFiscalServico");
                     b.Navigation("PagamentosPix");
                 });
 

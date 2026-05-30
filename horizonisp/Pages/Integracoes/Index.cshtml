@@ -1,61 +1,102 @@
-@page
-@model horizonisp.Pages.Integracoes.IndexModel
-@{
-    ViewData["Title"] = "Integrações";
-    var cfg = Model.Configuracao;
-}
-
-<h1 class="h3 mb-4">Integrações</h1>
-
-<div class="row g-4">
-    <div class="col-lg-6">
-        <div class="card border-0 shadow-sm h-100">
-            <div class="card-body">
-                <h2 class="h5">API REST v1</h2>
-                <p class="text-muted">Header obrigatório: <code>X-Api-Key: @cfg.Api.Chave</code></p>
-                <ul class="small mb-3">
-                    <li><code>GET /api/v1/clientes</code></li>
-                    <li><code>GET /api/v1/clientes/{id}</code></li>
-                    <li><code>GET /api/v1/assinaturas</code></li>
-                    <li><code>GET /api/v1/faturas?status=Pendente</code></li>
-                    <li><code>POST /api/v1/faturas/{id}/pagar</code></li>
-                    <li><code>GET /api/v1/chamados</code></li>
-                    <li><code>GET /api/v1/chamados/{id}</code></li>
-                    <li><code>PATCH /api/v1/chamados/{id}</code> — body: <code>{"status":"EmAndamento"}</code></li>
-                    <li><code>POST /api/v1/chamados/{id}/mensagens</code></li>
-                    <li><code>GET /api/v1/tecnico/chamados</code> — fila para app de campo</li>
-                    <li><code>GET /api/v1/olts</code></li>
-                    <li><code>GET /api/v1/onus?oltId=1</code></li>
-                    <li><code>GET /api/v1/rede/resumo</code></li>
-                    <li><code>POST /api/v1/rede/sincronizar?oltId=1</code></li>
-                </ul>
-                <p class="text-muted small mb-0">Webhook Pix: <code>POST /api/pix/webhook</code> com header <code>X-Webhook-Token</code></p>
-            </div>
-        </div>
-    </div>
-    <div class="col-lg-6">
-        <div class="card border-0 shadow-sm mb-4">
-            <div class="card-body">
-                <h2 class="h5">WhatsApp (@cfg.WhatsApp.Provedor)</h2>
-                <p>@(cfg.WhatsApp.Habilitado ? "Ativo" : "Modo simulado (log)")</p>
-                <ul class="mb-0">
-                    <li>Base URL: @(string.IsNullOrEmpty(cfg.WhatsApp.BaseUrl) ? "—" : cfg.WhatsApp.BaseUrl)</li>
-                    <li>Instância: @cfg.WhatsApp.Instancia</li>
-                </ul>
-                <p class="text-muted small mt-3 mb-0">Compatível com Evolution API. Configure em <code>HorizonIsp:WhatsApp</code>.</p>
-            </div>
-        </div>
-        <div class="card border-0 shadow-sm">
-            <div class="card-body">
-                <h2 class="h5">Rede FTTH</h2>
-                <p>@(cfg.Rede.Habilitado ? "Integração OLT ativa" : "Modo simulado — varia sinal das ONUs cadastradas")</p>
-                <ul class="mb-0 small">
-                    <li>Intervalo sync: @cfg.Rede.IntervaloSincronizacaoMinutos min</li>
-                    <li>Endpoint OLT: @cfg.Rede.CaminhoOnus</li>
-                </ul>
-                <p class="text-muted small mt-3 mb-0">Com <code>Rede.Habilitado=true</code>, consulta HTTP na OLT (Basic Auth). Se falhar, usa simulação.</p>
-            </div>
-        </div>
-    </div>
-</div>
-
+@page
+@model horizonisp.Pages.Integracoes.IndexModel
+@{
+    ViewData["Title"] = "Integrações";
+    var cfg = Model.Configuracao;
+}
+
+<h1 class="h3 mb-4">Integrações</h1>
+
+<div class="row g-4">
+    <div class="col-lg-6">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body">
+                <h2 class="h5">API REST v1</h2>
+                <p class="text-muted">Header obrigatório: <code>X-Api-Key: @cfg.Api.Chave</code></p>
+                <ul class="small mb-3">
+                    <li><code>GET /api/v1/clientes</code></li>
+                    <li><code>GET /api/v1/clientes/{id}</code></li>
+                    <li><code>GET /api/v1/assinaturas</code></li>
+                    <li><code>GET /api/v1/faturas?status=Pendente</code></li>
+                    <li><code>POST /api/v1/faturas/{id}/pagar</code></li>
+                    <li><code>GET /api/v1/chamados</code></li>
+                    <li><code>GET /api/v1/chamados/{id}</code></li>
+                    <li><code>PATCH /api/v1/chamados/{id}</code> — body: <code>{"status":"EmAndamento"}</code></li>
+                    <li><code>POST /api/v1/chamados/{id}/mensagens</code></li>
+                    <li><code>GET /api/v1/tecnico/chamados</code> — fila para app de campo</li>
+                    <li><code>GET /api/v1/ordens-servico</code></li>
+                    <li><code>GET /api/v1/tecnico/ordens-servico</code></li>
+                    <li><code>GET /api/v1/ordens-servico/{id}</code></li>
+                    <li><code>PATCH /api/v1/ordens-servico/{id}</code></li>
+                    <li><code>GET /api/v1/olts</code></li>
+                    <li><code>GET /api/v1/onus?oltId=1</code></li>
+                    <li><code>GET /api/v1/rede/resumo</code></li>
+                    <li><code>POST /api/v1/rede/sincronizar?oltId=1</code></li>
+                    <li><code>GET /api/v1/nfse</code></li>
+                    <li><code>GET /api/v1/nfse/fatura/{id}</code></li>
+                </ul>
+                <p class="text-muted small mb-0">Webhooks Pix: <code>POST /api/pix/webhook</code> e <code>POST /api/pix/gateway/webhook</code> com <code>X-Webhook-Token</code></p>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-body">
+                <h2 class="h5">WhatsApp (@cfg.WhatsApp.Provedor)</h2>
+                <p>@(cfg.WhatsApp.Habilitado ? "Ativo" : "Modo simulado (log)")</p>
+                <ul class="mb-0">
+                    <li>Base URL: @(string.IsNullOrEmpty(cfg.WhatsApp.BaseUrl) ? "—" : cfg.WhatsApp.BaseUrl)</li>
+                    <li>Instância: @cfg.WhatsApp.Instancia</li>
+                </ul>
+                <p class="text-muted small mt-3 mb-0">Compatível com Evolution API. Configure em <code>HorizonIsp:WhatsApp</code>.</p>
+            </div>
+        </div>
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-body">
+                <h2 class="h5">Pix — @cfg.Pix.Modo (@cfg.Pix.Provedor)</h2>
+                <p>@(cfg.Pix.Habilitado ? "Ativo" : "Desabilitado")</p>
+                <ul class="mb-0 small">
+                    <li>Modo <code>Estatico</code> — QR local (EMV)</li>
+                    <li>Modo <code>Gateway</code> — cobrança dinâmica (Efi, Asaas, Simulado)</li>
+                    <li>Efi: <code>BaseUrl</code> + OAuth (<code>ClientId</code>/<code>ClientSecret</code>)</li>
+                    <li>Asaas: <code>BaseUrl</code> + <code>ClientSecret</code> como API key</li>
+                </ul>
+            </div>
+        </div>
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-body">
+                <h2 class="h5">NFS-e (@cfg.Nfse.Provedor)</h2>
+                <p>@(cfg.Nfse.Habilitado ? "Emissão automática após pagamento" : "Desabilitada")</p>
+                <ul class="mb-0 small">
+                    <li>Município: @cfg.Nfse.Municipio · ISS @cfg.Nfse.AliquotaIss%</li>
+                    <li>Código serviço: @cfg.Nfse.CodigoServico</li>
+                    <li>CNPJ: @cfg.Nfse.CnpjPrestador</li>
+                </ul>
+                <p class="text-muted small mt-3 mb-0">Modo simulado gera número e código de verificação. Produção: configure <code>Nfse:BaseUrl</code> da prefeitura/emissor.</p>
+            </div>
+        </div>
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-body">
+                <h2 class="h5">Boleto</h2>
+                <p>@(cfg.Boleto.Habilitado ? "Geração ativa (modo registradora simulada)" : "Desabilitado")</p>
+                <ul class="mb-0 small">
+                    <li>Banco: @cfg.Boleto.Banco · Carteira: @cfg.Boleto.Carteira</li>
+                    <li>Cedente: @cfg.Boleto.Cedente</li>
+                </ul>
+                <p class="text-muted small mt-3 mb-0">Linha digitável gerada localmente. Para produção, integre CNAB/gateway bancário.</p>
+            </div>
+        </div>
+        <div class="card border-0 shadow-sm">
+            <div class="card-body">
+                <h2 class="h5">Rede FTTH</h2>
+                <p>@(cfg.Rede.Habilitado ? "Integração OLT ativa" : "Modo simulado — varia sinal das ONUs cadastradas")</p>
+                <ul class="mb-0 small">
+                    <li>Intervalo sync: @cfg.Rede.IntervaloSincronizacaoMinutos min</li>
+                    <li>Endpoint OLT: @cfg.Rede.CaminhoOnus</li>
+                </ul>
+                <p class="text-muted small mt-3 mb-0">Com <code>Rede.Habilitado=true</code>, consulta HTTP na OLT (Basic Auth). Se falhar, usa simulação.</p>
+            </div>
+        </div>
+    </div>
+</div>
+

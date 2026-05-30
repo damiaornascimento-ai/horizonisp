@@ -8,6 +8,7 @@ using horizonisp.Configuration;
 using horizonisp.Context;
 using horizonisp.Data;
 using horizonisp.Models;
+using horizonisp.Models.Enums;
 using Microsoft.Extensions.Options;
 
 using horizonisp.Services;
@@ -33,6 +34,14 @@ builder.Services.AddHttpClient("Olt")
     {
         ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
     });
+
+builder.Services.AddHttpClient("PixGateway")
+    .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+    {
+        ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+    });
+
+builder.Services.AddHttpClient("Nfse");
 
 builder.Services.AddAuthentication(options =>
     {
@@ -67,6 +76,13 @@ builder.Services.AddAuthorization(options =>
         policy.AddAuthenticationSchemes(AuthSchemes.Cliente);
         policy.RequireAuthenticatedUser();
     });
+
+    options.AddPolicy(AuthPolicies.SomenteAdmin, policy =>
+    {
+        policy.AddAuthenticationSchemes(AuthSchemes.Admin);
+        policy.RequireAuthenticatedUser();
+        policy.RequireRole(nameof(PerfilUsuario.Admin));
+    });
 });
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<PasswordHasher<Usuario>>();
@@ -76,6 +92,8 @@ builder.Services.AddScoped<IClienteAuthService, ClienteAuthService>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();
 builder.Services.AddScoped<IPortalService, PortalService>();
 builder.Services.AddScoped<IPixService, PixService>();
+builder.Services.AddScoped<IPixGatewayService, PixGatewayService>();
+builder.Services.AddScoped<INfseService, NfseService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IMikrotikService, MikrotikService>();
 builder.Services.AddScoped<IFaturamentoService, FaturamentoService>();
@@ -84,7 +102,8 @@ builder.Services.AddScoped<IRelatorioService, RelatorioService>();
 builder.Services.AddScoped<IWhatsAppService, WhatsAppService>();
 builder.Services.AddScoped<IRedeService, RedeService>();
 builder.Services.AddScoped<IOltIntegracaoService, OltIntegracaoService>();
-builder.Services.AddScoped<IRedeSincronizacaoService, RedeSincronizacaoService>();
+builder.Services.AddScoped<IBoletoService, BoletoService>();
+builder.Services.AddScoped<IOrdemServicoService, OrdemServicoService>();
 builder.Services.AddHostedService<FaturamentoBackgroundService>();
 builder.Services.AddHostedService<RedeBackgroundService>();
 builder.Services.AddRazorPages(options =>
@@ -96,9 +115,12 @@ builder.Services.AddRazorPages(options =>
     options.Conventions.AuthorizeFolder("/Faturas", AuthSchemes.Admin);
     options.Conventions.AuthorizeFolder("/Faturamento", AuthSchemes.Admin);
     options.Conventions.AuthorizeFolder("/Chamados", AuthSchemes.Admin);
+    options.Conventions.AuthorizeFolder("/OrdensServico", AuthSchemes.Admin);
+    options.Conventions.AuthorizeFolder("/Nfse", AuthSchemes.Admin);
     options.Conventions.AuthorizeFolder("/Relatorios", AuthSchemes.Admin);
     options.Conventions.AuthorizeFolder("/Rede", AuthSchemes.Admin);
     options.Conventions.AuthorizeFolder("/Integracoes", AuthSchemes.Admin);
+    options.Conventions.AuthorizeFolder("/Usuarios", AuthPolicies.SomenteAdmin);
     options.Conventions.AuthorizeFolder("/Portal", AuthSchemes.Cliente);
 
     options.Conventions.AllowAnonymousToPage("/Login");
@@ -151,6 +173,40 @@ app.MapPost("/api/pix/webhook", async (
     return resultado.Sucesso
         ? Results.Ok(resultado)
         : Results.BadRequest(resultado);
+}).AllowAnonymous();
+
+app.MapPost("/api/pix/gateway/webhook", async (
+    HttpRequest httpRequest,
+    IFaturamentoService faturamentoService,
+    IOptions<HorizonIspOptions> options) =>
+{
+    var token = httpRequest.Headers["X-Webhook-Token"].FirstOrDefault();
+    if (!string.Equals(token, options.Value.Pix.WebhookToken, StringComparison.Ordinal))
+    {
+        return Results.Unauthorized();
+    }
+
+    using var reader = new StreamReader(httpRequest.Body);
+    var body = await reader.ReadToEndAsync();
+    var pagamentos = PixGatewayWebhookParser.ExtrairPagamentos(body);
+
+    if (pagamentos.Count == 0)
+    {
+        return Results.BadRequest(new { erro = "Nenhum pagamento reconhecido no payload." });
+    }
+
+    var resultados = new List<PixConfirmacaoResult>();
+    foreach (var pagamento in pagamentos)
+    {
+        var resultado = await faturamentoService.ConfirmarPagamentoPixAsync(
+            pagamento.TxId,
+            pagamento.Valor,
+            "Gateway",
+            pagamento.EndToEndId);
+        resultados.Add(resultado);
+    }
+
+    return Results.Ok(resultados);
 }).AllowAnonymous();
 
 app.MapV1Endpoints();

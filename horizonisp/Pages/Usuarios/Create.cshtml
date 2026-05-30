@@ -1,0 +1,28 @@
+@page
+@model horizonisp.Pages.Usuarios.CreateModel
+@{
+    ViewData["Title"] = "Novo usuário";
+}
+
+<h1 class="h3 mb-4">Novo usuário</h1>
+
+<form method="post" class="card border-0 shadow-sm">
+    <div class="card-body">
+        <partial name="_Form" model="Model.Usuario" />
+        <div class="row g-3 mt-1">
+            <div class="col-md-6">
+                <label asp-for="Senha" class="form-label">Senha</label>
+                <input asp-for="Senha" class="form-control" type="password" autocomplete="new-password" />
+                <span asp-validation-for="Senha" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+    <div class="card-footer bg-white border-0 d-flex gap-2">
+        <button type="submit" class="btn btn-primary">Salvar</button>
+        <a asp-page="Index" class="btn btn-outline-secondary">Cancelar</a>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

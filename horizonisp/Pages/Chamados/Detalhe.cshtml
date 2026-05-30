@@ -12,6 +12,7 @@
             Cliente: <strong>@Model.Chamado.Cliente.Nome</strong> (@Model.Chamado.Cliente.Email)
         </p>
     </div>
+    <div class="d-flex gap-2 flex-wrap align-items-end">
     <form method="post" asp-page-handler="AtualizarStatus" class="d-flex gap-2 align-items-end">
         <div>
             <label class="form-label small">Status</label>
@@ -19,6 +20,8 @@
         </div>
         <button type="submit" class="btn btn-sm btn-outline-primary">Atualizar</button>
     </form>
+    <a asp-page="/OrdensServico/Create" asp-route-chamadoId="@Model.Chamado.Id" class="btn btn-sm btn-outline-secondary">Abrir O.S.</a>
+    </div>
 </div>
 
 <div class="card border-0 shadow-sm mb-4">

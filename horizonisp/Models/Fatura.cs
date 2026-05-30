@@ -28,12 +28,28 @@ namespace horizonisp.Models
         [MaxLength(25)]
         public string? PixTxId { get; set; }
 
+        [MaxLength(100)]
+        public string? PixGatewayRef { get; set; }
+
+        public DateTime? PixExpiracaoEm { get; set; }
+
         public DateTime? LembreteVencimentoEnviadoEm { get; set; }
 
         public DateTime? AvisoAtrasoEnviadoEm { get; set; }
 
+        [MaxLength(54)]
+        public string? BoletoLinhaDigitavel { get; set; }
+
+        [MaxLength(44)]
+        public string? BoletoCodigoBarras { get; set; }
+
+        [MaxLength(20)]
+        public string? BoletoNossoNumero { get; set; }
+
         public Assinatura Assinatura { get; set; } = null!;
 
         public ICollection<PagamentoPix> PagamentosPix { get; set; } = [];
+
+        public NotaFiscalServico? NotaFiscalServico { get; set; }
     }
 }

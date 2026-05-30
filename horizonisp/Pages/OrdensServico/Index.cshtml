@@ -1,0 +1,55 @@
+@page
+@model horizonisp.Pages.OrdensServico.IndexModel
+@{
+    ViewData["Title"] = "Ordens de serviço";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <h1 class="h3 mb-0">Ordens de serviço</h1>
+    <div class="d-flex gap-2">
+        <a asp-page="Create" class="btn btn-primary btn-sm">Nova O.S.</a>
+    </div>
+</div>
+
+<div class="btn-group mb-3">
+    <a asp-page="Index" class="btn btn-sm @(Model.FiltroStatus is null ? "btn-primary" : "btn-outline-primary")">Todas</a>
+    <a asp-page="Index" asp-route-status="@StatusOrdemServico.Aberta" class="btn btn-sm @(Model.FiltroStatus == StatusOrdemServico.Aberta ? "btn-primary" : "btn-outline-primary")">Abertas</a>
+    <a asp-page="Index" asp-route-status="@StatusOrdemServico.Agendada" class="btn btn-sm @(Model.FiltroStatus == StatusOrdemServico.Agendada ? "btn-primary" : "btn-outline-primary")">Agendadas</a>
+    <a asp-page="Index" asp-route-status="@StatusOrdemServico.EmCampo" class="btn btn-sm @(Model.FiltroStatus == StatusOrdemServico.EmCampo ? "btn-primary" : "btn-outline-primary")">Em campo</a>
+</div>
+
+<div class="card border-0 shadow-sm">
+    <div class="table-responsive">
+        <table class="table table-hover mb-0">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Cliente</th>
+                    <th>Título</th>
+                    <th>Tipo</th>
+                    <th>Status</th>
+                    <th>Técnico</th>
+                    <th>Agendada</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var os in Model.Ordens)
+            {
+                <tr>
+                    <td>@os.Id</td>
+                    <td>@os.Cliente.Nome</td>
+                    <td>@os.Titulo</td>
+                    <td>@EnumHelper.ObterTipoOrdemServico(os.Tipo)</td>
+                    <td>@EnumHelper.ObterStatusOrdemServico(os.Status)</td>
+                    <td>@(os.TecnicoResponsavel ?? "—")</td>
+                    <td>@(os.DataAgendada?.ToLocalTime().ToString("dd/MM/yyyy HH:mm") ?? "—")</td>
+                    <td class="text-end">
+                        <a asp-page="Detalhe" asp-route-id="@os.Id" class="btn btn-sm btn-outline-secondary">Detalhe</a>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</div>

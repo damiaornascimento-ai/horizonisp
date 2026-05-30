@@ -12,14 +12,15 @@ namespace horizonisp.Services
         int FaturasAtrasadas,
         decimal ReceitaMesAtual,
         int ChamadosAbertos,
-        int OnusOffline);
+        int OnusOffline,
+        int OrdensServicoAbertas);
 
     public interface IDashboardService
     {
         Task<DashboardResumo> ObterResumoAsync();
     }
 
-    public class DashboardService(AppDbContext db) : IDashboardService
+    public class DashboardService(AppDbContext db, IOrdemServicoService ordemServicoService) : IDashboardService
     {
         public async Task<DashboardResumo> ObterResumoAsync()
         {
@@ -31,7 +32,8 @@ namespace horizonisp.Services
             var assinaturasAtivas = await db.Assinaturas.CountAsync(a => a.Status == StatusAssinatura.Ativa);
             var faturasPendentes = await db.Faturas.CountAsync(f => f.Status == StatusFatura.Pendente);
             var faturasAtrasadas = await db.Faturas.CountAsync(f =>
-                f.Status == StatusFatura.Pendente && f.DataVencimento < hoje);
+                f.Status == StatusFatura.Atrasada
+                || (f.Status == StatusFatura.Pendente && f.DataVencimento.Date < hoje));
 
             var receitaMesAtual = await db.Faturas
                 .Where(f => f.Status == StatusFatura.Paga
@@ -43,6 +45,7 @@ namespace horizonisp.Services
                 c.Status == StatusChamado.Aberto || c.Status == StatusChamado.EmAndamento);
 
             var onusOffline = await db.Onus.CountAsync(o => o.Status == StatusOnu.Offline);
+            var ordensServicoAbertas = await ordemServicoService.ContarAbertasAsync();
 
             return new DashboardResumo(
                 totalClientes,
@@ -52,7 +55,8 @@ namespace horizonisp.Services
                 faturasAtrasadas,
                 receitaMesAtual,
                 chamadosAbertos,
-                onusOffline);
+                onusOffline,
+                ordensServicoAbertas);
         }
     }
 }

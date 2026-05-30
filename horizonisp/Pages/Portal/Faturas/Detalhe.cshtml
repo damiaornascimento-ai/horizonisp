@@ -87,6 +87,10 @@
                 var qrUrl = $"https://api.qrserver.com/v1/create-qr-code/?size=220x220&data={Uri.EscapeDataString(fatura.PixCopiaCola)}";
                 <div class="border rounded p-4 mt-4 bg-light">
                     <h2 class="h5 mb-3">Pague com Pix</h2>
+                    @if (!string.IsNullOrWhiteSpace(fatura.PixGatewayRef))
+                    {
+                        <p class="small text-muted mb-2">Cobrança Pix dinâmica@(fatura.PixExpiracaoEm.HasValue ? $" — válida até {fatura.PixExpiracaoEm.Value.ToLocalTime():g}" : "")</p>
+                    }
                     <div class="row g-4 align-items-center">
                         <div class="col-md-4 text-center">
                             <img src="@qrUrl" alt="QR Code Pix" class="img-fluid border bg-white p-2" width="220" height="220" />
@@ -105,6 +109,21 @@
             {
                 <div class="alert alert-info mt-4 mb-0">
                     Pix indisponível no momento. Entre em contato com o suporte para quitar esta fatura.
+                </div>
+            }
+
+            @if (!string.IsNullOrWhiteSpace(fatura.BoletoLinhaDigitavel))
+            {
+                <div class="border rounded p-4 mt-4">
+                    <h2 class="h5 mb-3">Boleto bancário</h2>
+                    <p class="mb-2">Nosso número: <strong>@fatura.BoletoNossoNumero</strong></p>
+                    <label class="form-label small text-muted">Linha digitável</label>
+                    <input class="form-control font-monospace small mb-2" readonly value="@fatura.BoletoLinhaDigitavel" id="linhaDigitavel" />
+                    <button type="button" class="btn btn-outline-dark btn-sm" onclick="copiarBoleto()">Copiar linha digitável</button>
+                    @if (!string.IsNullOrWhiteSpace(fatura.BoletoCodigoBarras))
+                    {
+                        <p class="text-muted small mt-3 mb-0">Código de barras: @fatura.BoletoCodigoBarras</p>
+                    }
                 </div>
             }
         }
@@ -130,6 +149,10 @@
             navigator.clipboard.writeText(campo.value).then(() => {
                 document.getElementById('pixCopiado').classList.remove('d-none');
             });
+        }
+        function copiarBoleto() {
+            const campo = document.getElementById('linhaDigitavel');
+            navigator.clipboard.writeText(campo.value);
         }
     </script>
 }

@@ -24,6 +24,7 @@ namespace horizonisp.Data
 
             await GarantirSenhasPortalDemoAsync(db, clientePasswordHasher);
             await GarantirChamadoTecnicoDemoAsync(db);
+            await GarantirOrdemServicoDemoAsync(db);
         }
 
         private static async Task SeedDadosIniciaisAsync(
@@ -75,8 +76,8 @@ namespace horizonisp.Data
 
             var clientes = new[]
             {
-                CriarClienteDemo("João Silva", "123.456.789-00", "joao.silva@email.com", clientePasswordHasher),
-                CriarClienteDemo("Maria Oliveira", "987.654.321-00", "maria.oliveira@email.com", clientePasswordHasher)
+                CriarClienteDemo("João Silva", "111.444.777-35", "joao.silva@email.com", clientePasswordHasher),
+                CriarClienteDemo("Maria Oliveira", "529.982.247-25", "maria.oliveira@email.com", clientePasswordHasher)
             };
             db.Clientes.AddRange(clientes);
 
@@ -266,6 +267,43 @@ namespace horizonisp.Data
                         DataEnvio = DateTime.UtcNow.AddHours(-2)
                     }
                 ]
+            });
+
+            await db.SaveChangesAsync();
+        }
+
+        private static async Task GarantirOrdemServicoDemoAsync(AppDbContext db)
+        {
+            if (await db.OrdensServico.AnyAsync())
+            {
+                return;
+            }
+
+            var chamado = await db.Chamados
+                .Include(c => c.Cliente)
+                .Include(c => c.Mensagens)
+                .FirstOrDefaultAsync(c => c.Categoria == CategoriaChamado.Tecnico);
+
+            if (chamado is null)
+            {
+                return;
+            }
+
+            var assinatura = await db.Assinaturas
+                .FirstOrDefaultAsync(a => a.ClienteId == chamado.ClienteId);
+
+            db.OrdensServico.Add(new OrdemServico
+            {
+                ClienteId = chamado.ClienteId,
+                AssinaturaId = assinatura?.Id,
+                ChamadoId = chamado.Id,
+                Titulo = "Visita técnica — ONU offline",
+                Descricao = chamado.Mensagens.OrderBy(m => m.DataEnvio).FirstOrDefault()?.Conteudo ?? chamado.Assunto,
+                Tipo = TipoOrdemServico.Manutencao,
+                Status = StatusOrdemServico.Aberta,
+                Endereco = assinatura?.EnderecoInstalacao ?? chamado.Cliente.Endereco,
+                DataAbertura = DateTime.UtcNow.AddHours(-1),
+                DataAtualizacao = DateTime.UtcNow.AddHours(-1)
             });
 
             await db.SaveChangesAsync();

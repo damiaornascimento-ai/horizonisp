@@ -1,0 +1,30 @@
+@page "{id:int}"
+@model horizonisp.Pages.Usuarios.EditModel
+@{
+    ViewData["Title"] = "Editar usuário";
+}
+
+<h1 class="h3 mb-4">Editar usuário</h1>
+
+<form method="post" class="card border-0 shadow-sm">
+    <div class="card-body">
+        <input type="hidden" asp-for="Usuario.Id" />
+        <partial name="_Form" model="Model.Usuario" />
+        <div class="row g-3 mt-1">
+            <div class="col-md-6">
+                <label asp-for="NovaSenha" class="form-label">Nova senha</label>
+                <input asp-for="NovaSenha" class="form-control" type="password" autocomplete="new-password" />
+                <div class="form-text">Deixe em branco para manter a senha atual.</div>
+                <span asp-validation-for="NovaSenha" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+    <div class="card-footer bg-white border-0 d-flex gap-2">
+        <button type="submit" class="btn btn-primary">Salvar</button>
+        <a asp-page="Index" class="btn btn-outline-secondary">Cancelar</a>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

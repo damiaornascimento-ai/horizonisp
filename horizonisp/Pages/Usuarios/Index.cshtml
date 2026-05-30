@@ -1,0 +1,43 @@
+@page
+@model horizonisp.Pages.Usuarios.IndexModel
+@{
+    ViewData["Title"] = "Usuários";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="h3 mb-0">Usuários</h1>
+        <p class="text-muted mb-0">Operadores e administradores do painel</p>
+    </div>
+    <a asp-page="Create" class="btn btn-primary">Novo usuário</a>
+</div>
+
+<div class="card border-0 shadow-sm">
+    <div class="table-responsive">
+        <table class="table table-hover mb-0">
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>E-mail</th>
+                    <th>Perfil</th>
+                    <th>Ativo</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var usuario in Model.Usuarios)
+            {
+                <tr>
+                    <td>@usuario.Nome</td>
+                    <td>@usuario.Email</td>
+                    <td>@EnumHelper.ObterPerfilUsuario(usuario.Perfil)</td>
+                    <td>@(usuario.Ativo ? "Sim" : "Não")</td>
+                    <td class="text-end">
+                        <a asp-page="Edit" asp-route-id="@usuario.Id" class="btn btn-sm btn-outline-secondary">Editar</a>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -1,0 +1,22 @@
+@page
+@model horizonisp.Pages.OrdensServico.CreateModel
+@{
+    ViewData["Title"] = "Nova ordem de serviço";
+}
+
+<h1 class="h3 mb-4">Nova ordem de serviço</h1>
+
+<form method="post" class="card border-0 shadow-sm">
+    <div class="card-body">
+        <input type="hidden" asp-for="Ordem.ChamadoId" />
+        <partial name="_Form" for="Ordem" />
+    </div>
+    <div class="card-footer bg-white border-0 d-flex gap-2">
+        <button type="submit" class="btn btn-primary">Salvar</button>
+        <a asp-page="Index" class="btn btn-outline-secondary">Cancelar</a>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

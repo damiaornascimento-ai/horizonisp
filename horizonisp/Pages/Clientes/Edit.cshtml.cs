@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using horizonisp.Context;
+using horizonisp.Helpers;
 using horizonisp.Models;
 
 namespace horizonisp.Pages.Clientes
@@ -34,9 +35,9 @@ namespace horizonisp.Pages.Clientes
 
         public async Task<IActionResult> OnPostAsync()
         {
-            if (!ModelState.IsValid)
+            if (!DocumentoValidator.EhValido(Cliente.Documento))
             {
-                return Page();
+                ModelState.AddModelError($"{nameof(Cliente)}.{nameof(Cliente.Documento)}", "CPF ou CNPJ inválido.");
             }
 
             var existente = await db.Clientes.FirstOrDefaultAsync(c => c.Id == Cliente.Id);
@@ -45,8 +46,19 @@ namespace horizonisp.Pages.Clientes
                 return NotFound();
             }
 
+            var documentoFormatado = DocumentoValidator.Formatar(Cliente.Documento);
+            if (await db.Clientes.AnyAsync(c => c.Documento == documentoFormatado && c.Id != Cliente.Id))
+            {
+                ModelState.AddModelError($"{nameof(Cliente)}.{nameof(Cliente.Documento)}", "Documento já cadastrado.");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return Page();
+            }
+
             existente.Nome = Cliente.Nome;
-            existente.Documento = Cliente.Documento;
+            existente.Documento = documentoFormatado;
             existente.Email = Cliente.Email;
             existente.Telefone = Cliente.Telefone;
             existente.Endereco = Cliente.Endereco;

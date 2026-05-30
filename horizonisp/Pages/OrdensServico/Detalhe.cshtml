@@ -1,0 +1,76 @@
+@page "{id:int}"
+@model horizonisp.Pages.OrdensServico.DetalheModel
+@{
+    ViewData["Title"] = $"O.S. #{Model.Ordem.Id}";
+    var os = Model.Ordem;
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="h3 mb-1">O.S. #@os.Id</h1>
+        <p class="text-muted mb-0">@os.Titulo</p>
+    </div>
+    <a asp-page="Index" class="btn btn-outline-secondary btn-sm">Voltar</a>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-7">
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-body">
+                <dl class="row mb-0">
+                    <dt class="col-sm-4">Cliente</dt>
+                    <dd class="col-sm-8">@os.Cliente.Nome · @os.Cliente.Telefone</dd>
+                    <dt class="col-sm-4">Endereço</dt>
+                    <dd class="col-sm-8">@os.Endereco</dd>
+                    <dt class="col-sm-4">Tipo</dt>
+                    <dd class="col-sm-8">@EnumHelper.ObterTipoOrdemServico(os.Tipo)</dd>
+                    <dt class="col-sm-4">Status</dt>
+                    <dd class="col-sm-8">@EnumHelper.ObterStatusOrdemServico(os.Status)</dd>
+                    <dt class="col-sm-4">Abertura</dt>
+                    <dd class="col-sm-8">@os.DataAbertura.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</dd>
+                    @if (os.ChamadoId.HasValue)
+                    {
+                        <dt class="col-sm-4">Chamado</dt>
+                        <dd class="col-sm-8"><a asp-page="/Chamados/Detalhe" asp-route-id="@os.ChamadoId">#@os.ChamadoId</a></dd>
+                    }
+                </dl>
+                <hr />
+                <h2 class="h6">Descrição</h2>
+                <p class="mb-0">@os.Descricao</p>
+                @if (!string.IsNullOrWhiteSpace(os.ObservacaoConclusao))
+                {
+                    <hr />
+                    <h2 class="h6">Conclusão</h2>
+                    <p class="mb-0">@os.ObservacaoConclusao</p>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-5">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body">
+                <h2 class="h6 mb-3">Atualizar O.S.</h2>
+                <form method="post" asp-page-handler="Atualizar">
+                    <input type="hidden" name="id" value="@os.Id" />
+                    <div class="mb-3">
+                        <label asp-for="NovoStatus" class="form-label">Status</label>
+                        <select asp-for="NovoStatus" class="form-select" asp-items="Html.GetEnumSelectList<StatusOrdemServico>()"></select>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="TecnicoResponsavel" class="form-label">Técnico</label>
+                        <input asp-for="TecnicoResponsavel" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="DataAgendada" class="form-label">Agendamento</label>
+                        <input asp-for="DataAgendada" class="form-control" type="datetime-local" />
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="ObservacaoConclusao" class="form-label">Observação (conclusão)</label>
+                        <textarea asp-for="ObservacaoConclusao" class="form-control" rows="3"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Salvar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
