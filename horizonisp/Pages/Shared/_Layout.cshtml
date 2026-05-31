@@ -53,21 +53,30 @@
                             <li class="nav-item">
                                 <a class="nav-link" asp-page="/OrdensServico/Index">O.S.</a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link" asp-page="/Relatorios/Index">Relatórios</a>
+                            <li class="nav-item dropdown py-lg-0 py-2">
+                                <a class="btn btn-danger btn-sm fw-semibold dropdown-toggle btn-nav-administracao"
+                                   href="#" id="navAdministracao" role="button"
+                                   data-bs-toggle="dropdown" aria-expanded="false">
+                                    Administração
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="navAdministracao">
+                                    @if (User.IsInRole("Admin"))
+                                    {
+                                        <li>
+                                            <a class="dropdown-item" asp-page="/Usuarios/Index">Usuários</a>
+                                        </li>
+                                    }
+                                    <li>
+                                        <a class="dropdown-item" asp-page="/Integracoes/Index">Integrações</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" asp-page="/Rede/Index">Rede</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" asp-page="/Relatorios/Index">Relatórios</a>
+                                    </li>
+                                </ul>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link" asp-page="/Rede/Index">Rede</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" asp-page="/Integracoes/Index">Integrações</a>
-                            </li>
-                            @if (User.IsInRole("Admin"))
-                            {
-                                <li class="nav-item">
-                                    <a class="nav-link" asp-page="/Usuarios/Index">Usuários</a>
-                                </li>
-                            }
                     }
                     </ul>
                     @if (User.Identity?.IsAuthenticated ?? false)

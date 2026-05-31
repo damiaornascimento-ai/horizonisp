@@ -25,6 +25,16 @@ body {
   white-space: nowrap;
 }
 
+.btn-nav-administracao {
+  white-space: nowrap;
+}
+
+.navbar .btn-nav-administracao.show,
+.navbar .btn-nav-administracao:active,
+.navbar .btn-nav-administracao:focus-visible {
+  color: #fff;
+}
+
 .form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
   color: var(--bs-secondary-color);
   text-align: end;
