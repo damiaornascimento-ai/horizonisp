@@ -17,9 +17,14 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="portalNav">
-                    @if (User.Identity?.IsAuthenticated ?? false)
-                    {
-                        <ul class="navbar-nav me-auto">
+                    <ul class="navbar-nav me-auto align-items-lg-center">
+                        <li class="nav-item py-lg-0 py-2">
+                            <a asp-page="/Index" class="btn btn-primary btn-sm fw-semibold btn-painel-principal">
+                                Painel principal
+                            </a>
+                        </li>
+                        @if (User.Identity?.IsAuthenticated ?? false)
+                        {
                             <li class="nav-item">
                                 <a class="nav-link" asp-page="/Portal/Index">Início</a>
                             </li>
@@ -32,7 +37,10 @@
                             <li class="nav-item">
                                 <a class="nav-link" asp-page="/Portal/Chamados/Index">Suporte</a>
                             </li>
-                        </ul>
+                        }
+                    </ul>
+                    @if (User.Identity?.IsAuthenticated ?? false)
+                    {
                         <div class="d-flex align-items-center gap-3">
                             <span class="navbar-text text-white-50">@User.Identity?.Name</span>
                             <form method="post" asp-page="/Portal/Login" asp-page-handler="Logout">
