@@ -14,6 +14,22 @@ namespace horizonisp.Helpers
             _ => status.ToString()
         };
 
+        public static string ObterCategoriaConexaoCliente(CategoriaConexaoCliente categoria) => categoria switch
+        {
+            CategoriaConexaoCliente.Online => "Online",
+            CategoriaConexaoCliente.Offline => "Offline",
+            CategoriaConexaoCliente.Bloqueado => "Bloqueado",
+            _ => categoria.ToString()
+        };
+
+        public static string ClasseBadgeCategoriaConexao(CategoriaConexaoCliente categoria) => categoria switch
+        {
+            CategoriaConexaoCliente.Online => "bg-success",
+            CategoriaConexaoCliente.Offline => "bg-warning text-dark",
+            CategoriaConexaoCliente.Bloqueado => "bg-danger",
+            _ => "bg-secondary"
+        };
+
         public static string ObterStatusAssinatura(StatusAssinatura status) => status switch
         {
             StatusAssinatura.Ativa => "Ativa",

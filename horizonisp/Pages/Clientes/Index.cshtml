@@ -4,32 +4,105 @@
     ViewData["Title"] = "Clientes";
 }
 
-<div class="d-flex justify-content-between align-items-center mb-4">
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
     <h1 class="h3 mb-0">Clientes</h1>
     <a asp-page="Create" class="btn btn-primary">Novo cliente</a>
 </div>
 
+<form method="get" class="card border-0 shadow-sm mb-4">
+    <div class="card-body">
+        <div class="row g-3 align-items-end">
+            <div class="col-lg-6">
+                <label for="busca" class="form-label">Buscar cliente</label>
+                <input type="search" id="busca" name="busca" value="@Model.Busca" class="form-control"
+                       placeholder="Nome, documento, e-mail, telefone ou cidade" />
+            </div>
+            <div class="col-lg-6 d-flex flex-wrap gap-2">
+                <button type="submit" class="btn btn-primary">Buscar</button>
+                @if (!string.IsNullOrWhiteSpace(Model.Busca) || Model.Categoria.HasValue)
+                {
+                    <a asp-page="Index" class="btn btn-outline-secondary">Limpar</a>
+                }
+            </div>
+        </div>
+    </div>
+</form>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-4">
+        <a asp-page="Index" asp-route-busca="@Model.Busca" asp-route-categoria="@CategoriaConexaoCliente.Online"
+           class="text-decoration-none text-body d-block h-100">
+            <div class="card border-0 shadow-sm h-100 @(Model.Categoria == CategoriaConexaoCliente.Online ? "border border-success border-2" : "")">
+                <div class="card-body">
+                    <div class="text-muted small">Online</div>
+                    <div class="display-6 text-success">@Model.TotalOnline</div>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-md-4">
+        <a asp-page="Index" asp-route-busca="@Model.Busca" asp-route-categoria="@CategoriaConexaoCliente.Offline"
+           class="text-decoration-none text-body d-block h-100">
+            <div class="card border-0 shadow-sm h-100 @(Model.Categoria == CategoriaConexaoCliente.Offline ? "border border-warning border-2" : "")">
+                <div class="card-body">
+                    <div class="text-muted small">Offline</div>
+                    <div class="display-6 text-warning">@Model.TotalOffline</div>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-md-4">
+        <a asp-page="Index" asp-route-busca="@Model.Busca" asp-route-categoria="@CategoriaConexaoCliente.Bloqueado"
+           class="text-decoration-none text-body d-block h-100">
+            <div class="card border-0 shadow-sm h-100 @(Model.Categoria == CategoriaConexaoCliente.Bloqueado ? "border border-danger border-2" : "")">
+                <div class="card-body">
+                    <div class="text-muted small">Bloqueados</div>
+                    <div class="display-6 text-danger">@Model.TotalBloqueados</div>
+                </div>
+            </div>
+        </a>
+    </div>
+</div>
+
+<div class="d-flex flex-wrap gap-2 mb-3">
+    <a asp-page="Index" asp-route-busca="@Model.Busca"
+       class="btn btn-sm @(Model.Categoria is null ? "btn-dark" : "btn-outline-dark")">Todos</a>
+    <a asp-page="Index" asp-route-busca="@Model.Busca" asp-route-categoria="@CategoriaConexaoCliente.Online"
+       class="btn btn-sm @(Model.Categoria == CategoriaConexaoCliente.Online ? "btn-success" : "btn-outline-success")">Online</a>
+    <a asp-page="Index" asp-route-busca="@Model.Busca" asp-route-categoria="@CategoriaConexaoCliente.Offline"
+       class="btn btn-sm @(Model.Categoria == CategoriaConexaoCliente.Offline ? "btn-warning" : "btn-outline-warning")">Offline</a>
+    <a asp-page="Index" asp-route-busca="@Model.Busca" asp-route-categoria="@CategoriaConexaoCliente.Bloqueado"
+       class="btn btn-sm @(Model.Categoria == CategoriaConexaoCliente.Bloqueado ? "btn-danger" : "btn-outline-danger")">Bloqueados</a>
+</div>
+
 <div class="card border-0 shadow-sm">
     <div class="table-responsive">
-        <table class="table table-hover mb-0">
+        <table class="table table-hover mb-0 align-middle">
             <thead>
                 <tr>
                     <th>Nome</th>
                     <th>Documento</th>
                     <th>E-mail</th>
                     <th>Telefone</th>
+                    <th>Conexão</th>
                     <th>Status</th>
                     <th></th>
                 </tr>
             </thead>
             <tbody>
-            @foreach (var cliente in Model.Clientes)
+            @foreach (var item in Model.Clientes)
             {
+                var cliente = item.Cliente;
                 <tr>
                     <td>@cliente.Nome</td>
                     <td>@cliente.Documento</td>
                     <td>@cliente.Email</td>
                     <td>@cliente.Telefone</td>
+                    <td>
+                        <span class="badge @EnumHelper.ClasseBadgeCategoriaConexao(item.CategoriaConexao)">
+                            @EnumHelper.ObterCategoriaConexaoCliente(item.CategoriaConexao)
+                        </span>
+                    </td>
                     <td>@EnumHelper.ObterStatusCliente(cliente.Status)</td>
                     <td class="text-end">
                         <a asp-page="Edit" asp-route-id="@cliente.Id" class="btn btn-sm btn-outline-secondary">Editar</a>
@@ -40,3 +113,8 @@
         </table>
     </div>
 </div>
+
+@if (!Model.Clientes.Any())
+{
+    <p class="text-muted mt-3 mb-0">Nenhum cliente encontrado para os filtros selecionados.</p>
+}

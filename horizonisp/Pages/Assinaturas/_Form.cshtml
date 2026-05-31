@@ -29,7 +29,7 @@
         <label asp-for="Status" class="form-label"></label>
         <select asp-for="Status" class="form-select" asp-items="Html.GetEnumSelectList<StatusAssinatura>()"></select>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-6">
         <label asp-for="DataInicio" class="form-label">Data de início</label>
         <input asp-for="DataInicio" class="form-control" type="date"
                value="@Model.DataInicio.ToLocalTime().ToString("yyyy-MM-dd")" />
@@ -37,5 +37,11 @@
     <div class="col-12">
         <label asp-for="Observacoes" class="form-label"></label>
         <textarea asp-for="Observacoes" class="form-control" rows="3"></textarea>
+    </div>
+    <div class="col-12">
+        <div class="d-flex flex-wrap align-items-center gap-2 pt-3 mt-1 border-top">
+            <button type="submit" class="btn btn-success">Salvar</button>
+            <a asp-page="Index" class="btn btn-danger">Cancelar</a>
+        </div>
     </div>
 </div>
