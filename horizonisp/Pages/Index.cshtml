@@ -13,75 +13,91 @@
 
 <div class="row g-3 mb-4">
     <div class="col-md-4">
-        <div class="card border-0 shadow-sm h-100">
-            <div class="card-body">
-                <div class="text-muted small">Clientes</div>
-                <div class="display-6">@Model.Resumo.TotalClientes</div>
-                <div class="small text-success">@Model.Resumo.ClientesAtivos ativos</div>
+        <a asp-page="/Clientes/Index" class="text-decoration-none text-body d-block h-100">
+            <div class="card border-0 shadow-sm h-100 card-dashboard-link">
+                <div class="card-body">
+                    <div class="text-muted small">Clientes</div>
+                    <div class="display-6">@Model.Resumo.TotalClientes</div>
+                    <div class="small text-success">@Model.Resumo.ClientesAtivos ativos</div>
+                </div>
             </div>
-        </div>
+        </a>
     </div>
     <div class="col-md-4">
-        <div class="card border-0 shadow-sm h-100">
-            <div class="card-body">
-                <div class="text-muted small">Assinaturas ativas</div>
-                <div class="display-6">@Model.Resumo.AssinaturasAtivas</div>
+        <a asp-page="/Assinaturas/Index" class="text-decoration-none text-body d-block h-100">
+            <div class="card border-0 shadow-sm h-100 card-dashboard-link">
+                <div class="card-body">
+                    <div class="text-muted small">Assinaturas ativas</div>
+                    <div class="display-6">@Model.Resumo.AssinaturasAtivas</div>
+                </div>
             </div>
-        </div>
+        </a>
     </div>
     <div class="col-md-4">
-        <div class="card border-0 shadow-sm h-100">
-            <div class="card-body">
-                <div class="text-muted small">Receita do mês</div>
-                <div class="display-6">@EnumHelper.Moeda(Model.Resumo.ReceitaMesAtual)</div>
+        <a asp-page="/Relatorios/Index" class="text-decoration-none text-body d-block h-100">
+            <div class="card border-0 shadow-sm h-100 card-dashboard-link">
+                <div class="card-body">
+                    <div class="text-muted small">Receita do mês</div>
+                    <div class="display-6">@EnumHelper.Moeda(Model.Resumo.ReceitaMesAtual)</div>
+                </div>
             </div>
-        </div>
+        </a>
     </div>
 </div>
 
 <div class="row g-3">
     <div class="col-md-4">
-        <div class="card border-0 shadow-sm">
-            <div class="card-body">
-                <h2 class="h5">Faturas pendentes</h2>
-                <p class="display-6 mb-0">@Model.Resumo.FaturasPendentes</p>
+        <a asp-page="/Faturas/Index" asp-route-status="@StatusFatura.Pendente" class="text-decoration-none text-body d-block h-100">
+            <div class="card border-0 shadow-sm h-100 card-dashboard-link">
+                <div class="card-body">
+                    <h2 class="h5">Faturas pendentes</h2>
+                    <p class="display-6 mb-0">@Model.Resumo.FaturasPendentes</p>
+                </div>
             </div>
-        </div>
+        </a>
     </div>
     <div class="col-md-4">
-        <div class="card border-0 shadow-sm">
-            <div class="card-body">
-                <h2 class="h5">Faturas atrasadas</h2>
-                <p class="display-6 mb-0 text-danger">@Model.Resumo.FaturasAtrasadas</p>
+        <a asp-page="/Relatorios/Index" asp-fragment="inadimplentes" class="text-decoration-none text-body d-block h-100">
+            <div class="card border-0 shadow-sm h-100 card-dashboard-link">
+                <div class="card-body">
+                    <h2 class="h5">Faturas atrasadas</h2>
+                    <p class="display-6 mb-0 text-danger">@Model.Resumo.FaturasAtrasadas</p>
+                </div>
             </div>
-        </div>
+        </a>
     </div>
     <div class="col-md-4">
-        <div class="card border-0 shadow-sm">
-            <div class="card-body">
-                <h2 class="h5">Chamados abertos</h2>
-                <p class="display-6 mb-0">@Model.Resumo.ChamadosAbertos</p>
+        <a asp-page="/Chamados/Index" class="text-decoration-none text-body d-block h-100">
+            <div class="card border-0 shadow-sm h-100 card-dashboard-link">
+                <div class="card-body">
+                    <h2 class="h5">Chamados abertos</h2>
+                    <p class="display-6 mb-0">@Model.Resumo.ChamadosAbertos</p>
+                </div>
             </div>
-        </div>
+        </a>
     </div>
 </div>
 
 <div class="row g-3 mt-1">
     <div class="col-md-4">
-        <div class="card border-0 shadow-sm">
-            <div class="card-body">
-                <h2 class="h5">ONUs offline</h2>
-                <p class="display-6 mb-0 @(Model.Resumo.OnusOffline > 0 ? "text-warning" : "")">@Model.Resumo.OnusOffline</p>
+        <a asp-page="/Rede/Index" class="text-decoration-none text-body d-block h-100">
+            <div class="card border-0 shadow-sm h-100 card-dashboard-link">
+                <div class="card-body">
+                    <h2 class="h5">ONUs offline</h2>
+                    <p class="display-6 mb-0 @(Model.Resumo.OnusOffline > 0 ? "text-warning" : "")">@Model.Resumo.OnusOffline</p>
+                </div>
             </div>
-        </div>
+        </a>
     </div>
     <div class="col-md-4">
-        <div class="card border-0 shadow-sm">
-            <div class="card-body">
-                <h2 class="h5">O.S. em aberto</h2>
-                <p class="display-6 mb-0">@Model.Resumo.OrdensServicoAbertas</p>
+        <a asp-page="/OrdensServico/Index" class="text-decoration-none text-body d-block h-100">
+            <div class="card border-0 shadow-sm h-100 card-dashboard-link">
+                <div class="card-body">
+                    <h2 class="h5">O.S. em aberto</h2>
+                    <p class="display-6 mb-0">@Model.Resumo.OrdensServicoAbertas</p>
+                </div>
             </div>
-        </div>
+        </a>
     </div>
 </div>
 

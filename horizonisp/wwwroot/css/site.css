@@ -25,14 +25,29 @@ body {
   white-space: nowrap;
 }
 
+.card-dashboard-link {
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+a:hover .card-dashboard-link {
+  transform: translateY(-2px);
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.12) !important;
+}
+
 .btn-nav-administracao {
   white-space: nowrap;
+  color: #fff !important;
 }
 
 .navbar .btn-nav-administracao.show,
 .navbar .btn-nav-administracao:active,
-.navbar .btn-nav-administracao:focus-visible {
-  color: #fff;
+.navbar .btn-nav-administracao:focus-visible,
+.navbar .btn-nav-administracao:hover {
+  color: #fff !important;
+}
+
+.navbar .btn-nav-administracao.dropdown-toggle::after {
+  border-top-color: #fff;
 }
 
 .form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
