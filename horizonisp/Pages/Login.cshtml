@@ -15,49 +15,51 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
 <body class="login-page">
-    <div class="login-page-overlay"></div>
-    <div class="login-page-content">
-    <div class="container-fluid px-4 pt-3">
-        <a asp-page="/Portal/Login" class="btn btn-success fw-semibold px-4 btn-area-cliente">
-            Área do Cliente
-        </a>
-    </div>
-    <div class="container">
-        <div class="row justify-content-center align-items-center min-vh-100">
-            <div class="col-md-5">
-                <div class="card shadow-sm">
-                    <div class="card-body p-4">
-                        <h1 class="h3 mb-1 text-center">Horizon ISP</h1>
-                        <p class="text-muted text-center mb-4">Gestão de provedor de internet</p>
+    <div class="login-page-shell">
+        <div class="login-page-overlay" aria-hidden="true"></div>
+        <div class="login-page-content">
+            <div class="container-fluid px-4 pt-3">
+                <a asp-page="/Portal/Login" class="btn btn-success fw-semibold px-4 btn-area-cliente">
+                    Área do Cliente
+                </a>
+            </div>
+            <div class="container">
+                <div class="row justify-content-center align-items-center min-vh-100">
+                    <div class="col-md-5">
+                        <div class="card shadow-sm">
+                            <div class="card-body p-4">
+                                <h1 class="h3 mb-1 text-center">Horizon ISP</h1>
+                                <p class="text-muted text-center mb-4">Gestão de provedor de internet</p>
 
-                        @if (!string.IsNullOrEmpty(Model.Erro))
-                        {
-                            <div class="alert alert-danger">@Model.Erro</div>
-                        }
+                                @if (!string.IsNullOrEmpty(Model.Erro))
+                                {
+                                    <div class="alert alert-danger">@Model.Erro</div>
+                                }
 
-                        <form method="post">
-                            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
-                            <div class="mb-3">
-                                <label asp-for="Input.Email" class="form-label">E-mail</label>
-                                <input asp-for="Input.Email" class="form-control" autocomplete="username" />
-                                <span asp-validation-for="Input.Email" class="text-danger"></span>
+                                <form method="post">
+                                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                                    <div class="mb-3">
+                                        <label asp-for="Input.Email" class="form-label">E-mail</label>
+                                        <input asp-for="Input.Email" class="form-control" autocomplete="username" />
+                                        <span asp-validation-for="Input.Email" class="text-danger"></span>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label asp-for="Input.Senha" class="form-label">Senha</label>
+                                        <input asp-for="Input.Senha" class="form-control" autocomplete="current-password" />
+                                        <span asp-validation-for="Input.Senha" class="text-danger"></span>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary w-100">Entrar</button>
+                                </form>
+
+                                <p class="text-muted small mt-4 mb-0 text-center">
+                                    Acesso inicial: admin@horizonisp.local / admin123
+                                </p>
                             </div>
-                            <div class="mb-3">
-                                <label asp-for="Input.Senha" class="form-label">Senha</label>
-                                <input asp-for="Input.Senha" class="form-control" autocomplete="current-password" />
-                                <span asp-validation-for="Input.Senha" class="text-danger"></span>
-                            </div>
-                            <button type="submit" class="btn btn-primary w-100">Entrar</button>
-                        </form>
-
-                        <p class="text-muted small mt-4 mb-0 text-center">
-                            Acesso inicial: admin@horizonisp.local / admin123
-                        </p>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
     </div>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

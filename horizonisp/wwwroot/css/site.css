@@ -31,13 +31,19 @@ body {
 
 .login-page {
   min-height: 100vh;
-  background: #eef2f7 url("/images/login-watermark.png") center center / cover no-repeat fixed;
+  margin: 0;
+}
+
+.login-page-shell {
+  position: relative;
+  min-height: 100vh;
+  background: #eef2f7 url("/images/login-watermark.png") center center / cover no-repeat;
 }
 
 .login-page-overlay {
-  position: fixed;
+  position: absolute;
   inset: 0;
-  background: rgba(248, 249, 250, 0.72);
+  background: rgba(248, 249, 250, 0.55);
   pointer-events: none;
   z-index: 0;
 }
@@ -49,9 +55,10 @@ body {
 }
 
 .login-page .card {
-  background: rgba(255, 255, 255, 0.94);
+  background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(4px);
   border: 0;
+  box-shadow: 0 0.5rem 1.25rem rgba(0, 0, 0, 0.08);
 }
 
 .card-dashboard-link {
