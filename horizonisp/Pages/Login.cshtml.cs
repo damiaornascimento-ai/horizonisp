@@ -67,12 +67,5 @@ namespace horizonisp.Pages
             Erro = "Credenciais inválidas ou acesso não disponível para este usuário.";
             return Page();
         }
-
-        public async Task<IActionResult> OnPostLogoutAsync()
-        {
-            await authService.SairAsync();
-            await clienteAuthService.SairAsync();
-            return RedirectToPage("/Login");
-        }
     }
 }

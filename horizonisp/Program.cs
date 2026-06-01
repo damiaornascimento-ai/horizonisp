@@ -126,6 +126,7 @@ builder.Services.AddRazorPages(options =>
     options.Conventions.AuthorizeFolder("/Portal", AuthSchemes.Cliente);
 
     options.Conventions.AllowAnonymousToPage("/Login");
+    options.Conventions.AllowAnonymousToPage("/Logout");
     options.Conventions.AllowAnonymousToPage("/Portal/Login");
     options.Conventions.AllowAnonymousToPage("/Portal/EsqueciSenha");
     options.Conventions.AllowAnonymousToPage("/Portal/RedefinirSenha");

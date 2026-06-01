@@ -7,6 +7,7 @@ namespace horizonisp.Auth
         private static readonly HashSet<string> CaminhosPublicos = new(StringComparer.OrdinalIgnoreCase)
         {
             "/Login",
+            "/Logout",
             "/Portal/Login",
             "/Portal/EsqueciSenha",
             "/Portal/RedefinirSenha",

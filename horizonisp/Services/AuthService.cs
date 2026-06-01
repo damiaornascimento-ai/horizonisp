@@ -68,6 +68,7 @@ namespace horizonisp.Services
                 ?? throw new InvalidOperationException("HttpContext indisponível.");
 
             await httpContext.SignOutAsync(AuthSchemes.Admin);
+            await httpContext.SignOutAsync(AuthSchemes.Cliente);
         }
     }
 }
