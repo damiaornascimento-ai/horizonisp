@@ -94,6 +94,19 @@ html[data-theme="indigo"] {
   flex-wrap: wrap;
 }
 
+.theme-picker-panel .theme-picker-inline {
+  gap: 0.625rem;
+}
+
+.theme-picker-panel .theme-swatch-btn {
+  width: 2rem;
+  height: 2rem;
+}
+
+.theme-picker-panel .theme-picker-label {
+  display: none;
+}
+
 .theme-picker-label {
   margin-right: 0.125rem;
 }
