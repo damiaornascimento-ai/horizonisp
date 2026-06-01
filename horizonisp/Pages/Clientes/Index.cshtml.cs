@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using horizonisp.Context;
+using horizonisp.Helpers;
 using horizonisp.Models;
 using horizonisp.Models.Enums;
 
@@ -61,7 +62,7 @@ namespace horizonisp.Pages.Clientes
                 .Select(c => new ClienteListagemItem
                 {
                     Cliente = c,
-                    CategoriaConexao = ClassificarConexao(c, onusPorAssinatura)
+                    CategoriaConexao = ClienteConexaoClassifier.Classificar(c, onusPorAssinatura)
                 })
                 .ToList();
 
@@ -74,38 +75,5 @@ namespace horizonisp.Pages.Clientes
                 : itens;
         }
 
-        private static CategoriaConexaoCliente ClassificarConexao(
-            Cliente cliente,
-            IReadOnlyDictionary<int, List<Onu>> onusPorAssinatura)
-        {
-            if (cliente.Status is StatusCliente.Suspenso
-                or StatusCliente.Inadimplente
-                or StatusCliente.Cancelado)
-            {
-                return CategoriaConexaoCliente.Bloqueado;
-            }
-
-            var onus = cliente.Assinaturas
-                .Where(a => onusPorAssinatura.ContainsKey(a.Id))
-                .SelectMany(a => onusPorAssinatura[a.Id])
-                .ToList();
-
-            if (onus.Count == 0)
-            {
-                return CategoriaConexaoCliente.Online;
-            }
-
-            if (onus.Any(o => o.Status == StatusOnu.Online))
-            {
-                return CategoriaConexaoCliente.Online;
-            }
-
-            if (onus.Any(o => o.Status == StatusOnu.Offline))
-            {
-                return CategoriaConexaoCliente.Offline;
-            }
-
-            return CategoriaConexaoCliente.Online;
-        }
     }
 }

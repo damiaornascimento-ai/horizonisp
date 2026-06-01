@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using horizonisp.Context;
+using horizonisp.Helpers;
 using horizonisp.Models.Enums;
 
 namespace horizonisp.Services
@@ -7,6 +8,9 @@ namespace horizonisp.Services
     public record DashboardResumo(
         int TotalClientes,
         int ClientesAtivos,
+        int ClientesOnline,
+        int ClientesOffline,
+        int ClientesBloqueados,
         int AssinaturasAtivas,
         int FaturasPendentes,
         int FaturasAtrasadas,
@@ -47,9 +51,14 @@ namespace horizonisp.Services
             var onusOffline = await db.Onus.CountAsync(o => o.Status == StatusOnu.Offline);
             var ordensServicoAbertas = await ordemServicoService.ContarAbertasAsync();
 
+            var (clientesOnline, clientesOffline, clientesBloqueados) = await ObterContagemConexaoClientesAsync();
+
             return new DashboardResumo(
                 totalClientes,
                 clientesAtivos,
+                clientesOnline,
+                clientesOffline,
+                clientesBloqueados,
                 assinaturasAtivas,
                 faturasPendentes,
                 faturasAtrasadas,
@@ -57,6 +66,44 @@ namespace horizonisp.Services
                 chamadosAbertos,
                 onusOffline,
                 ordensServicoAbertas);
+        }
+
+        private async Task<(int Online, int Offline, int Bloqueados)> ObterContagemConexaoClientesAsync()
+        {
+            var clientes = await db.Clientes
+                .Include(c => c.Assinaturas)
+                .ToListAsync();
+
+            var assinaturaIds = clientes
+                .SelectMany(c => c.Assinaturas.Select(a => a.Id))
+                .ToHashSet();
+
+            var onusPorAssinatura = await db.Onus
+                .Where(o => o.AssinaturaId.HasValue && assinaturaIds.Contains(o.AssinaturaId.Value))
+                .GroupBy(o => o.AssinaturaId!.Value)
+                .ToDictionaryAsync(g => g.Key, g => g.ToList());
+
+            var online = 0;
+            var offline = 0;
+            var bloqueados = 0;
+
+            foreach (var cliente in clientes)
+            {
+                switch (ClienteConexaoClassifier.Classificar(cliente, onusPorAssinatura))
+                {
+                    case CategoriaConexaoCliente.Online:
+                        online++;
+                        break;
+                    case CategoriaConexaoCliente.Offline:
+                        offline++;
+                        break;
+                    case CategoriaConexaoCliente.Bloqueado:
+                        bloqueados++;
+                        break;
+                }
+            }
+
+            return (online, offline, bloqueados);
         }
     }
 }

@@ -81,6 +81,12 @@ a:hover .card-dashboard-link {
   box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.12) !important;
 }
 
+.chart-conexao-wrapper {
+  position: relative;
+  height: 220px;
+  max-width: 280px;
+}
+
 .btn-nav-administracao {
   white-space: nowrap;
   color: #fff !important;
