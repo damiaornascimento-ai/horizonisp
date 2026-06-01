@@ -26,24 +26,25 @@
         <input asp-for="Telefone" class="form-control @ClasseInvalido("Telefone")" />
         <span asp-validation-for="Telefone" class="text-danger small"></span>
     </div>
-    <div class="col-md-8">
-        <label asp-for="Endereco" class="form-label"></label>
-        <input asp-for="Endereco" class="form-control @ClasseInvalido("Endereco")" />
-        <span asp-validation-for="Endereco" class="text-danger small"></span>
-    </div>
     <div class="col-md-4">
         <label asp-for="Cep" class="form-label"></label>
-        <input asp-for="Cep" class="form-control @ClasseInvalido("Cep")" />
+        <input asp-for="Cep" class="form-control @ClasseInvalido("Cep")" inputmode="numeric" maxlength="10" placeholder="00000-000" autocomplete="postal-code" />
         <span asp-validation-for="Cep" class="text-danger small"></span>
+        <span class="form-text cep-busca-status" aria-live="polite"></span>
+    </div>
+    <div class="col-md-8">
+        <label asp-for="Endereco" class="form-label"></label>
+        <input asp-for="Endereco" class="form-control @ClasseInvalido("Endereco")" autocomplete="street-address" />
+        <span asp-validation-for="Endereco" class="text-danger small"></span>
     </div>
     <div class="col-md-6">
         <label asp-for="Cidade" class="form-label"></label>
-        <input asp-for="Cidade" class="form-control @ClasseInvalido("Cidade")" />
+        <input asp-for="Cidade" class="form-control @ClasseInvalido("Cidade")" autocomplete="address-level2" />
         <span asp-validation-for="Cidade" class="text-danger small"></span>
     </div>
     <div class="col-md-3">
         <label asp-for="Estado" class="form-label"></label>
-        <input asp-for="Estado" class="form-control @ClasseInvalido("Estado")" maxlength="2" placeholder="SP" />
+        <input asp-for="Estado" class="form-control @ClasseInvalido("Estado")" maxlength="2" placeholder="SP" autocomplete="address-level1" style="text-transform: uppercase;" />
         <span asp-validation-for="Estado" class="text-danger small"></span>
     </div>
     <div class="col-md-3">
