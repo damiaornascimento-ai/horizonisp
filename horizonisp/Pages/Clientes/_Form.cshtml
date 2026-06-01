@@ -8,42 +8,42 @@
 <div class="row g-3">
     <div class="col-md-6">
         <label asp-for="Nome" class="form-label"></label>
-        <input asp-for="Nome" class="form-control @ClasseInvalido(nameof(Nome))" />
+        <input asp-for="Nome" class="form-control @ClasseInvalido("Nome")" />
         <span asp-validation-for="Nome" class="text-danger small"></span>
     </div>
     <div class="col-md-6">
         <label asp-for="Documento" class="form-label"></label>
-        <input asp-for="Documento" class="form-control @ClasseInvalido(nameof(Documento))" placeholder="000.000.000-00 ou 00.000.000/0000-00" />
+        <input asp-for="Documento" class="form-control @ClasseInvalido("Documento")" placeholder="000.000.000-00 ou 00.000.000/0000-00" />
         <span asp-validation-for="Documento" class="text-danger small"></span>
     </div>
     <div class="col-md-6">
         <label asp-for="Email" class="form-label"></label>
-        <input asp-for="Email" class="form-control @ClasseInvalido(nameof(Email))" type="email" autocomplete="email" />
+        <input asp-for="Email" class="form-control @ClasseInvalido("Email")" type="email" autocomplete="email" />
         <span asp-validation-for="Email" class="text-danger small"></span>
     </div>
     <div class="col-md-6">
         <label asp-for="Telefone" class="form-label"></label>
-        <input asp-for="Telefone" class="form-control @ClasseInvalido(nameof(Telefone))" />
+        <input asp-for="Telefone" class="form-control @ClasseInvalido("Telefone")" />
         <span asp-validation-for="Telefone" class="text-danger small"></span>
     </div>
     <div class="col-md-8">
         <label asp-for="Endereco" class="form-label"></label>
-        <input asp-for="Endereco" class="form-control @ClasseInvalido(nameof(Endereco))" />
+        <input asp-for="Endereco" class="form-control @ClasseInvalido("Endereco")" />
         <span asp-validation-for="Endereco" class="text-danger small"></span>
     </div>
     <div class="col-md-4">
         <label asp-for="Cep" class="form-label"></label>
-        <input asp-for="Cep" class="form-control @ClasseInvalido(nameof(Cep))" />
+        <input asp-for="Cep" class="form-control @ClasseInvalido("Cep")" />
         <span asp-validation-for="Cep" class="text-danger small"></span>
     </div>
     <div class="col-md-6">
         <label asp-for="Cidade" class="form-label"></label>
-        <input asp-for="Cidade" class="form-control @ClasseInvalido(nameof(Cidade))" />
+        <input asp-for="Cidade" class="form-control @ClasseInvalido("Cidade")" />
         <span asp-validation-for="Cidade" class="text-danger small"></span>
     </div>
     <div class="col-md-3">
         <label asp-for="Estado" class="form-label"></label>
-        <input asp-for="Estado" class="form-control @ClasseInvalido(nameof(Estado))" maxlength="2" placeholder="SP" />
+        <input asp-for="Estado" class="form-control @ClasseInvalido("Estado")" maxlength="2" placeholder="SP" />
         <span asp-validation-for="Estado" class="text-danger small"></span>
     </div>
     <div class="col-md-3">

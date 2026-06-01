@@ -1,4 +1,3 @@
-using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -12,7 +11,6 @@ namespace horizonisp.Pages.Clientes
     public class CreateModel(AppDbContext db, PasswordHasher<Cliente> passwordHasher) : PageModel
     {
         [BindProperty]
-        [ValidateComplexType]
         public Cliente Cliente { get; set; } = new();
 
         [BindProperty]
