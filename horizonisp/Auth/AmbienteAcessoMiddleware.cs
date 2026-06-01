@@ -8,6 +8,8 @@ namespace horizonisp.Auth
         {
             "/Login",
             "/Portal/Login",
+            "/Portal/EsqueciSenha",
+            "/Portal/RedefinirSenha",
             "/Error",
             "/Privacy"
         };

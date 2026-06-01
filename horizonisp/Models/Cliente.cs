@@ -43,6 +43,11 @@ namespace horizonisp.Models
         [MaxLength(256)]
         public string? SenhaPortalHash { get; set; }
 
+        [MaxLength(64)]
+        public string? RecuperacaoSenhaToken { get; set; }
+
+        public DateTime? RecuperacaoSenhaExpiraEm { get; set; }
+
         public bool PortalAtivo { get; set; } = true;
 
         public ICollection<Assinatura> Assinaturas { get; set; } = [];

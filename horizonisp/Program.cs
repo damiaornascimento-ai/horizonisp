@@ -89,6 +89,7 @@ builder.Services.AddScoped<PasswordHasher<Usuario>>();
 builder.Services.AddScoped<PasswordHasher<Cliente>>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IClienteAuthService, ClienteAuthService>();
+builder.Services.AddScoped<IRecuperacaoSenhaPortalService, RecuperacaoSenhaPortalService>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();
 builder.Services.AddScoped<IPortalService, PortalService>();
 builder.Services.AddScoped<IPixService, PixService>();
@@ -126,6 +127,8 @@ builder.Services.AddRazorPages(options =>
 
     options.Conventions.AllowAnonymousToPage("/Login");
     options.Conventions.AllowAnonymousToPage("/Portal/Login");
+    options.Conventions.AllowAnonymousToPage("/Portal/EsqueciSenha");
+    options.Conventions.AllowAnonymousToPage("/Portal/RedefinirSenha");
     options.Conventions.AllowAnonymousToPage("/Error");
     options.Conventions.AllowAnonymousToPage("/Privacy");
 });

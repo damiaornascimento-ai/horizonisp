@@ -123,6 +123,13 @@ namespace horizonisp.Migrations
                     b.Property<bool>("PortalAtivo")
                         .HasColumnType("bit");
 
+                    b.Property<DateTime?>("RecuperacaoSenhaExpiraEm")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("RecuperacaoSenhaToken")
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)");
+
                     b.Property<string>("SenhaPortalHash")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
