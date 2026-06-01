@@ -7,28 +7,33 @@ namespace horizonisp.Models
     {
         public int Id { get; set; }
 
-        [Required, MaxLength(150)]
+        [Required(ErrorMessage = "Informe o nome do cliente.")]
+        [MaxLength(150, ErrorMessage = "O nome deve ter no máximo 150 caracteres.")]
         public string Nome { get; set; } = string.Empty;
 
-        [Required, MaxLength(18)]
+        [Required(ErrorMessage = "Informe o CPF ou CNPJ.")]
+        [MaxLength(18, ErrorMessage = "O documento deve ter no máximo 18 caracteres.")]
         public string Documento { get; set; } = string.Empty;
 
-        [Required, EmailAddress, MaxLength(150)]
+        [Required(ErrorMessage = "Informe o e-mail.")]
+        [EmailAddress(ErrorMessage = "Informe um e-mail válido.")]
+        [MaxLength(150, ErrorMessage = "O e-mail deve ter no máximo 150 caracteres.")]
         public string Email { get; set; } = string.Empty;
 
-        [Required, MaxLength(20)]
+        [Required(ErrorMessage = "Informe o telefone.")]
+        [MaxLength(20, ErrorMessage = "O telefone deve ter no máximo 20 caracteres.")]
         public string Telefone { get; set; } = string.Empty;
 
-        [MaxLength(200)]
+        [MaxLength(200, ErrorMessage = "O endereço deve ter no máximo 200 caracteres.")]
         public string Endereco { get; set; } = string.Empty;
 
-        [MaxLength(100)]
+        [MaxLength(100, ErrorMessage = "A cidade deve ter no máximo 100 caracteres.")]
         public string Cidade { get; set; } = string.Empty;
 
-        [MaxLength(2)]
+        [MaxLength(2, ErrorMessage = "Use a sigla do estado com 2 letras (ex.: SP).")]
         public string Estado { get; set; } = string.Empty;
 
-        [MaxLength(10)]
+        [MaxLength(10, ErrorMessage = "O CEP deve ter no máximo 10 caracteres.")]
         public string Cep { get; set; } = string.Empty;
 
         public StatusCliente Status { get; set; } = StatusCliente.Ativo;

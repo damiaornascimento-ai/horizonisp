@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -11,6 +12,7 @@ namespace horizonisp.Pages.Clientes
     public class CreateModel(AppDbContext db, PasswordHasher<Cliente> passwordHasher) : PageModel
     {
         [BindProperty]
+        [ValidateComplexType]
         public Cliente Cliente { get; set; } = new();
 
         [BindProperty]
@@ -23,18 +25,21 @@ namespace horizonisp.Pages.Clientes
 
         public async Task<IActionResult> OnPostAsync()
         {
-            if (!DocumentoValidator.EhValido(Cliente.Documento))
+            TryValidateModel(Cliente, nameof(Cliente));
+
+            if (!string.IsNullOrWhiteSpace(Cliente.Documento) && !DocumentoValidator.EhValido(Cliente.Documento))
             {
                 ModelState.AddModelError($"{nameof(Cliente)}.{nameof(Cliente.Documento)}", "CPF ou CNPJ inválido.");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return Page();
             }
 
             if (await db.Clientes.AnyAsync(c => c.Documento == DocumentoValidator.Formatar(Cliente.Documento)))
             {
                 ModelState.AddModelError($"{nameof(Cliente)}.{nameof(Cliente.Documento)}", "Documento já cadastrado.");
-            }
-
-            if (!ModelState.IsValid)
-            {
                 return Page();
             }
 
