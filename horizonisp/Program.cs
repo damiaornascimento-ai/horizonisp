@@ -97,6 +97,7 @@ builder.Services.AddScoped<IPixGatewayService, PixGatewayService>();
 builder.Services.AddScoped<INfseService, NfseService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IMikrotikService, MikrotikService>();
+builder.Services.AddScoped<IClienteBloqueioService, ClienteBloqueioService>();
 builder.Services.AddScoped<IFaturamentoService, FaturamentoService>();
 builder.Services.AddScoped<IChamadoService, ChamadoService>();
 builder.Services.AddScoped<IRelatorioService, RelatorioService>();

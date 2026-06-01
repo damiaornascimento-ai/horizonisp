@@ -5,10 +5,11 @@ using Microsoft.EntityFrameworkCore;
 using horizonisp.Context;
 using horizonisp.Helpers;
 using horizonisp.Models;
+using horizonisp.Services;
 
 namespace horizonisp.Pages.Clientes
 {
-    public class EditModel(AppDbContext db, PasswordHasher<Cliente> passwordHasher) : PageModel
+    public class EditModel(AppDbContext db, PasswordHasher<Cliente> passwordHasher, IClienteBloqueioService bloqueioService) : PageModel
     {
         [BindProperty]
         public Cliente Cliente { get; set; } = new();
@@ -77,6 +78,20 @@ namespace horizonisp.Pages.Clientes
 
             await db.SaveChangesAsync();
             return RedirectToPage("Index");
+        }
+
+        public async Task<IActionResult> OnPostBloquearAsync(int id)
+        {
+            var resultado = await bloqueioService.BloquearManualmenteAsync(id);
+            TempData[resultado.Sucesso ? "Sucesso" : "Erro"] = resultado.Mensagem;
+            return RedirectToPage(new { id });
+        }
+
+        public async Task<IActionResult> OnPostAtivarAsync(int id)
+        {
+            var resultado = await bloqueioService.AtivarManualmenteAsync(id);
+            TempData[resultado.Sucesso ? "Sucesso" : "Erro"] = resultado.Mensagem;
+            return RedirectToPage(new { id });
         }
     }
 }

@@ -1,0 +1,36 @@
+@model horizonisp.Pages.Clientes.ClienteBloqueioAcoesModel
+@using horizonisp.Services
+
+@if (ClienteBloqueioService.PodeBloquearManualmente(Model.Status))
+{
+    <form method="post"
+          asp-page="@Model.Pagina"
+          asp-page-handler="Bloquear"
+          asp-route-id="@Model.ClienteId"
+          class="d-inline"
+          onsubmit="return confirm('Bloquear o acesso deste cliente manualmente?');">
+        @if (Model.Pagina == "Index")
+        {
+            <input type="hidden" name="busca" value="@Model.Busca" />
+            <input type="hidden" name="categoria" value="@Model.Categoria" />
+        }
+        <button type="submit" class="btn btn-sm btn-danger">Bloquear</button>
+    </form>
+}
+
+@if (ClienteBloqueioService.PodeAtivarManualmente(Model.Status))
+{
+    <form method="post"
+          asp-page="@Model.Pagina"
+          asp-page-handler="Ativar"
+          asp-route-id="@Model.ClienteId"
+          class="d-inline"
+          onsubmit="return confirm('Ativar o acesso deste cliente manualmente?');">
+        @if (Model.Pagina == "Index")
+        {
+            <input type="hidden" name="busca" value="@Model.Busca" />
+            <input type="hidden" name="categoria" value="@Model.Categoria" />
+        }
+        <button type="submit" class="btn btn-sm btn-success">Ativar</button>
+    </form>
+}

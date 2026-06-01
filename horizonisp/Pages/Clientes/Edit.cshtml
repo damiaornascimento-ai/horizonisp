@@ -6,6 +6,35 @@
 
 <h1 class="h3 mb-4">Editar cliente</h1>
 
+@if (TempData["Sucesso"] is string sucesso)
+{
+    <div class="alert alert-success">@sucesso</div>
+}
+@if (TempData["Erro"] is string erro)
+{
+    <div class="alert alert-danger">@erro</div>
+}
+
+<div class="card border-0 shadow-sm mb-3">
+    <div class="card-body d-flex flex-wrap align-items-center justify-content-between gap-2">
+        <div>
+            <div class="text-muted small">Controle de acesso</div>
+            <div class="fw-semibold">@EnumHelper.ObterStatusCliente(Model.Cliente.Status)</div>
+        </div>
+        <div class="d-flex flex-wrap gap-2">
+            @{
+                var bloqueioModel = new ClienteBloqueioAcoesModel
+                {
+                    ClienteId = Model.Cliente.Id,
+                    Status = Model.Cliente.Status,
+                    Pagina = "Edit"
+                };
+            }
+            <partial name="_ClienteBloqueioAcoes" model="bloqueioModel" />
+        </div>
+    </div>
+</div>
+
 <div class="card border-0 shadow-sm">
     <div class="card-body">
         <form method="post" novalidate>

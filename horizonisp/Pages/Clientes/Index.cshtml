@@ -9,6 +9,15 @@
     <a asp-page="Create" class="btn btn-primary">Novo cliente</a>
 </div>
 
+@if (TempData["Sucesso"] is string sucesso)
+{
+    <div class="alert alert-success">@sucesso</div>
+}
+@if (TempData["Erro"] is string erro)
+{
+    <div class="alert alert-danger">@erro</div>
+}
+
 <form method="get" class="card border-0 shadow-sm mb-4">
     <div class="card-body">
         <div class="row g-3 align-items-end">
@@ -86,7 +95,7 @@
                     <th>Telefone</th>
                     <th>Conexão</th>
                     <th>Status</th>
-                    <th></th>
+                    <th class="text-end">Ações</th>
                 </tr>
             </thead>
             <tbody>
@@ -105,7 +114,20 @@
                     </td>
                     <td>@EnumHelper.ObterStatusCliente(cliente.Status)</td>
                     <td class="text-end">
-                        <a asp-page="Edit" asp-route-id="@cliente.Id" class="btn btn-sm btn-outline-secondary">Editar</a>
+                        <div class="d-inline-flex flex-wrap gap-1 justify-content-end">
+                            @{
+                                var bloqueioModel = new ClienteBloqueioAcoesModel
+                                {
+                                    ClienteId = cliente.Id,
+                                    Status = cliente.Status,
+                                    Pagina = "Index",
+                                    Busca = Model.Busca,
+                                    Categoria = Model.Categoria
+                                };
+                            }
+                            <partial name="_ClienteBloqueioAcoes" model="bloqueioModel" />
+                            <a asp-page="Edit" asp-route-id="@cliente.Id" class="btn btn-sm btn-outline-secondary">Editar</a>
+                        </div>
                     </td>
                 </tr>
             }
