@@ -9,7 +9,7 @@ using horizonisp.Services;
 namespace horizonisp.Pages
 {
     [AllowAnonymous]
-    public class LoginModel(IAuthService authService) : PageModel
+    public class LoginModel(IAuthService authService, IClienteAuthService clienteAuthService) : PageModel
     {
         [BindProperty]
         public InputModel Input { get; set; } = new();
@@ -18,12 +18,13 @@ namespace horizonisp.Pages
 
         public class InputModel
         {
-            [Required(ErrorMessage = "Informe o e-mail.")]
-            [EmailAddress(ErrorMessage = "E-mail inválido.")]
-            public string Email { get; set; } = string.Empty;
+            [Required(ErrorMessage = "Informe o e-mail ou CPF/CNPJ.")]
+            [Display(Name = "E-mail ou documento")]
+            public string Identificador { get; set; } = string.Empty;
 
             [Required(ErrorMessage = "Informe a senha.")]
             [DataType(DataType.Password)]
+            [Display(Name = "Senha")]
             public string Senha { get; set; } = string.Empty;
         }
 
@@ -49,20 +50,28 @@ namespace horizonisp.Pages
                 return Page();
             }
 
-            var usuario = await authService.ValidarLoginAsync(Input.Email, Input.Senha);
-            if (usuario is null)
+            var usuario = await authService.ValidarLoginAsync(Input.Identificador, Input.Senha);
+            if (usuario is not null)
             {
-                Erro = "E-mail ou senha inválidos.";
-                return Page();
+                await authService.EntrarAsync(usuario);
+                return RedirectToPage("/Index");
             }
 
-            await authService.EntrarAsync(usuario);
-            return RedirectToPage("/Index");
+            var cliente = await clienteAuthService.ValidarLoginAsync(Input.Identificador, Input.Senha);
+            if (cliente is not null)
+            {
+                await clienteAuthService.EntrarAsync(cliente);
+                return RedirectToPage("/Portal/Index");
+            }
+
+            Erro = "Credenciais inválidas ou acesso não disponível para este usuário.";
+            return Page();
         }
 
         public async Task<IActionResult> OnPostLogoutAsync()
         {
             await authService.SairAsync();
+            await clienteAuthService.SairAsync();
             return RedirectToPage("/Login");
         }
     }

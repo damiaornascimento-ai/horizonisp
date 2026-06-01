@@ -15,7 +15,7 @@ namespace horizonisp.Pages.Portal.Faturas
             var clienteId = User.ObterClienteId();
             if (clienteId is null)
             {
-                return RedirectToPage("/Portal/Login");
+                return RedirectToPage("/Login");
             }
 
             Faturas = await portalService.ObterFaturasAsync(clienteId.Value);

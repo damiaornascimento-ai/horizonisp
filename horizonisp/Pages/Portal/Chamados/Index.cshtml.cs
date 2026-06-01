@@ -15,7 +15,7 @@ namespace horizonisp.Pages.Portal.Chamados
             var clienteId = User.ObterClienteId();
             if (clienteId is null)
             {
-                return RedirectToPage("/Portal/Login");
+                return RedirectToPage("/Login");
             }
 
             Chamados = await chamadoService.ListarPorClienteAsync(clienteId.Value);

@@ -20,7 +20,7 @@ namespace horizonisp.Pages.Portal.Faturas
             var clienteId = User.ObterClienteId();
             if (clienteId is null)
             {
-                return RedirectToPage("/Portal/Login");
+                return RedirectToPage("/Login");
             }
 
             var fatura = await portalService.ObterFaturaAsync(clienteId.Value, id.Value);

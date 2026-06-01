@@ -27,7 +27,7 @@ namespace horizonisp.Pages.Portal.Chamados
             var clienteId = User.ObterClienteId();
             if (clienteId is null)
             {
-                return RedirectToPage("/Portal/Login");
+                return RedirectToPage("/Login");
             }
 
             var chamado = await chamadoService.ObterAsync(id.Value, clienteId.Value);
@@ -45,7 +45,7 @@ namespace horizonisp.Pages.Portal.Chamados
             var clienteId = User.ObterClienteId();
             if (clienteId is null)
             {
-                return RedirectToPage("/Portal/Login");
+                return RedirectToPage("/Login");
             }
 
             if (string.IsNullOrWhiteSpace(NovaMensagem))

@@ -76,7 +76,7 @@ namespace horizonisp.Pages.Portal.Conta
             var clienteId = User.ObterClienteId();
             if (clienteId is null)
             {
-                return RedirectToPage("/Portal/Login");
+                return RedirectToPage("/Login");
             }
 
             if (!TryValidateModel(SenhaPortal, nameof(SenhaPortal)))
@@ -103,7 +103,7 @@ namespace horizonisp.Pages.Portal.Conta
             var clienteId = User.ObterClienteId();
             if (clienteId is null)
             {
-                return RedirectToPage("/Portal/Login");
+                return RedirectToPage("/Login");
             }
 
             if (!TryValidateModel(SenhaPppoe, nameof(SenhaPppoe)))
@@ -135,7 +135,7 @@ namespace horizonisp.Pages.Portal.Conta
             var clienteId = User.ObterClienteId();
             if (clienteId is null)
             {
-                return RedirectToPage("/Portal/Login");
+                return RedirectToPage("/Login");
             }
 
             await CarregarAssinaturasAsync(clienteId.Value);

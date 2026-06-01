@@ -57,8 +57,8 @@ builder.Services.AddAuthentication(options =>
     })
     .AddCookie(AuthSchemes.Cliente, options =>
     {
-        options.LoginPath = "/Portal/Login";
-        options.AccessDeniedPath = "/Portal/Login";
+        options.LoginPath = "/Login";
+        options.AccessDeniedPath = "/Login";
         options.ExpireTimeSpan = TimeSpan.FromHours(12);
         options.Cookie.Name = "HorizonISP.Cliente";
     });

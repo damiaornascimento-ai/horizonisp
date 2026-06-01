@@ -14,13 +14,13 @@ namespace horizonisp.Pages.Portal
             var clienteId = User.ObterClienteId();
             if (clienteId is null)
             {
-                return RedirectToPage("/Portal/Login");
+                return RedirectToPage("/Login");
             }
 
             var resumo = await portalService.ObterResumoAsync(clienteId.Value);
             if (resumo is null)
             {
-                return RedirectToPage("/Portal/Login");
+                return RedirectToPage("/Login");
             }
 
             Resumo = resumo;
