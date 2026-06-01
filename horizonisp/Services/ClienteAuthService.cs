@@ -26,6 +26,12 @@ namespace horizonisp.Services
         {
             var identificadorNormalizado = identificador.Trim();
 
+            if (identificadorNormalizado.Contains('@')
+                && await db.Usuarios.AnyAsync(u => u.Email == identificadorNormalizado && u.Ativo))
+            {
+                return null;
+            }
+
             var cliente = await db.Clientes.FirstOrDefaultAsync(c =>
                 c.PortalAtivo
                 && c.Status != StatusCliente.Cancelado
@@ -55,6 +61,8 @@ namespace horizonisp.Services
 
             var httpContext = httpContextAccessor.HttpContext
                 ?? throw new InvalidOperationException("HttpContext indisponível.");
+
+            await httpContext.SignOutAsync(AuthSchemes.Admin);
 
             await httpContext.SignInAsync(
                 AuthSchemes.Cliente,

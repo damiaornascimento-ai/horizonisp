@@ -1,7 +1,9 @@
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using horizonisp.Auth;
 using horizonisp.Services;
 
 namespace horizonisp.Pages
@@ -25,11 +27,16 @@ namespace horizonisp.Pages
             public string Senha { get; set; } = string.Empty;
         }
 
-        public IActionResult OnGet()
+        public async Task<IActionResult> OnGet()
         {
-            if (User.Identity?.IsAuthenticated ?? false)
+            if ((await HttpContext.AuthenticateAsync(AuthSchemes.Admin)).Succeeded)
             {
                 return RedirectToPage("/Index");
+            }
+
+            if ((await HttpContext.AuthenticateAsync(AuthSchemes.Cliente)).Succeeded)
+            {
+                return RedirectToPage("/Portal/Index");
             }
 
             return Page();

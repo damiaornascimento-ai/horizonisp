@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -27,11 +28,16 @@ namespace horizonisp.Pages.Portal
             public string Senha { get; set; } = string.Empty;
         }
 
-        public IActionResult OnGet()
+        public async Task<IActionResult> OnGet()
         {
-            if (User.Identity?.IsAuthenticated == true && User.IsInRole(AuthRoles.Cliente))
+            if ((await HttpContext.AuthenticateAsync(AuthSchemes.Cliente)).Succeeded)
             {
                 return RedirectToPage("/Portal/Index");
+            }
+
+            if ((await HttpContext.AuthenticateAsync(AuthSchemes.Admin)).Succeeded)
+            {
+                return RedirectToPage("/Index");
             }
 
             return Page();
@@ -47,7 +53,7 @@ namespace horizonisp.Pages.Portal
             var cliente = await clienteAuthService.ValidarLoginAsync(Input.Identificador, Input.Senha);
             if (cliente is null)
             {
-                Erro = "Credenciais inválidas ou portal desativado.";
+                Erro = "Credenciais inválidas, portal desativado ou acesso restrito a clientes.";
                 return Page();
             }
 

@@ -143,6 +143,7 @@ app.UseStaticFiles();
 app.UseRouting();
 app.UseMiddleware<ApiKeyMiddleware>();
 app.UseAuthentication();
+app.UseMiddleware<AmbienteAcessoMiddleware>();
 app.UseAuthorization();
 
 using (var scope = app.Services.CreateScope())

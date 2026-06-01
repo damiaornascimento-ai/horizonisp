@@ -19,11 +19,6 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarMain">
                     <ul class="navbar-nav me-auto align-items-lg-center">
-                        <li class="nav-item py-lg-0 py-2">
-                            <a asp-page="/Portal/Login" class="btn btn-success btn-sm fw-semibold btn-area-cliente">
-                                Área do Cliente
-                            </a>
-                        </li>
                     @if (User.Identity?.IsAuthenticated ?? false)
                     {
                             <li class="nav-item">
