@@ -17,7 +17,8 @@ namespace horizonisp.Services
         decimal ReceitaMesAtual,
         int ChamadosAbertos,
         int OnusOffline,
-        int OrdensServicoAbertas);
+        int OrdensServicoAbertas,
+        int TotalNfse);
 
     public interface IDashboardService
     {
@@ -50,6 +51,7 @@ namespace horizonisp.Services
 
             var onusOffline = await db.Onus.CountAsync(o => o.Status == StatusOnu.Offline);
             var ordensServicoAbertas = await ordemServicoService.ContarAbertasAsync();
+            var totalNfse = await db.NotasFiscaisServico.CountAsync();
 
             var (clientesOnline, clientesOffline, clientesBloqueados) = await ObterContagemConexaoClientesAsync();
 
@@ -65,7 +67,8 @@ namespace horizonisp.Services
                 receitaMesAtual,
                 chamadosAbertos,
                 onusOffline,
-                ordensServicoAbertas);
+                ordensServicoAbertas,
+                totalNfse);
         }
 
         private async Task<(int Online, int Offline, int Bloqueados)> ObterContagemConexaoClientesAsync()

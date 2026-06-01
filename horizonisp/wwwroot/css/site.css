@@ -9,8 +9,114 @@ html {
 }
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem var(--horizon-focus, #258cfb);
 }
+
+:root,
+html[data-theme="azul"] {
+  --bs-primary: #0d6efd;
+  --bs-primary-rgb: 13, 110, 253;
+  --bs-link-color: #0d6efd;
+  --bs-link-hover-color: #0a58ca;
+  --horizon-focus: #258cfb;
+}
+
+html[data-theme="verde"] {
+  --bs-primary: #198754;
+  --bs-primary-rgb: 25, 135, 84;
+  --bs-link-color: #198754;
+  --bs-link-hover-color: #146c43;
+  --horizon-focus: #20c997;
+}
+
+html[data-theme="roxo"] {
+  --bs-primary: #6f42c1;
+  --bs-primary-rgb: 111, 66, 193;
+  --bs-link-color: #6f42c1;
+  --bs-link-hover-color: #59359a;
+  --horizon-focus: #8b6bd1;
+}
+
+html[data-theme="laranja"] {
+  --bs-primary: #e8590c;
+  --bs-primary-rgb: 232, 89, 12;
+  --bs-link-color: #e8590c;
+  --bs-link-hover-color: #ca4a0a;
+  --horizon-focus: #fd7e14;
+}
+
+html[data-theme="indigo"] {
+  --bs-primary: #4338ca;
+  --bs-primary-rgb: 67, 56, 202;
+  --bs-link-color: #4338ca;
+  --bs-link-hover-color: #3730a3;
+  --horizon-focus: #6366f1;
+}
+
+.theme-current-dot {
+  display: inline-block;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.85);
+  background-color: var(--bs-primary);
+}
+
+.theme-picker-menu {
+  min-width: 11rem;
+}
+
+.theme-option {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+}
+
+.theme-option.active {
+  font-weight: 600;
+  background-color: var(--bs-light);
+}
+
+.theme-swatch {
+  display: inline-block;
+  width: 1.125rem;
+  height: 1.125rem;
+  border-radius: 50%;
+  border: 2px solid rgba(0, 0, 0, 0.08);
+  flex-shrink: 0;
+}
+
+.theme-picker-inline {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.theme-picker-label {
+  margin-right: 0.125rem;
+}
+
+.theme-swatch-btn {
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  padding: 0;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.theme-swatch-btn:hover {
+  transform: scale(1.08);
+}
+
+.theme-swatch-btn.active {
+  border-color: #212529;
+  box-shadow: 0 0 0 2px #fff, 0 0 0 4px currentColor;
+}
+
 
 html {
   position: relative;

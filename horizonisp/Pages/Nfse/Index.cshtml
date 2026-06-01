@@ -4,17 +4,13 @@
     ViewData["Title"] = "NFS-e";
 }
 
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <div>
-        <h1 class="h3 mb-0">Notas fiscais de serviço</h1>
-        <p class="text-muted mb-0">Emitidas automaticamente após confirmação de pagamento</p>
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <h1 class="h3 mb-0">NFS-e</h1>
+    <div class="btn-group">
+        <a asp-page="Index" class="btn btn-sm @(Model.FiltroStatus is null ? "btn-primary" : "btn-outline-primary")">Todas</a>
+        <a asp-page="Index" asp-route-status="@StatusNfse.Autorizada" class="btn btn-sm @(Model.FiltroStatus == StatusNfse.Autorizada ? "btn-primary" : "btn-outline-primary")">Autorizadas</a>
+        <a asp-page="Index" asp-route-status="@StatusNfse.Rejeitada" class="btn btn-sm @(Model.FiltroStatus == StatusNfse.Rejeitada ? "btn-primary" : "btn-outline-primary")">Rejeitadas</a>
     </div>
-</div>
-
-<div class="btn-group mb-3">
-    <a asp-page="Index" class="btn btn-sm @(Model.FiltroStatus is null ? "btn-primary" : "btn-outline-primary")">Todas</a>
-    <a asp-page="Index" asp-route-status="@StatusNfse.Autorizada" class="btn btn-sm @(Model.FiltroStatus == StatusNfse.Autorizada ? "btn-primary" : "btn-outline-primary")">Autorizadas</a>
-    <a asp-page="Index" asp-route-status="@StatusNfse.Rejeitada" class="btn btn-sm @(Model.FiltroStatus == StatusNfse.Rejeitada ? "btn-primary" : "btn-outline-primary")">Rejeitadas</a>
 </div>
 
 <div class="card border-0 shadow-sm">

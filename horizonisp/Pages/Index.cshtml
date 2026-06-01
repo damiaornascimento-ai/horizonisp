@@ -121,29 +121,38 @@
             </div>
         </div>
     </div>
-    <div class="col-lg-6">
-        <div class="row g-3 h-100">
-            <div class="col-md-6">
-                <a asp-page="/Rede/Index" class="text-decoration-none text-body d-block h-100">
-                    <div class="card border-0 shadow-sm h-100 card-dashboard-link">
-                        <div class="card-body">
-                            <h2 class="h5">ONUs offline</h2>
-                            <p class="display-6 mb-0 @(Model.Resumo.OnusOffline > 0 ? "text-warning" : "")">@Model.Resumo.OnusOffline</p>
-                        </div>
-                    </div>
-                </a>
+</div>
+
+<div class="row g-3 mt-1">
+    <div class="col-md-4">
+        <a asp-page="/Rede/Index" class="text-decoration-none text-body d-block h-100">
+            <div class="card border-0 shadow-sm h-100 card-dashboard-link">
+                <div class="card-body">
+                    <h2 class="h5">ONUs offline</h2>
+                    <p class="display-6 mb-0 @(Model.Resumo.OnusOffline > 0 ? "text-warning" : "")">@Model.Resumo.OnusOffline</p>
+                </div>
             </div>
-            <div class="col-md-6">
-                <a asp-page="/OrdensServico/Index" class="text-decoration-none text-body d-block h-100">
-                    <div class="card border-0 shadow-sm h-100 card-dashboard-link">
-                        <div class="card-body">
-                            <h2 class="h5">O.S. em aberto</h2>
-                            <p class="display-6 mb-0">@Model.Resumo.OrdensServicoAbertas</p>
-                        </div>
-                    </div>
-                </a>
+        </a>
+    </div>
+    <div class="col-md-4">
+        <a asp-page="/OrdensServico/Index" class="text-decoration-none text-body d-block h-100">
+            <div class="card border-0 shadow-sm h-100 card-dashboard-link">
+                <div class="card-body">
+                    <h2 class="h5">O.S. em aberto</h2>
+                    <p class="display-6 mb-0">@Model.Resumo.OrdensServicoAbertas</p>
+                </div>
             </div>
-        </div>
+        </a>
+    </div>
+    <div class="col-md-4">
+        <a asp-page="/Nfse/Index" class="text-decoration-none text-body d-block h-100">
+            <div class="card border-0 shadow-sm h-100 card-dashboard-link">
+                <div class="card-body">
+                    <h2 class="h5">NFS-e emitidas</h2>
+                    <p class="display-6 mb-0">@Model.Resumo.TotalNfse</p>
+                </div>
+            </div>
+        </a>
     </div>
 </div>
 
@@ -152,6 +161,7 @@
     <a class="btn btn-outline-primary me-2" asp-page="/Assinaturas/Create">Nova assinatura</a>
     <a class="btn btn-outline-primary" asp-page="/Faturas/Index">Ver faturas</a>
     <a class="btn btn-outline-secondary" asp-page="/Faturamento/Index">Faturamento</a>
+    <a class="btn btn-outline-secondary" asp-page="/Nfse/Index">NFS-e</a>
     <a class="btn btn-outline-secondary" asp-page="/Relatorios/Index">Relatórios</a>
     <a class="btn btn-outline-secondary" asp-page="/Rede/Index">Rede FTTH</a>
     <a class="btn btn-outline-secondary" asp-page="/Chamados/Index">Chamados</a>

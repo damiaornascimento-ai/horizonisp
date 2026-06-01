@@ -4,6 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Horizon ISP</title>
+    <partial name="_ThemeHead" />
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/horizonisp.styles.css" asp-append-version="true" />
@@ -40,7 +41,7 @@
                                 <a class="nav-link" asp-page="/Faturamento/Index">Faturamento</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" asp-page="/Nfse/Index">NFS-e</a>
+                                <a class="nav-link text-nowrap" asp-page="/Nfse/Index">NFS-e</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" asp-page="/Chamados/Index">Chamados</a>
@@ -76,9 +77,10 @@
                     </ul>
                     @if (User.Identity?.IsAuthenticated ?? false)
                     {
-                        <ul class="navbar-nav">
+                        <ul class="navbar-nav align-items-lg-center">
+                            <partial name="_ThemePicker" />
                             <li class="nav-item">
-                                <span class="navbar-text text-white-50 me-3">@User.Identity?.Name</span>
+                                <span class="navbar-text text-white-50 me-lg-3">@User.Identity?.Name</span>
                             </li>
                             <li class="nav-item">
                                 <a asp-page="/Logout" class="btn btn-outline-light btn-sm">Sair</a>
