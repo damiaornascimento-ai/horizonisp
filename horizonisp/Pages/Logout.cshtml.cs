@@ -6,15 +6,9 @@ using horizonisp.Services;
 namespace horizonisp.Pages
 {
     [AllowAnonymous]
+    [IgnoreAntiforgeryToken]
     public class LogoutModel(IAuthService authService, IClienteAuthService clienteAuthService) : PageModel
     {
-        public async Task<IActionResult> OnPostAsync()
-        {
-            await authService.SairAsync();
-            await clienteAuthService.SairAsync();
-            return Redirect("/Login");
-        }
-
         public async Task<IActionResult> OnGetAsync()
         {
             await authService.SairAsync();
