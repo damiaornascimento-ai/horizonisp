@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using horizonisp.Context;
+using horizonisp.Helpers;
 using horizonisp.Models;
 using horizonisp.Models.Enums;
 
@@ -13,6 +14,9 @@ namespace horizonisp.Pages.Clientes
         public Cliente Cliente { get; private set; } = new();
         public string? PlanoAtivo { get; private set; }
         public StatusAssinatura? StatusAssinaturaAtiva { get; private set; }
+        public int? OnuSinalDbm { get; private set; }
+        public StatusOnu? OnuStatus { get; private set; }
+        public string? OnuSerial { get; private set; }
 
         [BindProperty(SupportsGet = true)]
         public double? Latitude { get; set; }
@@ -42,6 +46,16 @@ namespace horizonisp.Pages.Clientes
                 PlanoAtivo = assinaturaAtiva.Plano?.Nome;
                 StatusAssinaturaAtiva = assinaturaAtiva.Status;
             }
+
+            var onus = await db.Onus
+                .AsNoTracking()
+                .Where(o => o.AssinaturaId != null && cliente.Assinaturas.Select(a => a.Id).Contains(o.AssinaturaId.Value))
+                .ToListAsync();
+
+            var onuResumo = ClienteOnuResumo.SelecionarOnu(onus, cliente.Assinaturas);
+            OnuSinalDbm = onuResumo.SinalDbm;
+            OnuStatus = onuResumo.StatusOnu;
+            OnuSerial = onuResumo.Serial;
 
             return Page();
         }

@@ -89,6 +89,31 @@
                         <div class="fw-semibold">@EnumHelper.ObterStatusAssinatura(Model.StatusAssinaturaAtiva.Value)</div>
                     </div>
                 }
+                <div class="col-6 col-md-3">
+                    <div class="text-muted">Sinal da ONU</div>
+                    @if (Model.OnuSinalDbm.HasValue)
+                    {
+                        <span class="badge @EnumHelper.ClasseBadgeSinalOnu(Model.OnuSinalDbm)">
+                            @EnumHelper.FormatarSinalOnu(Model.OnuSinalDbm)
+                        </span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-secondary">Sem leitura</span>
+                    }
+                    @if (Model.OnuStatus.HasValue)
+                    {
+                        <div class="mt-1">
+                            <span class="badge @EnumHelper.ClasseBadgeStatusOnu(Model.OnuStatus.Value)">
+                                ONU @EnumHelper.ObterStatusOnu(Model.OnuStatus.Value)
+                            </span>
+                        </div>
+                    }
+                    @if (!string.IsNullOrWhiteSpace(Model.OnuSerial))
+                    {
+                        <div class="text-muted mt-1" style="font-size: 0.75rem;">Serial @Model.OnuSerial</div>
+                    }
+                </div>
             </div>
         </div>
     </div>

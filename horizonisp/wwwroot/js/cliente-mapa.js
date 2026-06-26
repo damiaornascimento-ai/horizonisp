@@ -28,6 +28,63 @@ window.horizonMapa = (function () {
         return labels[status] ?? status ?? '—';
     }
 
+    function obterStatusOnuTexto(status) {
+        const labels = {
+            0: 'Desconhecido',
+            1: 'Online',
+            2: 'Offline'
+        };
+        return labels[status] ?? '—';
+    }
+
+    function formatarSinalOnu(sinalDbm) {
+        if (sinalDbm === null || sinalDbm === undefined || !Number.isFinite(Number(sinalDbm))) {
+            return { texto: 'Sem leitura', classe: 'mk-sinal-neutro' };
+        }
+
+        const valor = Number(sinalDbm);
+        let classe = 'mk-sinal-ruim';
+        if (valor >= -23) {
+            classe = 'mk-sinal-bom';
+        } else if (valor >= -27) {
+            classe = 'mk-sinal-medio';
+        }
+
+        return { texto: `${valor} dBm`, classe };
+    }
+
+    function montarPopupCliente(cliente, config, id) {
+        const nome = cliente.nome ?? cliente.Nome ?? 'Cliente';
+        const endereco = cliente.endereco ?? cliente.Endereco ?? '';
+        const cidade = cliente.cidade ?? cliente.Cidade ?? '';
+        const status = cliente.status ?? cliente.Status;
+        const statusTexto = obterStatusClienteTexto(status);
+        const sinal = formatarSinalOnu(cliente.sinalDbm ?? cliente.SinalDbm);
+        const statusOnu = cliente.statusOnu ?? cliente.StatusOnu;
+        const onuSerial = cliente.onuSerial ?? cliente.OnuSerial;
+        const statusOnuTexto = statusOnu !== null && statusOnu !== undefined
+            ? obterStatusOnuTexto(statusOnu)
+            : null;
+        const urlInstalacao = config.urlLocalizacao.replace('__id__', id);
+        const urlCadastro = config.urlCadastro
+            ? config.urlCadastro.replace('__id__', id)
+            : null;
+
+        return `
+            <strong>${nome}</strong>
+            <div class="mk-map-popup-tags">
+                <span class="mk-map-popup-status">${statusTexto}</span>
+                <span class="mk-map-popup-sinal ${sinal.classe}">${sinal.texto}</span>
+                ${statusOnuTexto ? `<span class="mk-map-popup-onu">ONU ${statusOnuTexto}</span>` : ''}
+            </div>
+            ${onuSerial ? `<div class="mk-map-popup-meta">Serial ${onuSerial}</div>` : ''}
+            ${endereco}<br/>
+            ${cidade}<br/>
+            <a href="${urlInstalacao}">Marcar instalação</a>
+            ${urlCadastro ? ` · <a href="${urlCadastro}">Cadastro</a>` : ''}
+        `;
+    }
+
     function adicionarCamadasMapa(map) {
         const ruas = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 19,
@@ -380,23 +437,7 @@ window.horizonMapa = (function () {
             }
 
             const marker = L.marker([lat, lng]).addTo(map);
-            const nome = cliente.nome ?? cliente.Nome ?? 'Cliente';
-            const endereco = cliente.endereco ?? cliente.Endereco ?? '';
-            const cidade = cliente.cidade ?? cliente.Cidade ?? '';
-            const status = cliente.status ?? cliente.Status;
-            const statusTexto = obterStatusClienteTexto(status);
-            const urlInstalacao = config.urlLocalizacao.replace('__id__', id);
-            const urlCadastro = config.urlCadastro
-                ? config.urlCadastro.replace('__id__', id)
-                : null;
-            const popup = `
-                <strong>${nome}</strong><br/>
-                <span class="mk-map-popup-status">${statusTexto}</span><br/>
-                ${endereco}<br/>
-                ${cidade}<br/>
-                <a href="${urlInstalacao}">Marcar instalação</a>
-                ${urlCadastro ? ` · <a href="${urlCadastro}">Cadastro</a>` : ''}
-            `;
+            const popup = montarPopupCliente(cliente, config, id);
             marker.bindPopup(popup);
             bounds.push([lat, lng]);
         });

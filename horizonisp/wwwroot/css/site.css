@@ -969,3 +969,50 @@ a:hover .card-dashboard-link {
   font-size: 0.75rem;
   font-weight: 600;
 }
+
+.mk-map-popup-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin: 0.25rem 0 0.4rem;
+}
+
+.mk-map-popup-sinal,
+.mk-map-popup-onu {
+  display: inline-block;
+  padding: 0.1rem 0.45rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.mk-map-popup-onu {
+  background: #eef2f7;
+  color: #4a5568;
+}
+
+.mk-map-popup-meta {
+  font-size: 0.72rem;
+  color: #6b7280;
+  margin-bottom: 0.25rem;
+}
+
+.mk-sinal-bom {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.mk-sinal-medio {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.mk-sinal-ruim {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.mk-sinal-neutro {
+  background: #e5e7eb;
+  color: #4b5563;
+}

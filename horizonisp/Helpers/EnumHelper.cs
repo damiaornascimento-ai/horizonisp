@@ -102,6 +102,24 @@ namespace horizonisp.Helpers
             _ => status.ToString()
         };
 
+        public static string FormatarSinalOnu(int? sinalDbm) =>
+            sinalDbm.HasValue ? $"{sinalDbm} dBm" : "Sem leitura";
+
+        public static string ClasseBadgeSinalOnu(int? sinalDbm) => sinalDbm switch
+        {
+            null => "bg-secondary",
+            >= -23 => "bg-success",
+            >= -27 => "bg-warning text-dark",
+            _ => "bg-danger"
+        };
+
+        public static string ClasseBadgeStatusOnu(StatusOnu status) => status switch
+        {
+            StatusOnu.Online => "bg-success",
+            StatusOnu.Offline => "bg-danger",
+            _ => "bg-secondary"
+        };
+
         public static string ObterPerfilUsuario(PerfilUsuario perfil) => perfil switch
         {
             PerfilUsuario.Admin => "Administrador",
