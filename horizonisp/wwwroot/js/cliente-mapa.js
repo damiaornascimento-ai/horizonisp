@@ -2,9 +2,20 @@ window.horizonMapa = (function () {
     const defaultCenter = [-23.5505, -46.6333];
     const defaultZoom = 12;
     const detailZoom = 17;
+    const gpsPrecisaoIdeal = 15;
+    const gpsPrecisaoAceitavel = 40;
+    const gpsTempoMaxMs = 30000;
+    const gpsTempoMinMs = 4000;
 
     function formatCoord(value) {
         return Number(value).toFixed(6);
+    }
+
+    function formatPrecisao(metros) {
+        if (!Number.isFinite(metros)) {
+            return '—';
+        }
+        return metros < 1000 ? `${Math.round(metros)} m` : `${(metros / 1000).toFixed(1)} km`;
     }
 
     function criarMapa(elementId, center, zoom) {
@@ -14,6 +25,91 @@ window.horizonMapa = (function () {
             attribution: '&copy; OpenStreetMap'
         }).addTo(map);
         return map;
+    }
+
+    function capturarGpsRefinado(onProgress, onSuccess, onError) {
+        const opcoes = { enableHighAccuracy: true, timeout: 25000, maximumAge: 0 };
+        let melhor = null;
+        let watchId = null;
+        let finalizado = false;
+        const inicio = Date.now();
+
+        function encerrar() {
+            if (watchId !== null) {
+                navigator.geolocation.clearWatch(watchId);
+                watchId = null;
+            }
+        }
+
+        function concluir() {
+            if (finalizado) {
+                return;
+            }
+            finalizado = true;
+            encerrar();
+            if (melhor) {
+                onSuccess(melhor);
+            } else {
+                onError({ code: 3 });
+            }
+        }
+
+        function avaliarLeitura(pos) {
+            const leitura = {
+                latitude: pos.coords.latitude,
+                longitude: pos.coords.longitude,
+                accuracy: pos.coords.accuracy,
+                altitude: pos.coords.altitude,
+                timestamp: pos.timestamp
+            };
+
+            if (!melhor || leitura.accuracy < melhor.accuracy) {
+                melhor = leitura;
+                onProgress(melhor);
+            }
+
+            const tempoDecorrido = Date.now() - inicio;
+            const precisaoBoa = melhor.accuracy <= gpsPrecisaoIdeal;
+            const precisaoRazoavel = melhor.accuracy <= gpsPrecisaoAceitavel;
+            const tempoSuficiente = tempoDecorrido >= gpsTempoMinMs;
+
+            if (precisaoBoa && tempoSuficiente) {
+                concluir();
+                return;
+            }
+
+            if (tempoDecorrido >= gpsTempoMaxMs) {
+                concluir();
+                return;
+            }
+
+            if (tempoSuficiente && precisaoRazoavel && tempoDecorrido >= 10000) {
+                concluir();
+            }
+        }
+
+        watchId = navigator.geolocation.watchPosition(
+            avaliarLeitura,
+            (err) => {
+                if (finalizado) {
+                    return;
+                }
+                finalizado = true;
+                encerrar();
+                if (melhor) {
+                    onSuccess(melhor);
+                } else {
+                    onError(err);
+                }
+            },
+            opcoes
+        );
+
+        setTimeout(() => {
+            if (!finalizado) {
+                concluir();
+            }
+        }, gpsTempoMaxMs + 500);
     }
 
     function iniciarCliente(config) {
@@ -36,33 +132,79 @@ window.horizonMapa = (function () {
 
         const map = criarMapa('mapaInstalacao', center, zoom);
         let marker = null;
+        let circuloPrecisao = null;
         let manualMode = false;
+        let gpsAtivo = false;
 
-        function atualizarCoordenadas(newLat, newLng) {
+        function removerCirculoPrecisao() {
+            if (circuloPrecisao) {
+                map.removeLayer(circuloPrecisao);
+                circuloPrecisao = null;
+            }
+        }
+
+        function atualizarCirculoPrecisao(newLat, newLng, metros) {
+            removerCirculoPrecisao();
+            if (!Number.isFinite(metros) || metros <= 0) {
+                return;
+            }
+
+            circuloPrecisao = L.circle([newLat, newLng], {
+                radius: metros,
+                color: '#0069b4',
+                fillColor: '#00a8e8',
+                fillOpacity: 0.12,
+                weight: 1
+            }).addTo(map);
+        }
+
+        function atualizarCoordenadas(newLat, newLng, precisaoMetros) {
             lat = newLat;
             lng = newLng;
             latInput.value = formatCoord(newLat);
             lngInput.value = formatCoord(newLng);
-            coordEl.textContent = `Lat: ${formatCoord(newLat)} · Lng: ${formatCoord(newLng)}`;
+
+            const precisaoTexto = Number.isFinite(precisaoMetros)
+                ? ` · Precisão: ±${formatPrecisao(precisaoMetros)}`
+                : '';
+            coordEl.textContent = `Lat: ${formatCoord(newLat)} · Lng: ${formatCoord(newLng)}${precisaoTexto}`;
         }
 
-        function colocarMarcador(newLat, newLng, moverMapa) {
+        function colocarMarcador(newLat, newLng, moverMapa, precisaoMetros) {
             if (marker) {
                 marker.setLatLng([newLat, newLng]);
             } else {
                 marker = L.marker([newLat, newLng], { draggable: true }).addTo(map);
                 marker.on('dragend', () => {
                     const pos = marker.getLatLng();
+                    removerCirculoPrecisao();
                     atualizarCoordenadas(pos.lat, pos.lng);
-                    statusEl.textContent = 'Posição ajustada. Salve para confirmar.';
+                    statusEl.textContent = 'Posição ajustada manualmente. Salve para confirmar.';
                 });
             }
 
-            atualizarCoordenadas(newLat, newLng);
+            atualizarCoordenadas(newLat, newLng, precisaoMetros);
+
+            if (Number.isFinite(precisaoMetros)) {
+                atualizarCirculoPrecisao(newLat, newLng, precisaoMetros);
+            } else {
+                removerCirculoPrecisao();
+            }
 
             if (moverMapa) {
-                map.setView([newLat, newLng], detailZoom);
+                const zoomAlvo = Number.isFinite(precisaoMetros) && precisaoMetros > 80 ? 16 : detailZoom;
+                map.setView([newLat, newLng], zoomAlvo);
             }
+        }
+
+        function mensagemPrecisao(metros) {
+            if (metros <= gpsPrecisaoIdeal) {
+                return `GPS com boa precisão (±${formatPrecisao(metros)}). Ajuste o marcador se necessário e salve.`;
+            }
+            if (metros <= gpsPrecisaoAceitavel) {
+                return `GPS capturado (±${formatPrecisao(metros)}). Recomendado arrastar o marcador para o ponto exato da instalação.`;
+            }
+            return `GPS com baixa precisão (±${formatPrecisao(metros)}). Arraste o marcador para a posição correta antes de salvar.`;
         }
 
         if (hasPosition) {
@@ -76,6 +218,7 @@ window.horizonMapa = (function () {
                 return;
             }
 
+            manualMode = true;
             colocarMarcador(e.latlng.lat, e.latlng.lng, false);
             statusEl.textContent = 'Posição definida no mapa. Salve para confirmar.';
         });
@@ -93,26 +236,36 @@ window.horizonMapa = (function () {
                 return;
             }
 
-            statusEl.textContent = 'Obtendo localização do dispositivo...';
-            btnGps.disabled = true;
+            if (gpsAtivo) {
+                return;
+            }
 
-            navigator.geolocation.getCurrentPosition(
-                (pos) => {
-                    manualMode = true;
-                    colocarMarcador(pos.coords.latitude, pos.coords.longitude, true);
-                    statusEl.textContent = 'Localização do dispositivo capturada. Ajuste se necessário e salve.';
+            manualMode = true;
+            gpsAtivo = true;
+            btnGps.disabled = true;
+            statusEl.textContent = 'Buscando sinal GPS... aguarde ao ar livre, com o celular parado.';
+
+            capturarGpsRefinado(
+                (leitura) => {
+                    colocarMarcador(leitura.latitude, leitura.longitude, true, leitura.accuracy);
+                    statusEl.textContent = `Refinando GPS... precisão atual ±${formatPrecisao(leitura.accuracy)}.`;
+                },
+                (leitura) => {
+                    gpsAtivo = false;
                     btnGps.disabled = false;
+                    colocarMarcador(leitura.latitude, leitura.longitude, true, leitura.accuracy);
+                    statusEl.textContent = mensagemPrecisao(leitura.accuracy);
                 },
                 (err) => {
+                    gpsAtivo = false;
+                    btnGps.disabled = false;
                     const mensagens = {
-                        1: 'Permissão de localização negada.',
-                        2: 'Posição indisponível.',
-                        3: 'Tempo esgotado ao obter GPS.'
+                        1: 'Permissão de localização negada. Libere o acesso ao GPS nas configurações do navegador.',
+                        2: 'Sinal GPS indisponível. Tente ao ar livre ou marque manualmente.',
+                        3: 'Tempo esgotado ao obter GPS. Tente novamente ou marque manualmente.'
                     };
                     statusEl.textContent = mensagens[err.code] || 'Não foi possível obter a localização.';
-                    btnGps.disabled = false;
-                },
-                { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
+                }
             );
         });
 
