@@ -49,9 +49,9 @@
     </div>
 </div>
 
-<form method="post" id="formLocalizacao">
-    <input type="hidden" asp-for="Latitude" id="inputLatitude" />
-    <input type="hidden" asp-for="Longitude" id="inputLongitude" />
+<form method="post" asp-route-id="@Model.Cliente.Id" id="formLocalizacao">
+    <input type="hidden" name="Latitude" id="inputLatitude" value="@(Model.Latitude?.ToString(System.Globalization.CultureInfo.InvariantCulture) ?? "")" />
+    <input type="hidden" name="Longitude" id="inputLongitude" value="@(Model.Longitude?.ToString(System.Globalization.CultureInfo.InvariantCulture) ?? "")" />
 
     <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2" role="alert"></div>
 

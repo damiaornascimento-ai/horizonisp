@@ -284,6 +284,21 @@ window.horizonMapa = (function () {
                 .catch(() => { /* silencioso */ });
         }
 
+        document.getElementById('formLocalizacao')?.addEventListener('submit', (e) => {
+            if (!latInput.value?.trim() || !lngInput.value?.trim()) {
+                e.preventDefault();
+                statusEl.textContent = 'Marque a posição no mapa antes de salvar.';
+                return;
+            }
+
+            const latNum = Number(latInput.value);
+            const lngNum = Number(lngInput.value);
+            if (!Number.isFinite(latNum) || !Number.isFinite(lngNum)) {
+                e.preventDefault();
+                statusEl.textContent = 'Coordenadas inválidas. Marque novamente no mapa.';
+            }
+        });
+
         setTimeout(() => map.invalidateSize(), 200);
     }
 

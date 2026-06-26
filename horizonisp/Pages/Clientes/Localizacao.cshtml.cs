@@ -1,3 +1,4 @@
+using System.Globalization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
@@ -10,10 +11,10 @@ namespace horizonisp.Pages.Clientes
     {
         public Cliente Cliente { get; private set; } = new();
 
-        [BindProperty]
+        [BindProperty(SupportsGet = true)]
         public double? Latitude { get; set; }
 
-        [BindProperty]
+        [BindProperty(SupportsGet = true)]
         public double? Longitude { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? id)
@@ -32,6 +33,9 @@ namespace horizonisp.Pages.Clientes
 
         public async Task<IActionResult> OnPostAsync(int id)
         {
+            ModelState.Remove(nameof(Latitude));
+            ModelState.Remove(nameof(Longitude));
+
             var cliente = await CarregarClienteAsync(id);
             if (cliente is null)
             {
@@ -40,20 +44,17 @@ namespace horizonisp.Pages.Clientes
 
             Cliente = cliente;
 
-            if (!Latitude.HasValue || !Longitude.HasValue)
+            if (!TentarLerCoordenadas(out var latitude, out var longitude, out var erro))
             {
-                ModelState.AddModelError(string.Empty, "Marque a posição no mapa antes de salvar.");
+                ModelState.AddModelError(string.Empty, erro);
                 return Page();
             }
 
-            if (Latitude is < -90 or > 90 || Longitude is < -180 or > 180)
-            {
-                ModelState.AddModelError(string.Empty, "Coordenadas inválidas.");
-                return Page();
-            }
+            Latitude = latitude;
+            Longitude = longitude;
 
-            cliente.Latitude = Latitude;
-            cliente.Longitude = Longitude;
+            cliente.Latitude = latitude;
+            cliente.Longitude = longitude;
             cliente.LocalizacaoInstalacaoEm = DateTime.UtcNow;
 
             await db.SaveChangesAsync();
@@ -76,6 +77,46 @@ namespace horizonisp.Pages.Clientes
             await db.SaveChangesAsync();
             TempData["Sucesso"] = "Localização removida.";
             return RedirectToPage(new { id });
+        }
+
+        private bool TentarLerCoordenadas(out double latitude, out double longitude, out string erro)
+        {
+            latitude = 0;
+            longitude = 0;
+
+            var latTexto = Request.Form["Latitude"].ToString();
+            var lngTexto = Request.Form["Longitude"].ToString();
+
+            if (string.IsNullOrWhiteSpace(latTexto) || string.IsNullOrWhiteSpace(lngTexto))
+            {
+                erro = "Marque a posição no mapa antes de salvar.";
+                return false;
+            }
+
+            if (!TryParseCoordenada(latTexto, out latitude) || !TryParseCoordenada(lngTexto, out longitude))
+            {
+                erro = "Coordenadas inválidas. Marque novamente no mapa.";
+                return false;
+            }
+
+            if (latitude is < -90 or > 90 || longitude is < -180 or > 180)
+            {
+                erro = "Coordenadas fora do intervalo válido.";
+                return false;
+            }
+
+            erro = string.Empty;
+            return true;
+        }
+
+        private static bool TryParseCoordenada(string valor, out double resultado)
+        {
+            if (double.TryParse(valor, NumberStyles.Float, CultureInfo.InvariantCulture, out resultado))
+            {
+                return true;
+            }
+
+            return double.TryParse(valor, NumberStyles.Float, CultureInfo.CurrentCulture, out resultado);
         }
 
         private async Task<Cliente?> CarregarClienteAsync(int? id)
