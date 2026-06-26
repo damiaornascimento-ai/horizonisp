@@ -36,6 +36,12 @@ window.horizonMapa = (function () {
         return map;
     }
 
+    function coordenadaValida(lat, lng) {
+        return Number.isFinite(lat) && Number.isFinite(lng)
+            && lat >= -90 && lat <= 90
+            && lng >= -180 && lng <= 180;
+    }
+
     function capturarGpsRefinado(onProgress, onSuccess, onError) {
         const opcoes = { enableHighAccuracy: true, timeout: 25000, maximumAge: 0 };
         let melhor = null;
@@ -135,7 +141,11 @@ window.horizonMapa = (function () {
 
         let lat = config.latitude;
         let lng = config.longitude;
-        const hasPosition = lat !== null && lng !== null;
+        const hasPosition = coordenadaValida(Number(lat), Number(lng));
+        if (hasPosition) {
+            lat = Number(lat);
+            lng = Number(lng);
+        }
         const center = hasPosition ? [lat, lng] : defaultCenter;
         const zoom = hasPosition ? detailZoom : defaultZoom;
 
@@ -316,15 +326,23 @@ window.horizonMapa = (function () {
         const bounds = [];
 
         (config.clientes || []).forEach((cliente) => {
-            const marker = L.marker([cliente.latitude, cliente.longitude]).addTo(map);
+            const lat = Number(cliente.latitude ?? cliente.Latitude);
+            const lng = Number(cliente.longitude ?? cliente.Longitude);
+            const id = cliente.id ?? cliente.Id;
+
+            if (!coordenadaValida(lat, lng)) {
+                return;
+            }
+
+            const marker = L.marker([lat, lng]).addTo(map);
             const popup = `
-                <strong>${cliente.nome}</strong><br/>
-                ${cliente.endereco}<br/>
-                ${cliente.cidade}<br/>
-                <a href="${config.urlLocalizacao.replace('__id__', cliente.id)}">Abrir instalação</a>
+                <strong>${cliente.nome ?? cliente.Nome ?? 'Cliente'}</strong><br/>
+                ${cliente.endereco ?? cliente.Endereco ?? ''}<br/>
+                ${cliente.cidade ?? cliente.Cidade ?? ''}<br/>
+                <a href="${config.urlLocalizacao.replace('__id__', id)}">Abrir instalação</a>
             `;
             marker.bindPopup(popup);
-            bounds.push([cliente.latitude, cliente.longitude]);
+            bounds.push([lat, lng]);
         });
 
         if (bounds.length === 1) {

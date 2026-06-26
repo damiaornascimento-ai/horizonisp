@@ -11,6 +11,11 @@ namespace horizonisp.Pages.Clientes
 
     public class MapaModel(AppDbContext db) : PageModel
     {
+        private static readonly JsonSerializerOptions JsonOpcoes = new()
+        {
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+        };
+
         public IList<ClienteMapaPonto> Clientes { get; private set; } = [];
         public int TotalComLocalizacao { get; private set; }
         public int TotalSemLocalizacao { get; private set; }
@@ -46,7 +51,7 @@ namespace horizonisp.Pages.Clientes
                     c.Longitude!.Value))
                 .ToList();
 
-            ClientesJson = JsonSerializer.Serialize(Clientes);
+            ClientesJson = JsonSerializer.Serialize(Clientes, JsonOpcoes);
         }
     }
 }
