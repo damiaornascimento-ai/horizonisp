@@ -14,52 +14,51 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
-<body class="bg-light">
-    <div class="container">
-        <div class="row justify-content-center align-items-center min-vh-100">
-            <div class="col-md-5">
-                <div class="card shadow-sm border-0">
-                    <div class="card-body p-4">
-                        <h1 class="h4 mb-1">Criar nova senha</h1>
-                        <p class="text-muted mb-4">Escolha uma nova senha para acessar a área do cliente.</p>
-
-                        @if (!string.IsNullOrEmpty(Model.Erro))
-                        {
-                            <div class="alert alert-danger">@Model.Erro</div>
-                        }
-
-                        @if (Model.Concluido)
-                        {
-                            <div class="alert alert-success mb-3">
-                                Senha alterada com sucesso. Você já pode entrar com a nova senha.
-                            </div>
-                            <a asp-page="/Login" class="btn btn-dark w-100">Ir para o login</a>
-                        }
-                        else if (Model.TokenValido)
-                        {
-                            <form method="post">
-                                <input type="hidden" asp-for="Token" />
-                                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
-                                <div class="mb-3">
-                                    <label asp-for="Input.NovaSenha" class="form-label"></label>
-                                    <input asp-for="Input.NovaSenha" class="form-control" autocomplete="new-password" />
-                                    <span asp-validation-for="Input.NovaSenha" class="text-danger"></span>
-                                </div>
-                                <div class="mb-3">
-                                    <label asp-for="Input.Confirmacao" class="form-label"></label>
-                                    <input asp-for="Input.Confirmacao" class="form-control" autocomplete="new-password" />
-                                    <span asp-validation-for="Input.Confirmacao" class="text-danger"></span>
-                                </div>
-                                <button type="submit" class="btn btn-dark w-100 mb-3">Salvar nova senha</button>
-                            </form>
-                            <a asp-page="/Portal/EsqueciSenha" class="small">Solicitar novo link</a>
-                        }
-                        else
-                        {
-                            <a asp-page="/Portal/EsqueciSenha" class="btn btn-dark w-100">Solicitar novo link</a>
-                        }
-                    </div>
+<body class="login-page">
+    <div class="login-page-form" style="min-height: 100vh;">
+        <div class="card">
+            <div class="card-body">
+                <div class="text-center mb-4">
+                    <div class="mk-sidebar-brand-title text-primary fs-5 fw-bold">Horizon ISP</div>
+                    <h1 class="h5 mt-2 mb-1">Criar nova senha</h1>
+                    <p class="text-muted small mb-0">Escolha uma nova senha para a área do cliente.</p>
                 </div>
+
+                @if (!string.IsNullOrEmpty(Model.Erro))
+                {
+                    <div class="alert alert-danger">@Model.Erro</div>
+                }
+
+                @if (Model.Concluido)
+                {
+                    <div class="alert alert-success mb-3">
+                        Senha alterada com sucesso. Você já pode entrar com a nova senha.
+                    </div>
+                    <a asp-page="/Login" class="btn btn-primary w-100">Ir para o login</a>
+                }
+                else if (Model.TokenValido)
+                {
+                    <form method="post">
+                        <input type="hidden" asp-for="Token" />
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                        <div class="mb-3">
+                            <label asp-for="Input.NovaSenha" class="form-label"></label>
+                            <input asp-for="Input.NovaSenha" class="form-control" autocomplete="new-password" />
+                            <span asp-validation-for="Input.NovaSenha" class="text-danger"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="Input.Confirmacao" class="form-label"></label>
+                            <input asp-for="Input.Confirmacao" class="form-control" autocomplete="new-password" />
+                            <span asp-validation-for="Input.Confirmacao" class="text-danger"></span>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100 mb-3">Salvar nova senha</button>
+                    </form>
+                    <a asp-page="/Portal/EsqueciSenha" class="small">Solicitar novo link</a>
+                }
+                else
+                {
+                    <a asp-page="/Portal/EsqueciSenha" class="btn btn-primary w-100">Solicitar novo link</a>
+                }
             </div>
         </div>
     </div>

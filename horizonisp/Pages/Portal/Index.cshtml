@@ -4,34 +4,28 @@
     ViewData["Title"] = "Início";
 }
 
-<div class="mb-4">
-    <h1 class="h3">Olá, @Model.Resumo.Cliente.Nome</h1>
-    <p class="text-muted mb-0">Bem-vindo à sua área do assinante.</p>
+<div class="mk-page-header">
+    <h1 class="h3 mb-1">Olá, @Model.Resumo.Cliente.Nome</h1>
+    <p class="text-muted mb-0">Bem-vindo à sua área do assinante</p>
 </div>
 
 <div class="row g-3 mb-4">
     <div class="col-md-4">
-        <div class="card border-0 shadow-sm h-100">
-            <div class="card-body">
-                <div class="text-muted small">Assinaturas</div>
-                <div class="display-6">@Model.Resumo.Assinaturas.Count</div>
-            </div>
+        <div class="mk-kpi-card">
+            <div class="mk-kpi-label">Assinaturas</div>
+            <div class="mk-kpi-value">@Model.Resumo.Assinaturas.Count</div>
         </div>
     </div>
     <div class="col-md-4">
-        <div class="card border-0 shadow-sm h-100">
-            <div class="card-body">
-                <div class="text-muted small">Faturas pendentes</div>
-                <div class="display-6">@Model.Resumo.FaturasPendentes</div>
-            </div>
+        <div class="mk-kpi-card accent">
+            <div class="mk-kpi-label">Faturas pendentes</div>
+            <div class="mk-kpi-value">@Model.Resumo.FaturasPendentes</div>
         </div>
     </div>
     <div class="col-md-4">
-        <div class="card border-0 shadow-sm h-100">
-            <div class="card-body">
-                <div class="text-muted small">Faturas atrasadas</div>
-                <div class="display-6 text-danger">@Model.Resumo.FaturasAtrasadas</div>
-            </div>
+        <div class="mk-kpi-card danger">
+            <div class="mk-kpi-label">Faturas atrasadas</div>
+            <div class="mk-kpi-value text-danger">@Model.Resumo.FaturasAtrasadas</div>
         </div>
     </div>
 </div>
@@ -39,9 +33,11 @@
 @if (Model.Resumo.ProximaFatura is not null)
 {
     var fatura = Model.Resumo.ProximaFatura;
-    <div class="card border-0 shadow-sm mb-4">
-        <div class="card-body">
-            <h2 class="h5">Próximo vencimento</h2>
+    <div class="mk-panel mb-4">
+        <div class="mk-panel-header">
+            <i class="bi bi-calendar-event me-2"></i>Próximo vencimento
+        </div>
+        <div class="mk-panel-body">
             <p class="mb-1">
                 Referência <strong>@fatura.Referencia</strong> —
                 @EnumHelper.Moeda(fatura.Valor)
@@ -50,19 +46,21 @@
                 Vence em @fatura.DataVencimento.ToLocalTime().ToString("dd/MM/yyyy")
                 (@EnumHelper.ObterStatusFatura(fatura.Status))
             </p>
-            <a asp-page="/Portal/Faturas/Detalhe" asp-route-id="@fatura.Id" class="btn btn-dark btn-sm">
-                Ver 2ª via
+            <a asp-page="/Portal/Faturas/Detalhe" asp-route-id="@fatura.Id" class="btn btn-primary btn-sm">
+                <i class="bi bi-receipt me-1"></i>Ver 2ª via
             </a>
         </div>
     </div>
 }
 
-<div class="card border-0 shadow-sm">
-    <div class="card-body">
-        <h2 class="h5 mb-3">Suas assinaturas</h2>
+<div class="mk-panel">
+    <div class="mk-panel-header">
+        <i class="bi bi-wifi me-2"></i>Suas assinaturas
+    </div>
+    <div class="mk-panel-body">
         @foreach (var assinatura in Model.Resumo.Assinaturas)
         {
-            <div class="border rounded p-3 mb-3">
+            <div class="border rounded p-3 mb-3 bg-light">
                 <div class="d-flex justify-content-between flex-wrap gap-2">
                     <div>
                         <strong>@assinatura.Plano.Nome</strong>
@@ -71,7 +69,7 @@
                             · @EnumHelper.ObterTipoPlano(assinatura.Plano.Tipo)
                         </div>
                     </div>
-                    <span class="badge text-bg-secondary">@EnumHelper.ObterStatusAssinatura(assinatura.Status)</span>
+                    <span class="badge text-bg-primary">@EnumHelper.ObterStatusAssinatura(assinatura.Status)</span>
                 </div>
                 <div class="small mt-2">
                     Login: <code>@assinatura.LoginPppoe</code>

@@ -1,59 +1,90 @@
+@{
+    var path = Context.Request.Path.Value ?? "/";
+    string NavClass(string prefix) =>
+        path.Equals(prefix, StringComparison.OrdinalIgnoreCase)
+        || path.StartsWith(prefix + "/", StringComparison.OrdinalIgnoreCase)
+            ? "mk-nav-link active"
+            : "mk-nav-link";
+    var pageTitle = ViewData["Title"]?.ToString() ?? "Área do Cliente";
+    var userInitial = User.Identity?.Name?.Length > 0
+        ? User.Identity.Name[0].ToString().ToUpperInvariant()
+        : "?";
+}
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Área do Cliente</title>
+    <title>@pageTitle - Área do Cliente</title>
     <partial name="_ThemeHead" />
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
-<body class="bg-light">
-    <header>
-        <nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4">
-            <div class="container">
-                <a class="navbar-brand" asp-page="/Portal/Index">Horizon ISP</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#portalNav"
-                        aria-controls="portalNav" aria-expanded="false" aria-label="Alternar navegação">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="portalNav">
-                    @if (User.Identity?.IsAuthenticated ?? false)
-                    {
-                        <ul class="navbar-nav me-auto">
-                            <li class="nav-item">
-                                <a class="nav-link" asp-page="/Portal/Index">Início</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" asp-page="/Portal/Faturas/Index">Minhas faturas</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" asp-page="/Portal/Conta/Senha">Minha conta</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" asp-page="/Portal/Chamados/Index">Suporte</a>
-                            </li>
-                        </ul>
-                        <div class="d-flex align-items-center gap-2 gap-lg-3">
-                            <partial name="_ThemePicker" />
-                            <span class="navbar-text text-white-50">@User.Identity?.Name</span>
-                            <a asp-page="/Logout" class="btn btn-outline-light btn-sm">Sair</a>
-                        </div>
-                    }
-                </div>
+<body class="mk-app mk-portal">
+    <div class="mk-sidebar-overlay" aria-hidden="true"></div>
+
+    <aside class="mk-sidebar">
+        <a class="mk-sidebar-brand" asp-page="/Portal/Index">
+            <div class="mk-sidebar-brand-title">Horizon ISP</div>
+            <div class="mk-sidebar-brand-sub">Área do assinante</div>
+        </a>
+
+        <nav class="mk-sidebar-nav">
+            <div class="mk-nav-section">
+                <div class="mk-nav-section-title">Minha conta</div>
+                <a class="@NavClass("/Portal/Index")" asp-page="/Portal/Index">
+                    <i class="bi bi-house-door-fill"></i>
+                    <span>Início</span>
+                </a>
+                <a class="@NavClass("/Portal/Faturas")" asp-page="/Portal/Faturas/Index">
+                    <i class="bi bi-receipt"></i>
+                    <span>Minhas faturas</span>
+                </a>
+                <a class="@NavClass("/Portal/Conta")" asp-page="/Portal/Conta/Senha">
+                    <i class="bi bi-shield-lock-fill"></i>
+                    <span>Minha conta</span>
+                </a>
+                <a class="@NavClass("/Portal/Chamados")" asp-page="/Portal/Chamados/Index">
+                    <i class="bi bi-headset"></i>
+                    <span>Suporte</span>
+                </a>
             </div>
         </nav>
-    </header>
+    </aside>
 
-    <div class="container pb-4">
-        @RenderBody()
-    </div>
+    <div class="mk-main">
+        <header class="mk-topbar">
+            <div class="d-flex align-items-center gap-3">
+                <button type="button" class="mk-sidebar-toggle" data-mk-sidebar-toggle aria-label="Abrir menu">
+                    <i class="bi bi-list"></i>
+                </button>
+                <div>
+                    <p class="mk-topbar-breadcrumb">Área do Cliente / @pageTitle</p>
+                    <h2 class="mk-topbar-title">@pageTitle</h2>
+                </div>
+            </div>
+            <div class="mk-topbar-user">
+                <partial name="_ThemePickerInline" />
+                <div class="mk-user-pill d-none d-sm-flex">
+                    <span class="mk-user-avatar">@userInitial</span>
+                    <span>@User.Identity?.Name</span>
+                </div>
+                <a asp-page="/Logout" class="btn btn-outline-secondary btn-sm">
+                    <i class="bi bi-box-arrow-right"></i>
+                    <span class="d-none d-md-inline ms-1">Sair</span>
+                </a>
+            </div>
+        </header>
 
-    <footer class="border-top py-3 mt-auto">
-        <div class="container text-muted small">
+        <main class="mk-content" role="main">
+            @RenderBody()
+        </main>
+
+        <footer class="mk-footer">
             Precisa de ajuda? Entre em contato com o suporte do provedor.
-        </div>
-    </footer>
+        </footer>
+    </div>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>

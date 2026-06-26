@@ -4,10 +4,10 @@
     ViewData["Title"] = "Painel";
 }
 
-<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
-    <div>
-        <h1 class="h3 mb-1">Painel</h1>
-        <p class="text-muted mb-0">Visão geral do provedor</p>
+<div class="d-flex justify-content-between align-items-start mb-4 flex-wrap gap-3">
+    <div class="mk-page-header mb-0">
+        <h1 class="h3 mb-1">Workspace</h1>
+        <p class="text-muted mb-0">Visão geral da operação do provedor</p>
     </div>
     <div class="card border-0 shadow-sm theme-picker-panel">
         <div class="card-body py-2 px-3 d-flex align-items-center gap-2">
@@ -19,79 +19,94 @@
 
 <div class="row g-3 mb-4">
     <div class="col-md-4">
-        <a asp-page="/Clientes/Index" class="text-decoration-none text-body d-block h-100">
-            <div class="card border-0 shadow-sm h-100 card-dashboard-link">
-                <div class="card-body">
-                    <div class="text-muted small">Clientes</div>
-                    <div class="display-6">@Model.Resumo.TotalClientes</div>
-                    <div class="small text-success">@Model.Resumo.ClientesAtivos ativos</div>
-                </div>
+        <a asp-page="/Clientes/Index" class="text-decoration-none d-block h-100">
+            <div class="mk-kpi-card">
+                <div class="mk-kpi-label">Clientes</div>
+                <div class="mk-kpi-value">@Model.Resumo.TotalClientes</div>
+                <div class="mk-kpi-meta text-success">@Model.Resumo.ClientesAtivos ativos</div>
             </div>
         </a>
     </div>
     <div class="col-md-4">
-        <a asp-page="/Assinaturas/Index" class="text-decoration-none text-body d-block h-100">
-            <div class="card border-0 shadow-sm h-100 card-dashboard-link">
-                <div class="card-body">
-                    <div class="text-muted small">Assinaturas ativas</div>
-                    <div class="display-6">@Model.Resumo.AssinaturasAtivas</div>
-                </div>
+        <a asp-page="/Assinaturas/Index" class="text-decoration-none d-block h-100">
+            <div class="mk-kpi-card accent">
+                <div class="mk-kpi-label">Assinaturas ativas</div>
+                <div class="mk-kpi-value">@Model.Resumo.AssinaturasAtivas</div>
             </div>
         </a>
     </div>
     <div class="col-md-4">
-        <a asp-page="/Relatorios/Index" class="text-decoration-none text-body d-block h-100">
-            <div class="card border-0 shadow-sm h-100 card-dashboard-link">
-                <div class="card-body">
-                    <div class="text-muted small">Receita do mês</div>
-                    <div class="display-6">@EnumHelper.Moeda(Model.Resumo.ReceitaMesAtual)</div>
-                </div>
+        <a asp-page="/Relatorios/Index" class="text-decoration-none d-block h-100">
+            <div class="mk-kpi-card success">
+                <div class="mk-kpi-label">Receita do mês</div>
+                <div class="mk-kpi-value">@EnumHelper.Moeda(Model.Resumo.ReceitaMesAtual)</div>
             </div>
         </a>
     </div>
 </div>
 
-<div class="row g-3">
+<div class="row g-3 mb-4">
     <div class="col-md-4">
-        <a asp-page="/Faturas/Index" asp-route-status="@StatusFatura.Pendente" class="text-decoration-none text-body d-block h-100">
-            <div class="card border-0 shadow-sm h-100 card-dashboard-link">
-                <div class="card-body">
-                    <h2 class="h5">Faturas pendentes</h2>
-                    <p class="display-6 mb-0">@Model.Resumo.FaturasPendentes</p>
-                </div>
+        <a asp-page="/Faturas/Index" asp-route-status="@StatusFatura.Pendente" class="text-decoration-none d-block h-100">
+            <div class="mk-kpi-card">
+                <div class="mk-kpi-label">Faturas pendentes</div>
+                <div class="mk-kpi-value">@Model.Resumo.FaturasPendentes</div>
             </div>
         </a>
     </div>
     <div class="col-md-4">
-        <a asp-page="/Relatorios/Index" asp-fragment="inadimplentes" class="text-decoration-none text-body d-block h-100">
-            <div class="card border-0 shadow-sm h-100 card-dashboard-link">
-                <div class="card-body">
-                    <h2 class="h5">Faturas atrasadas</h2>
-                    <p class="display-6 mb-0 text-danger">@Model.Resumo.FaturasAtrasadas</p>
-                </div>
+        <a asp-page="/Relatorios/Index" asp-fragment="inadimplentes" class="text-decoration-none d-block h-100">
+            <div class="mk-kpi-card danger">
+                <div class="mk-kpi-label">Faturas atrasadas</div>
+                <div class="mk-kpi-value text-danger">@Model.Resumo.FaturasAtrasadas</div>
             </div>
         </a>
     </div>
     <div class="col-md-4">
-        <a asp-page="/Chamados/Index" class="text-decoration-none text-body d-block h-100">
-            <div class="card border-0 shadow-sm h-100 card-dashboard-link">
-                <div class="card-body">
-                    <h2 class="h5">Chamados abertos</h2>
-                    <p class="display-6 mb-0">@Model.Resumo.ChamadosAbertos</p>
-                </div>
+        <a asp-page="/Chamados/Index" class="text-decoration-none d-block h-100">
+            <div class="mk-kpi-card warning">
+                <div class="mk-kpi-label">Atendimentos abertos</div>
+                <div class="mk-kpi-value">@Model.Resumo.ChamadosAbertos</div>
             </div>
         </a>
     </div>
 </div>
 
-<div class="row g-3 mt-1">
+<div class="row g-3 mb-4">
+    <div class="col-md-4">
+        <a asp-page="/Rede/Index" class="text-decoration-none d-block h-100">
+            <div class="mk-kpi-card warning">
+                <div class="mk-kpi-label">ONUs offline</div>
+                <div class="mk-kpi-value @(Model.Resumo.OnusOffline > 0 ? "text-warning" : "")">@Model.Resumo.OnusOffline</div>
+            </div>
+        </a>
+    </div>
+    <div class="col-md-4">
+        <a asp-page="/OrdensServico/Index" class="text-decoration-none d-block h-100">
+            <div class="mk-kpi-card">
+                <div class="mk-kpi-label">O.S. em aberto</div>
+                <div class="mk-kpi-value">@Model.Resumo.OrdensServicoAbertas</div>
+            </div>
+        </a>
+    </div>
+    <div class="col-md-4">
+        <a asp-page="/Nfse/Index" class="text-decoration-none d-block h-100">
+            <div class="mk-kpi-card accent">
+                <div class="mk-kpi-label">NFS-e emitidas</div>
+                <div class="mk-kpi-value">@Model.Resumo.TotalNfse</div>
+            </div>
+        </a>
+    </div>
+</div>
+
+<div class="row g-3 mb-4">
     <div class="col-lg-6">
-        <div class="card border-0 shadow-sm h-100">
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-start mb-3">
-                    <h2 class="h5 mb-0">Clientes por conexão</h2>
-                    <a asp-page="/Clientes/Index" class="small text-decoration-none">Ver todos</a>
-                </div>
+        <div class="mk-panel h-100">
+            <div class="mk-panel-header d-flex justify-content-between align-items-center">
+                <span><i class="bi bi-pie-chart me-2"></i>Clientes por conexão</span>
+                <a asp-page="/Clientes/Index" class="small text-decoration-none">Ver todos</a>
+            </div>
+            <div class="mk-panel-body">
                 <div class="row align-items-center">
                     <div class="col-sm-7">
                         <div class="chart-conexao-wrapper mx-auto">
@@ -129,49 +144,16 @@
     </div>
 </div>
 
-<div class="row g-3 mt-1">
-    <div class="col-md-4">
-        <a asp-page="/Rede/Index" class="text-decoration-none text-body d-block h-100">
-            <div class="card border-0 shadow-sm h-100 card-dashboard-link">
-                <div class="card-body">
-                    <h2 class="h5">ONUs offline</h2>
-                    <p class="display-6 mb-0 @(Model.Resumo.OnusOffline > 0 ? "text-warning" : "")">@Model.Resumo.OnusOffline</p>
-                </div>
-            </div>
-        </a>
-    </div>
-    <div class="col-md-4">
-        <a asp-page="/OrdensServico/Index" class="text-decoration-none text-body d-block h-100">
-            <div class="card border-0 shadow-sm h-100 card-dashboard-link">
-                <div class="card-body">
-                    <h2 class="h5">O.S. em aberto</h2>
-                    <p class="display-6 mb-0">@Model.Resumo.OrdensServicoAbertas</p>
-                </div>
-            </div>
-        </a>
-    </div>
-    <div class="col-md-4">
-        <a asp-page="/Nfse/Index" class="text-decoration-none text-body d-block h-100">
-            <div class="card border-0 shadow-sm h-100 card-dashboard-link">
-                <div class="card-body">
-                    <h2 class="h5">NFS-e emitidas</h2>
-                    <p class="display-6 mb-0">@Model.Resumo.TotalNfse</p>
-                </div>
-            </div>
-        </a>
-    </div>
-</div>
-
-<div class="mt-4">
-    <a class="btn btn-outline-primary me-2" asp-page="/Clientes/Create">Novo cliente</a>
-    <a class="btn btn-outline-primary me-2" asp-page="/Assinaturas/Create">Nova assinatura</a>
-    <a class="btn btn-outline-primary" asp-page="/Faturas/Index">Ver faturas</a>
-    <a class="btn btn-outline-secondary" asp-page="/Faturamento/Index">Faturamento</a>
-    <a class="btn btn-outline-secondary" asp-page="/Nfse/Index">NFS-e</a>
-    <a class="btn btn-outline-secondary" asp-page="/Relatorios/Index">Relatórios</a>
-    <a class="btn btn-outline-secondary" asp-page="/Rede/Index">Rede FTTH</a>
-    <a class="btn btn-outline-secondary" asp-page="/Chamados/Index">Chamados</a>
-    <a class="btn btn-outline-secondary" asp-page="/OrdensServico/Index">O.S.</a>
+<div class="mk-quick-actions">
+    <a class="btn btn-primary btn-sm" asp-page="/Clientes/Create"><i class="bi bi-person-plus me-1"></i>Novo cliente</a>
+    <a class="btn btn-outline-primary btn-sm" asp-page="/Assinaturas/Create"><i class="bi bi-wifi me-1"></i>Nova assinatura</a>
+    <a class="btn btn-outline-primary btn-sm" asp-page="/Faturas/Index"><i class="bi bi-receipt me-1"></i>Faturas</a>
+    <a class="btn btn-outline-secondary btn-sm" asp-page="/Faturamento/Index">Faturamento</a>
+    <a class="btn btn-outline-secondary btn-sm" asp-page="/Nfse/Index">NFS-e</a>
+    <a class="btn btn-outline-secondary btn-sm" asp-page="/Relatorios/Index">Relatórios</a>
+    <a class="btn btn-outline-secondary btn-sm" asp-page="/Rede/Index">Rede FTTH</a>
+    <a class="btn btn-outline-secondary btn-sm" asp-page="/Chamados/Index">Atendimentos</a>
+    <a class="btn btn-outline-secondary btn-sm" asp-page="/OrdensServico/Index">O.S.</a>
 </div>
 
 @section Scripts {

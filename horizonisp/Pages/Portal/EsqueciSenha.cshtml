@@ -14,16 +14,17 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
-<body class="bg-light">
-    <div class="container">
-        <div class="row justify-content-center align-items-center min-vh-100">
-            <div class="col-md-5">
-                <div class="card shadow-sm border-0">
-                    <div class="card-body p-4">
-                        <h1 class="h4 mb-1">Esqueci minha senha</h1>
-                        <p class="text-muted mb-4">
-                            Informe o e-mail ou CPF/CNPJ cadastrado. Enviaremos instruções se houver uma conta ativa no portal.
-                        </p>
+<body class="login-page">
+    <div class="login-page-form" style="min-height: 100vh;">
+        <div class="card">
+            <div class="card-body">
+                <div class="text-center mb-4">
+                    <div class="mk-sidebar-brand-title text-primary fs-5 fw-bold">Horizon ISP</div>
+                    <h1 class="h5 mt-2 mb-1">Esqueci minha senha</h1>
+                    <p class="text-muted small mb-0">
+                        Informe o e-mail ou CPF/CNPJ cadastrado.
+                    </p>
+                </div>
 
                         @if (Model.Enviado)
                         {
@@ -40,13 +41,11 @@
                                     <input asp-for="Input.Identificador" class="form-control" autocomplete="username" />
                                     <span asp-validation-for="Input.Identificador" class="text-danger"></span>
                                 </div>
-                                <button type="submit" class="btn btn-dark w-100 mb-3">Enviar link de recuperação</button>
+                                <button type="submit" class="btn btn-primary w-100 mb-3">Enviar link de recuperação</button>
                             </form>
                         }
 
                         <a asp-page="/Login" class="small">Voltar ao login</a>
-                    </div>
-                </div>
             </div>
         </div>
     </div>

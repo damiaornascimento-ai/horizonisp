@@ -5,8 +5,10 @@
 }
 
 <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
-    <h1 class="h3 mb-0">Clientes</h1>
-    <a asp-page="Create" class="btn btn-primary">Novo cliente</a>
+    <div class="mk-page-header mb-0">
+        <h1 class="h3 mb-0">Clientes</h1>
+    </div>
+    <a asp-page="Create" class="btn btn-primary"><i class="bi bi-person-plus me-1"></i>Novo cliente</a>
 </div>
 
 @if (TempData["Sucesso"] is string sucesso)
@@ -40,34 +42,28 @@
 <div class="row g-3 mb-4">
     <div class="col-md-4">
         <a asp-page="Index" asp-route-busca="@Model.Busca" asp-route-categoria="@CategoriaConexaoCliente.Online"
-           class="text-decoration-none text-body d-block h-100">
-            <div class="card border-0 shadow-sm h-100 @(Model.Categoria == CategoriaConexaoCliente.Online ? "border border-success border-2" : "")">
-                <div class="card-body">
-                    <div class="text-muted small">Online</div>
-                    <div class="display-6 text-success">@Model.TotalOnline</div>
-                </div>
+           class="text-decoration-none d-block h-100">
+            <div class="mk-kpi-card success @(Model.Categoria == CategoriaConexaoCliente.Online ? "border border-success border-2" : "")">
+                <div class="mk-kpi-label">Online</div>
+                <div class="mk-kpi-value text-success">@Model.TotalOnline</div>
             </div>
         </a>
     </div>
     <div class="col-md-4">
         <a asp-page="Index" asp-route-busca="@Model.Busca" asp-route-categoria="@CategoriaConexaoCliente.Offline"
-           class="text-decoration-none text-body d-block h-100">
-            <div class="card border-0 shadow-sm h-100 @(Model.Categoria == CategoriaConexaoCliente.Offline ? "border border-warning border-2" : "")">
-                <div class="card-body">
-                    <div class="text-muted small">Offline</div>
-                    <div class="display-6 text-warning">@Model.TotalOffline</div>
-                </div>
+           class="text-decoration-none d-block h-100">
+            <div class="mk-kpi-card warning @(Model.Categoria == CategoriaConexaoCliente.Offline ? "border border-warning border-2" : "")">
+                <div class="mk-kpi-label">Offline</div>
+                <div class="mk-kpi-value text-warning">@Model.TotalOffline</div>
             </div>
         </a>
     </div>
     <div class="col-md-4">
         <a asp-page="Index" asp-route-busca="@Model.Busca" asp-route-categoria="@CategoriaConexaoCliente.Bloqueado"
-           class="text-decoration-none text-body d-block h-100">
-            <div class="card border-0 shadow-sm h-100 @(Model.Categoria == CategoriaConexaoCliente.Bloqueado ? "border border-danger border-2" : "")">
-                <div class="card-body">
-                    <div class="text-muted small">Bloqueados</div>
-                    <div class="display-6 text-danger">@Model.TotalBloqueados</div>
-                </div>
+           class="text-decoration-none d-block h-100">
+            <div class="mk-kpi-card danger @(Model.Categoria == CategoriaConexaoCliente.Bloqueado ? "border border-danger border-2" : "")">
+                <div class="mk-kpi-label">Bloqueados</div>
+                <div class="mk-kpi-value text-danger">@Model.TotalBloqueados</div>
             </div>
         </a>
     </div>
@@ -84,7 +80,7 @@
        class="btn btn-sm @(Model.Categoria == CategoriaConexaoCliente.Bloqueado ? "btn-danger" : "btn-outline-danger")">Bloqueados</a>
 </div>
 
-<div class="card border-0 shadow-sm">
+<div class="mk-panel">
     <div class="table-responsive">
         <table class="table table-hover mb-0 align-middle">
             <thead>

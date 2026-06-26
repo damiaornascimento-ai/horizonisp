@@ -1,108 +1,155 @@
-﻿<!DOCTYPE html>
+﻿@{
+    var path = Context.Request.Path.Value ?? "/";
+    string NavClass(string prefix) =>
+        path.Equals(prefix, StringComparison.OrdinalIgnoreCase)
+        || path.StartsWith(prefix + "/", StringComparison.OrdinalIgnoreCase)
+            ? "mk-nav-link active"
+            : "mk-nav-link";
+    var pageTitle = ViewData["Title"]?.ToString() ?? "Horizon ISP";
+    var userInitial = User.Identity?.Name?.Length > 0
+        ? User.Identity.Name[0].ToString().ToUpperInvariant()
+        : "?";
+}
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Horizon ISP</title>
+    <title>@pageTitle - Horizon ISP</title>
     <partial name="_ThemeHead" />
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/horizonisp.styles.css" asp-append-version="true" />
 </head>
-<body>
-    <header>
-        <nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4">
-            <div class="container">
-                <a class="navbar-brand fw-semibold" asp-page="/Index">Horizon ISP</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain"
-                        aria-controls="navbarMain" aria-expanded="false" aria-label="Alternar navegação">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarMain">
-                    <ul class="navbar-nav me-auto align-items-lg-center">
-                    @if (User.Identity?.IsAuthenticated ?? false)
-                    {
-                            <li class="nav-item">
-                                <a class="nav-link" asp-page="/Index">Painel</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" asp-page="/Clientes/Index">Clientes</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" asp-page="/Planos/Index">Planos</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" asp-page="/Assinaturas/Index">Assinaturas</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" asp-page="/Faturas/Index">Faturas</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" asp-page="/Faturamento/Index">Faturamento</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-nowrap" asp-page="/Nfse/Index">NFS-e</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" asp-page="/Chamados/Index">Chamados</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" asp-page="/OrdensServico/Index">O.S.</a>
-                            </li>
-                            <li class="nav-item dropdown py-lg-0 py-2">
-                                <a class="btn btn-danger btn-sm fw-semibold dropdown-toggle btn-nav-administracao text-white"
-                                   href="#" id="navAdministracao" role="button"
-                                   data-bs-toggle="dropdown" aria-expanded="false">
-                                    Administração
-                                </a>
-                                <ul class="dropdown-menu" aria-labelledby="navAdministracao">
-                                    @if (User.IsInRole("Admin"))
-                                    {
-                                        <li>
-                                            <a class="dropdown-item" asp-page="/Usuarios/Index">Usuários</a>
-                                        </li>
-                                    }
-                                    <li>
-                                        <a class="dropdown-item" asp-page="/Integracoes/Index">Integrações</a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" asp-page="/Rede/Index">Rede</a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" asp-page="/Relatorios/Index">Relatórios</a>
-                                    </li>
-                                </ul>
-                            </li>
-                    }
-                    </ul>
-                    @if (User.Identity?.IsAuthenticated ?? false)
-                    {
-                        <ul class="navbar-nav align-items-lg-center">
-                            <partial name="_ThemePicker" />
-                            <li class="nav-item">
-                                <span class="navbar-text text-white-50 me-lg-3">@User.Identity?.Name</span>
-                            </li>
-                            <li class="nav-item">
-                                <a asp-page="/Logout" class="btn btn-outline-light btn-sm">Sair</a>
-                            </li>
-                        </ul>
-                    }
-                </div>
+<body class="mk-app">
+@if (User.Identity?.IsAuthenticated ?? false)
+{
+    <div class="mk-sidebar-overlay" aria-hidden="true"></div>
+
+    <aside class="mk-sidebar">
+        <a class="mk-sidebar-brand" asp-page="/Index">
+            <div class="mk-sidebar-brand-title">Horizon ISP</div>
+            <div class="mk-sidebar-brand-sub">Gestão do provedor</div>
+        </a>
+
+        <nav class="mk-sidebar-nav">
+            <div class="mk-nav-section">
+                <div class="mk-nav-section-title">Workspace</div>
+                <a class="@NavClass("/Index")" asp-page="/Index">
+                    <i class="bi bi-grid-1x2-fill"></i>
+                    <span>Painel</span>
+                </a>
+            </div>
+
+            <div class="mk-nav-section">
+                <div class="mk-nav-section-title">Cadastros</div>
+                <a class="@NavClass("/Clientes")" asp-page="/Clientes/Index">
+                    <i class="bi bi-people-fill"></i>
+                    <span>Clientes</span>
+                </a>
+                <a class="@NavClass("/Planos")" asp-page="/Planos/Index">
+                    <i class="bi bi-box-seam-fill"></i>
+                    <span>Planos</span>
+                </a>
+                <a class="@NavClass("/Assinaturas")" asp-page="/Assinaturas/Index">
+                    <i class="bi bi-wifi"></i>
+                    <span>Assinaturas</span>
+                </a>
+            </div>
+
+            <div class="mk-nav-section">
+                <div class="mk-nav-section-title">Financeiro</div>
+                <a class="@NavClass("/Faturas")" asp-page="/Faturas/Index">
+                    <i class="bi bi-receipt"></i>
+                    <span>Faturas</span>
+                </a>
+                <a class="@NavClass("/Faturamento")" asp-page="/Faturamento/Index">
+                    <i class="bi bi-cash-stack"></i>
+                    <span>Faturamento</span>
+                </a>
+                <a class="@NavClass("/Nfse")" asp-page="/Nfse/Index">
+                    <i class="bi bi-file-earmark-text"></i>
+                    <span>NFS-e</span>
+                </a>
+            </div>
+
+            <div class="mk-nav-section">
+                <div class="mk-nav-section-title">Operação</div>
+                <a class="@NavClass("/Chamados")" asp-page="/Chamados/Index">
+                    <i class="bi bi-headset"></i>
+                    <span>Atendimentos</span>
+                </a>
+                <a class="@NavClass("/OrdensServico")" asp-page="/OrdensServico/Index">
+                    <i class="bi bi-tools"></i>
+                    <span>Ordens de serviço</span>
+                </a>
+                <a class="@NavClass("/Rede")" asp-page="/Rede/Index">
+                    <i class="bi bi-diagram-3-fill"></i>
+                    <span>Rede FTTH</span>
+                </a>
+            </div>
+
+            <div class="mk-nav-section">
+                <div class="mk-nav-section-title">Administração</div>
+                @if (User.IsInRole("Admin"))
+                {
+                    <a class="@NavClass("/Usuarios")" asp-page="/Usuarios/Index">
+                        <i class="bi bi-person-badge-fill"></i>
+                        <span>Usuários</span>
+                    </a>
+                }
+                <a class="@NavClass("/Integracoes")" asp-page="/Integracoes/Index">
+                    <i class="bi bi-plug-fill"></i>
+                    <span>Integrações</span>
+                </a>
+                <a class="@NavClass("/Relatorios")" asp-page="/Relatorios/Index">
+                    <i class="bi bi-bar-chart-line-fill"></i>
+                    <span>Relatórios</span>
+                </a>
             </div>
         </nav>
-    </header>
+    </aside>
 
-    <div class="container">
-        <main role="main" class="pb-4">
+    <div class="mk-main">
+        <header class="mk-topbar">
+            <div class="d-flex align-items-center gap-3">
+                <button type="button" class="mk-sidebar-toggle" data-mk-sidebar-toggle aria-label="Abrir menu">
+                    <i class="bi bi-list"></i>
+                </button>
+                <div>
+                    <p class="mk-topbar-breadcrumb">Horizon ISP / @pageTitle</p>
+                    <h2 class="mk-topbar-title">@pageTitle</h2>
+                </div>
+            </div>
+            <div class="mk-topbar-user">
+                <partial name="_ThemePickerInline" />
+                <div class="mk-user-pill d-none d-sm-flex">
+                    <span class="mk-user-avatar">@userInitial</span>
+                    <span>@User.Identity?.Name</span>
+                </div>
+                <a asp-page="/Logout" class="btn btn-outline-secondary btn-sm">
+                    <i class="bi bi-box-arrow-right"></i>
+                    <span class="d-none d-md-inline ms-1">Sair</span>
+                </a>
+            </div>
+        </header>
+
+        <main class="mk-content" role="main">
             @RenderBody()
         </main>
-    </div>
 
-    <footer class="border-top footer text-muted py-3">
-        <div class="container">
-            <span>&copy; @DateTime.Now.Year - Horizon ISP - Gestão de provedor de internet</span>
-        </div>
-    </footer>
+        <footer class="mk-footer">
+            &copy; @DateTime.Now.Year Horizon ISP — Sistema de gestão para provedores de internet
+        </footer>
+    </div>
+}
+else
+{
+    <main class="mk-content container py-4" role="main">
+        @RenderBody()
+    </main>
+}
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
