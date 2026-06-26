@@ -20,7 +20,7 @@
     <div class="mk-panel-body py-2">
         <span class="text-muted small">
             <i class="bi bi-info-circle me-1"></i>
-            Clique em um marcador para abrir a instalação do cliente. Clientes sem posição podem ser marcados na tela de localização.
+            Clique em um marcador para abrir a instalação do cliente. Use o seletor <strong>Camadas</strong> no canto do mapa para alternar entre rua, satélite e terreno.
         </span>
     </div>
 </div>
@@ -34,7 +34,8 @@
     <script>
         window.horizonMapaGeral = {
             clientes: @Html.Raw(Model.ClientesJson),
-            urlLocalizacao: '@Url.Page("/Clientes/Localizacao", new { id = "__id__" })'
+            urlLocalizacao: '@Url.Page("/Clientes/Localizacao", new { id = "__id__" })',
+            urlCadastro: '@Url.Page("/Clientes/Edit", new { id = "__id__" })'
         };
         document.addEventListener('DOMContentLoaded', () => horizonMapa.iniciarGeral(window.horizonMapaGeral));
     </script>

@@ -14,6 +14,15 @@ namespace horizonisp.Helpers
             _ => status.ToString()
         };
 
+        public static string ClasseBadgeStatusCliente(StatusCliente status) => status switch
+        {
+            StatusCliente.Ativo => "bg-success",
+            StatusCliente.Inadimplente => "bg-warning text-dark",
+            StatusCliente.Suspenso => "bg-secondary",
+            StatusCliente.Cancelado => "bg-danger",
+            _ => "bg-secondary"
+        };
+
         public static string ObterCategoriaConexaoCliente(CategoriaConexaoCliente categoria) => categoria switch
         {
             CategoriaConexaoCliente.Online => "Online",

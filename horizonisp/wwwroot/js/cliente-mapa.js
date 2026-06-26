@@ -18,12 +18,57 @@ window.horizonMapa = (function () {
         return metros < 1000 ? `${Math.round(metros)} m` : `${(metros / 1000).toFixed(1)} km`;
     }
 
-    function criarMapa(elementId, center, zoom) {
-        const map = L.map(elementId, { scrollWheelZoom: true }).setView(center, zoom);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    function obterStatusClienteTexto(status) {
+        const labels = {
+            0: 'Ativo',
+            1: 'Inadimplente',
+            2: 'Suspenso',
+            3: 'Cancelado'
+        };
+        return labels[status] ?? status ?? '—';
+    }
+
+    function adicionarCamadasMapa(map) {
+        const ruas = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 19,
             attribution: '&copy; OpenStreetMap'
-        }).addTo(map);
+        });
+
+        const satelite = L.tileLayer(
+            'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+            {
+                maxZoom: 19,
+                attribution: 'Tiles &copy; Esri'
+            }
+        );
+
+        const terreno = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
+            maxZoom: 17,
+            attribution: '&copy; OpenTopoMap (&copy; OpenStreetMap)'
+        });
+
+        const claro = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+            maxZoom: 20,
+            attribution: '&copy; OpenStreetMap &copy; CARTO'
+        });
+
+        ruas.addTo(map);
+
+        L.control.layers(
+            {
+                'Mapa (ruas)': ruas,
+                'Satélite': satelite,
+                'Terreno': terreno,
+                'Mapa claro': claro
+            },
+            null,
+            { collapsed: true, position: 'topright' }
+        ).addTo(map);
+    }
+
+    function criarMapa(elementId, center, zoom) {
+        const map = L.map(elementId, { scrollWheelZoom: true }).setView(center, zoom);
+        adicionarCamadasMapa(map);
 
         const container = document.getElementById(elementId);
         if (container && typeof ResizeObserver !== 'undefined') {
@@ -335,11 +380,22 @@ window.horizonMapa = (function () {
             }
 
             const marker = L.marker([lat, lng]).addTo(map);
+            const nome = cliente.nome ?? cliente.Nome ?? 'Cliente';
+            const endereco = cliente.endereco ?? cliente.Endereco ?? '';
+            const cidade = cliente.cidade ?? cliente.Cidade ?? '';
+            const status = cliente.status ?? cliente.Status;
+            const statusTexto = obterStatusClienteTexto(status);
+            const urlInstalacao = config.urlLocalizacao.replace('__id__', id);
+            const urlCadastro = config.urlCadastro
+                ? config.urlCadastro.replace('__id__', id)
+                : null;
             const popup = `
-                <strong>${cliente.nome ?? cliente.Nome ?? 'Cliente'}</strong><br/>
-                ${cliente.endereco ?? cliente.Endereco ?? ''}<br/>
-                ${cliente.cidade ?? cliente.Cidade ?? ''}<br/>
-                <a href="${config.urlLocalizacao.replace('__id__', id)}">Abrir instalação</a>
+                <strong>${nome}</strong><br/>
+                <span class="mk-map-popup-status">${statusTexto}</span><br/>
+                ${endereco}<br/>
+                ${cidade}<br/>
+                <a href="${urlInstalacao}">Marcar instalação</a>
+                ${urlCadastro ? ` · <a href="${urlCadastro}">Cadastro</a>` : ''}
             `;
             marker.bindPopup(popup);
             bounds.push([lat, lng]);

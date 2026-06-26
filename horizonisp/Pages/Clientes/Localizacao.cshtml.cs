@@ -4,12 +4,15 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using horizonisp.Context;
 using horizonisp.Models;
+using horizonisp.Models.Enums;
 
 namespace horizonisp.Pages.Clientes
 {
     public class LocalizacaoModel(AppDbContext db) : PageModel
     {
         public Cliente Cliente { get; private set; } = new();
+        public string? PlanoAtivo { get; private set; }
+        public StatusAssinatura? StatusAssinaturaAtiva { get; private set; }
 
         [BindProperty(SupportsGet = true)]
         public double? Latitude { get; set; }
@@ -28,6 +31,18 @@ namespace horizonisp.Pages.Clientes
             Cliente = cliente;
             Latitude = cliente.Latitude;
             Longitude = cliente.Longitude;
+
+            var assinaturaAtiva = cliente.Assinaturas
+                .Where(a => a.Status == StatusAssinatura.Ativa)
+                .OrderByDescending(a => a.DataInicio)
+                .FirstOrDefault();
+
+            if (assinaturaAtiva is not null)
+            {
+                PlanoAtivo = assinaturaAtiva.Plano?.Nome;
+                StatusAssinaturaAtiva = assinaturaAtiva.Status;
+            }
+
             return Page();
         }
 
@@ -126,7 +141,10 @@ namespace horizonisp.Pages.Clientes
                 return null;
             }
 
-            return await db.Clientes.FirstOrDefaultAsync(c => c.Id == id);
+            return await db.Clientes
+                .Include(c => c.Assinaturas)
+                .ThenInclude(a => a.Plano)
+                .FirstOrDefaultAsync(c => c.Id == id);
         }
     }
 }

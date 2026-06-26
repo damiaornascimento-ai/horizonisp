@@ -4,10 +4,11 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using horizonisp.Context;
 using horizonisp.Models;
+using horizonisp.Models.Enums;
 
 namespace horizonisp.Pages.Clientes
 {
-    public record ClienteMapaPonto(int Id, string Nome, string Endereco, string Cidade, double Latitude, double Longitude);
+    public record ClienteMapaPonto(int Id, string Nome, string Endereco, string Cidade, double Latitude, double Longitude, StatusCliente Status);
 
     public class MapaModel(AppDbContext db) : PageModel
     {
@@ -33,7 +34,8 @@ namespace horizonisp.Pages.Clientes
                     c.Endereco,
                     c.Cidade,
                     c.Latitude,
-                    c.Longitude
+                    c.Longitude,
+                    c.Status
                 })
                 .ToListAsync();
 
@@ -48,7 +50,8 @@ namespace horizonisp.Pages.Clientes
                     c.Endereco,
                     c.Cidade,
                     c.Latitude!.Value,
-                    c.Longitude!.Value))
+                    c.Longitude!.Value,
+                    c.Status))
                 .ToList();
 
             ClientesJson = JsonSerializer.Serialize(Clientes, JsonOpcoes);

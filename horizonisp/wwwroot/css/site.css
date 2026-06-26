@@ -947,3 +947,25 @@ a:hover .card-dashboard-link {
   font-family: var(--bs-body-font-family);
   border-radius: var(--mk-radius);
 }
+
+.leaflet-control-layers {
+  border-radius: var(--mk-radius);
+  border: 1px solid var(--mk-border);
+  box-shadow: var(--mk-shadow);
+  font-size: 0.85rem;
+}
+
+.leaflet-control-layers-expanded {
+  padding: 0.35rem 0.5rem;
+}
+
+.mk-map-popup-status {
+  display: inline-block;
+  margin: 0.2rem 0 0.35rem;
+  padding: 0.1rem 0.45rem;
+  border-radius: 999px;
+  background: var(--mk-primary-light);
+  color: var(--mk-primary);
+  font-size: 0.75rem;
+  font-weight: 600;
+}

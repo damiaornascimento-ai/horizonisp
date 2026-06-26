@@ -1,23 +1,27 @@
 @page "{id:int}"
+@using horizonisp.Helpers
 @model horizonisp.Pages.Clientes.LocalizacaoModel
 @{
     ViewData["Title"] = "Localização da instalação";
     var temLocalizacao = Model.Latitude.HasValue && Model.Longitude.HasValue;
+    var cliente = Model.Cliente;
 }
 
 <div class="mk-localizacao-page">
 <div class="mk-toolbar mk-localizacao-toolbar">
     <div>
-        <h1 class="mk-toolbar-title">@Model.Cliente.Nome</h1>
+        <h1 class="mk-toolbar-title">@cliente.Nome</h1>
         <p class="text-muted small mb-0">
-            @Model.Cliente.Endereco · @Model.Cliente.Cidade/@Model.Cliente.Estado
+            @cliente.Endereco · @cliente.Cidade/@cliente.Estado
         </p>
     </div>
     <div class="d-flex flex-wrap gap-2">
         <a asp-page="Mapa" class="btn btn-outline-secondary btn-sm">
             <i class="bi bi-map me-1"></i>Mapa geral
         </a>
-        <a asp-page="Edit" asp-route-id="@Model.Cliente.Id" class="btn btn-outline-secondary btn-sm">Editar cliente</a>
+        <a asp-page="Edit" asp-route-id="@cliente.Id" class="btn btn-primary btn-sm">
+            <i class="bi bi-person-lines-fill me-1"></i>Cadastro do cliente
+        </a>
     </div>
 </div>
 
@@ -26,31 +30,80 @@
     <div class="alert alert-success mb-3">@sucesso</div>
 }
 
-    <div class="row g-3 mb-3 mk-localizacao-header">
-        <div class="col-md-4">
-            <div class="mk-kpi-card @(temLocalizacao ? "success" : "warning")">
-                <div class="mk-kpi-label">Status da instalação</div>
-                <div class="mk-kpi-value fs-5">@(temLocalizacao ? "Marcada" : "Pendente")</div>
-                @if (Model.Cliente.LocalizacaoInstalacaoEm.HasValue)
+    <div class="mk-panel mk-cliente-resumo mb-3 mk-localizacao-header">
+        <div class="mk-panel-header d-flex flex-wrap align-items-center justify-content-between gap-2">
+            <span><i class="bi bi-person-badge me-1"></i>Dados do cliente</span>
+            <a asp-page="Edit" asp-route-id="@cliente.Id" class="btn btn-sm btn-outline-primary">
+                <i class="bi bi-pencil-square me-1"></i>Editar cadastro
+            </a>
+        </div>
+        <div class="mk-panel-body">
+            <div class="row g-3 small">
+                <div class="col-6 col-md-3">
+                    <div class="text-muted">Status</div>
+                    <span class="badge @EnumHelper.ClasseBadgeStatusCliente(cliente.Status)">
+                        @EnumHelper.ObterStatusCliente(cliente.Status)
+                    </span>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="text-muted">Telefone</div>
+                    <div class="fw-semibold">@cliente.Telefone</div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="text-muted">E-mail</div>
+                    <div class="fw-semibold text-break">@cliente.Email</div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="text-muted">Documento</div>
+                    <div class="fw-semibold">@cliente.Documento</div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="text-muted">Portal do cliente</div>
+                    <span class="badge @(cliente.PortalAtivo ? "bg-success" : "bg-secondary")">
+                        @(cliente.PortalAtivo ? "Ativo" : "Inativo")
+                    </span>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="text-muted">Instalação no mapa</div>
+                    <span class="badge @(temLocalizacao ? "bg-success" : "bg-warning text-dark")">
+                        @(temLocalizacao ? "Marcada" : "Pendente")
+                    </span>
+                    @if (cliente.LocalizacaoInstalacaoEm.HasValue)
+                    {
+                        <div class="text-muted mt-1" style="font-size: 0.75rem;">
+                            @cliente.LocalizacaoInstalacaoEm.Value.ToLocalTime().ToString("dd/MM/yyyy HH:mm")
+                        </div>
+                    }
+                </div>
+                @if (!string.IsNullOrWhiteSpace(Model.PlanoAtivo))
                 {
-                    <div class="mk-kpi-meta text-muted">
-                        Atualizado em @Model.Cliente.LocalizacaoInstalacaoEm.Value.ToLocalTime().ToString("dd/MM/yyyy HH:mm")
+                    <div class="col-6 col-md-3">
+                        <div class="text-muted">Plano ativo</div>
+                        <div class="fw-semibold">@Model.PlanoAtivo</div>
+                    </div>
+                }
+                @if (Model.StatusAssinaturaAtiva.HasValue)
+                {
+                    <div class="col-6 col-md-3">
+                        <div class="text-muted">Assinatura</div>
+                        <div class="fw-semibold">@EnumHelper.ObterStatusAssinatura(Model.StatusAssinaturaAtiva.Value)</div>
                     </div>
                 }
             </div>
         </div>
-        <div class="col-md-8">
-            <div class="mk-panel h-100">
-                <div class="mk-panel-header">Como marcar</div>
-                <div class="mk-panel-body small text-muted mb-0">
-                    <strong>GPS do dispositivo:</strong> use no celular ao ar livre; aguarde alguns segundos até a precisão melhorar (círculo azul no mapa).<br />
-                    <strong>Manual:</strong> clique no mapa ou arraste o marcador para o ponto exato da instalação — recomendado se o GPS ficar impreciso.
-                </div>
-            </div>
+    </div>
+
+    <div class="mk-panel mb-3 mk-localizacao-header">
+        <div class="mk-panel-body py-2 small text-muted mb-0">
+            <i class="bi bi-layers me-1"></i>Use o seletor <strong>Camadas</strong> no mapa para alternar entre rua, satélite e terreno.
+            <span class="mx-2">·</span>
+            <strong>GPS:</strong> aguarde a precisão melhorar ao ar livre.
+            <span class="mx-2">·</span>
+            <strong>Manual:</strong> clique no mapa ou arraste o marcador.
         </div>
     </div>
 
-    <form method="post" asp-route-id="@Model.Cliente.Id" id="formLocalizacao" class="mk-localizacao-form">
+    <form method="post" asp-route-id="@cliente.Id" id="formLocalizacao" class="mk-localizacao-form">
         <input type="hidden" name="Latitude" id="inputLatitude" value="@(Model.Latitude?.ToString(System.Globalization.CultureInfo.InvariantCulture) ?? "")" />
         <input type="hidden" name="Longitude" id="inputLongitude" value="@(Model.Longitude?.ToString(System.Globalization.CultureInfo.InvariantCulture) ?? "")" />
 
@@ -97,7 +150,7 @@
         window.horizonMapaCliente = {
             latitude: @(Model.Latitude.HasValue ? Model.Latitude.Value.ToString(System.Globalization.CultureInfo.InvariantCulture) : "null"),
             longitude: @(Model.Longitude.HasValue ? Model.Longitude.Value.ToString(System.Globalization.CultureInfo.InvariantCulture) : "null"),
-            endereco: @Html.Raw(System.Text.Json.JsonSerializer.Serialize($"{Model.Cliente.Endereco}, {Model.Cliente.Cidade} - {Model.Cliente.Estado}"))
+            endereco: @Html.Raw(System.Text.Json.JsonSerializer.Serialize($"{cliente.Endereco}, {cliente.Cidade} - {cliente.Estado}"))
         };
         document.addEventListener('DOMContentLoaded', () => horizonMapa.iniciarCliente(window.horizonMapaCliente));
     </script>
