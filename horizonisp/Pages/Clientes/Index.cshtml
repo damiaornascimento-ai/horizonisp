@@ -123,6 +123,9 @@
                                 };
                             }
                             <partial name="_ClienteBloqueioAcoes" model="bloqueioModel" />
+                            <a asp-page="Localizacao" asp-route-id="@cliente.Id" class="btn btn-sm btn-outline-primary" title="Localização">
+                                <i class="bi bi-geo-alt"></i>
+                            </a>
                             <a asp-page="Edit" asp-route-id="@cliente.Id" class="btn btn-sm btn-outline-secondary">Editar</a>
                         </div>
                     </td>

@@ -1,0 +1,98 @@
+@page "{id:int}"
+@model horizonisp.Pages.Clientes.LocalizacaoModel
+@{
+    ViewData["Title"] = "Localização da instalação";
+    var temLocalizacao = Model.Latitude.HasValue && Model.Longitude.HasValue;
+}
+
+<div class="mk-toolbar">
+    <div>
+        <h1 class="mk-toolbar-title">@Model.Cliente.Nome</h1>
+        <p class="text-muted small mb-0">
+            @Model.Cliente.Endereco · @Model.Cliente.Cidade/@Model.Cliente.Estado
+        </p>
+    </div>
+    <div class="d-flex flex-wrap gap-2">
+        <a asp-page="Mapa" class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-map me-1"></i>Mapa geral
+        </a>
+        <a asp-page="Edit" asp-route-id="@Model.Cliente.Id" class="btn btn-outline-secondary btn-sm">Editar cliente</a>
+    </div>
+</div>
+
+@if (TempData["Sucesso"] is string sucesso)
+{
+    <div class="alert alert-success">@sucesso</div>
+}
+
+<div class="row g-3 mb-3">
+    <div class="col-md-4">
+        <div class="mk-kpi-card @(temLocalizacao ? "success" : "warning")">
+            <div class="mk-kpi-label">Status da instalação</div>
+            <div class="mk-kpi-value fs-5">@(temLocalizacao ? "Marcada" : "Pendente")</div>
+            @if (Model.Cliente.LocalizacaoInstalacaoEm.HasValue)
+            {
+                <div class="mk-kpi-meta text-muted">
+                    Atualizado em @Model.Cliente.LocalizacaoInstalacaoEm.Value.ToLocalTime().ToString("dd/MM/yyyy HH:mm")
+                </div>
+            }
+        </div>
+    </div>
+    <div class="col-md-8">
+        <div class="mk-panel h-100">
+            <div class="mk-panel-header">Como marcar</div>
+            <div class="mk-panel-body small text-muted mb-0">
+                <strong>GPS do dispositivo:</strong> use no celular/tablet do técnico para capturar a posição atual.<br />
+                <strong>Manual:</strong> clique no mapa ou arraste o marcador para o ponto exato da instalação.
+            </div>
+        </div>
+    </div>
+</div>
+
+<form method="post" id="formLocalizacao">
+    <input type="hidden" asp-for="Latitude" id="inputLatitude" />
+    <input type="hidden" asp-for="Longitude" id="inputLongitude" />
+
+    <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2" role="alert"></div>
+
+    <div class="d-flex flex-wrap gap-2 mb-3">
+        <button type="button" class="btn btn-primary btn-sm" id="btnGps">
+            <i class="bi bi-geo-alt-fill me-1"></i>Usar minha localização (GPS)
+        </button>
+        <button type="button" class="btn btn-outline-primary btn-sm" id="btnManual">
+            <i class="bi bi-hand-index me-1"></i>Marcar manualmente no mapa
+        </button>
+        @if (temLocalizacao)
+        {
+            <button type="submit" asp-page-handler="Remover" class="btn btn-outline-danger btn-sm ms-auto"
+                    onclick="return confirm('Remover a localização deste cliente?');">
+                Remover marcação
+            </button>
+        }
+    </div>
+
+    <p id="mapaStatus" class="small text-muted mb-2">@(temLocalizacao ? "Arraste o marcador ou clique no mapa para ajustar." : "Nenhuma posição definida.")</p>
+    <p id="mapaCoordenadas" class="small fw-semibold mb-3"></p>
+
+    <div id="mapaInstalacao" class="mk-map mb-3"></div>
+
+    <button type="submit" class="btn btn-success">
+        <i class="bi bi-check-lg me-1"></i>Salvar localização
+    </button>
+    <a asp-page="Index" class="btn btn-danger">Cancelar</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+    <script src="~/js/cliente-mapa.js" asp-append-version="true"></script>
+    <script>
+        window.horizonMapaCliente = {
+            latitude: @(Model.Latitude.HasValue ? Model.Latitude.Value.ToString(System.Globalization.CultureInfo.InvariantCulture) : "null"),
+            longitude: @(Model.Longitude.HasValue ? Model.Longitude.Value.ToString(System.Globalization.CultureInfo.InvariantCulture) : "null"),
+            endereco: @Html.Raw(System.Text.Json.JsonSerializer.Serialize($"{Model.Cliente.Endereco}, {Model.Cliente.Cidade} - {Model.Cliente.Estado}"))
+        };
+        document.addEventListener('DOMContentLoaded', () => horizonMapa.iniciarCliente(window.horizonMapaCliente));
+    </script>
+}

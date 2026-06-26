@@ -36,6 +36,12 @@ namespace horizonisp.Models
         [MaxLength(10, ErrorMessage = "O CEP deve ter no máximo 10 caracteres.")]
         public string Cep { get; set; } = string.Empty;
 
+        public double? Latitude { get; set; }
+
+        public double? Longitude { get; set; }
+
+        public DateTime? LocalizacaoInstalacaoEm { get; set; }
+
         public StatusCliente Status { get; set; } = StatusCliente.Ativo;
 
         public DateTime DataCadastro { get; set; } = DateTime.UtcNow;

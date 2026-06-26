@@ -19,7 +19,12 @@
             <div class="card-body">
                 <dl class="row mb-0">
                     <dt class="col-sm-4">Cliente</dt>
-                    <dd class="col-sm-8">@os.Cliente.Nome · @os.Cliente.Telefone</dd>
+                    <dd class="col-sm-8">
+                        @os.Cliente.Nome · @os.Cliente.Telefone
+                        <a asp-page="/Clientes/Localizacao" asp-route-id="@os.ClienteId" class="btn btn-sm btn-outline-primary ms-2">
+                            <i class="bi bi-geo-alt"></i> Mapa
+                        </a>
+                    </dd>
                     <dt class="col-sm-4">Endereço</dt>
                     <dd class="col-sm-8">@os.Endereco</dd>
                     <dt class="col-sm-4">Tipo</dt>

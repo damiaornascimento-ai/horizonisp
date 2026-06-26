@@ -186,6 +186,9 @@ namespace horizonisp.Data
                 Cidade = "São Paulo",
                 Estado = "SP",
                 Cep = "01000-000",
+                Latitude = -23.55052,
+                Longitude = -46.63331,
+                LocalizacaoInstalacaoEm = DateTime.UtcNow,
                 Status = StatusCliente.Ativo,
                 PortalAtivo = true
             };

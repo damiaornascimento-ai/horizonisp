@@ -115,6 +115,15 @@ namespace horizonisp.Migrations
                         .HasMaxLength(2)
                         .HasColumnType("nvarchar(2)");
 
+                    b.Property<double?>("Latitude")
+                        .HasColumnType("float");
+
+                    b.Property<DateTime?>("LocalizacaoInstalacaoEm")
+                        .HasColumnType("datetime2");
+
+                    b.Property<double?>("Longitude")
+                        .HasColumnType("float");
+
                     b.Property<string>("Nome")
                         .IsRequired()
                         .HasMaxLength(150)

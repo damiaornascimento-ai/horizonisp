@@ -876,3 +876,20 @@ a:hover .card-dashboard-link {
     display: none;
   }
 }
+
+.mk-map {
+  width: 100%;
+  min-height: 380px;
+  border-radius: var(--mk-radius);
+  border: 1px solid var(--mk-border);
+  z-index: 1;
+}
+
+.mk-map-overview {
+  min-height: calc(100vh - 280px);
+}
+
+.leaflet-container {
+  font-family: var(--bs-body-font-family);
+  border-radius: var(--mk-radius);
+}
