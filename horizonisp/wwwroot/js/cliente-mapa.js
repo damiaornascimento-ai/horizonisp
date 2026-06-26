@@ -134,6 +134,34 @@ window.horizonMapa = (function () {
         L.control.layers(camadas, null, { collapsed: true, position: 'topright' }).addTo(map);
     }
 
+    function agendarAjusteMapa(map, elementId) {
+        const ajustar = () => {
+            if (map && !map._removed) {
+                map.invalidateSize({ animate: false });
+            }
+        };
+
+        map.whenReady(ajustar);
+        requestAnimationFrame(() => requestAnimationFrame(ajustar));
+        setTimeout(ajustar, 200);
+        setTimeout(ajustar, 600);
+
+        const elemento = document.getElementById(elementId);
+        const container = elemento?.closest('.mk-localizacao-map-wrap')
+            ?? elemento?.parentElement;
+
+        if (container && typeof ResizeObserver !== 'undefined') {
+            let debounceId = null;
+            const observer = new ResizeObserver(() => {
+                clearTimeout(debounceId);
+                debounceId = setTimeout(ajustar, 120);
+            });
+            observer.observe(container);
+        }
+
+        window.addEventListener('resize', ajustar);
+    }
+
     function criarMapa(elementId, center, zoom) {
         const map = L.map(elementId, {
             scrollWheelZoom: true,
@@ -141,15 +169,7 @@ window.horizonMapa = (function () {
             minZoom: 3
         }).setView(center, zoom);
         adicionarCamadasMapa(map);
-
-        const container = document.getElementById(elementId);
-        if (container && typeof ResizeObserver !== 'undefined') {
-            const observer = new ResizeObserver(() => map.invalidateSize());
-            observer.observe(container);
-        }
-
-        window.addEventListener('resize', () => map.invalidateSize());
-
+        agendarAjusteMapa(map, elementId);
         return map;
     }
 
@@ -265,6 +285,58 @@ window.horizonMapa = (function () {
         }
         const center = hasPosition ? [lat, lng] : defaultCenter;
         const zoom = hasPosition ? detailZoom : defaultZoom;
+
+        const iniciarMapaCliente = (tentativas = 0) => {
+            const elemento = document.getElementById('mapaInstalacao');
+            const container = elemento?.closest('.mk-localizacao-map-wrap');
+            if (!elemento || !container) {
+                return;
+            }
+
+            if (container.offsetHeight < 120 && tentativas < 30) {
+                requestAnimationFrame(() => iniciarMapaCliente(tentativas + 1));
+                return;
+            }
+
+            if (elemento._leaflet_id) {
+                return;
+            }
+
+            configurarMapaCliente(config, {
+                latInput,
+                lngInput,
+                statusEl,
+                coordEl,
+                btnGps,
+                btnManual,
+                lat,
+                lng,
+                hasPosition,
+                center,
+                zoom
+            });
+        };
+
+        iniciarMapaCliente();
+    }
+
+    function configurarMapaCliente(config, estado) {
+        const {
+            latInput,
+            lngInput,
+            statusEl,
+            coordEl,
+            btnGps,
+            btnManual,
+            lat: latInicial,
+            lng: lngInicial,
+            hasPosition,
+            center,
+            zoom
+        } = estado;
+
+        let lat = latInicial;
+        let lng = lngInicial;
 
         const map = criarMapa('mapaInstalacao', center, zoom);
         let marker = null;
@@ -435,7 +507,6 @@ window.horizonMapa = (function () {
             }
         });
 
-        setTimeout(() => map.invalidateSize(), 200);
     }
 
     function iniciarGeral(config) {
@@ -462,8 +533,6 @@ window.horizonMapa = (function () {
         } else if (bounds.length > 1) {
             map.fitBounds(bounds, { padding: [40, 40] });
         }
-
-        setTimeout(() => map.invalidateSize(), 200);
     }
 
     return { iniciarCliente, iniciarGeral };

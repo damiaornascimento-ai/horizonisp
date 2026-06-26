@@ -890,17 +890,12 @@ a:hover .card-dashboard-link {
 }
 
 .mk-content:has(.mk-localizacao-page) {
-  display: flex;
-  flex-direction: column;
-  min-height: calc(100vh - var(--mk-topbar-height) - 3.25rem);
   padding-bottom: 1rem;
 }
 
 .mk-localizacao-page {
   display: flex;
   flex-direction: column;
-  flex: 1;
-  min-height: 0;
 }
 
 .mk-localizacao-toolbar {
@@ -918,21 +913,19 @@ a:hover .card-dashboard-link {
 .mk-localizacao-form {
   display: flex;
   flex-direction: column;
-  flex: 1;
-  min-height: 0;
 }
 
 .mk-localizacao-map-wrap {
-  position: relative;
-  flex: 1 1 auto;
-  min-height: 280px;
+  width: 100%;
+  height: min(62vh, 720px);
+  min-height: 360px;
+  margin-bottom: 0.75rem;
 }
 
-.mk-map-fill {
-  position: absolute;
-  inset: 0;
-  min-height: 0;
-  height: auto;
+.mk-localizacao-map-wrap .mk-map {
+  width: 100%;
+  height: 100%;
+  min-height: 360px;
 }
 
 .mk-localizacao-actions {
@@ -946,6 +939,8 @@ a:hover .card-dashboard-link {
 .leaflet-container {
   font-family: var(--bs-body-font-family);
   border-radius: var(--mk-radius);
+  height: 100%;
+  width: 100%;
 }
 
 .leaflet-control-layers {
