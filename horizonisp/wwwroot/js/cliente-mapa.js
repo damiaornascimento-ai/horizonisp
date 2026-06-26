@@ -87,6 +87,7 @@ window.horizonMapa = (function () {
 
     function adicionarCamadasMapa(map) {
         const ruas = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxNativeZoom: 19,
             maxZoom: 19,
             attribution: '&copy; OpenStreetMap'
         });
@@ -94,37 +95,51 @@ window.horizonMapa = (function () {
         const satelite = L.tileLayer(
             'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
             {
+                maxNativeZoom: 17,
                 maxZoom: 19,
+                minZoom: 1,
                 attribution: 'Tiles &copy; Esri'
             }
         );
 
         const terreno = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
+            maxNativeZoom: 17,
             maxZoom: 17,
             attribution: '&copy; OpenTopoMap (&copy; OpenStreetMap)'
         });
 
         const claro = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+            maxNativeZoom: 20,
             maxZoom: 20,
             attribution: '&copy; OpenStreetMap &copy; CARTO'
         });
 
+        const camadas = {
+            'Mapa (ruas)': ruas,
+            'Satélite': satelite,
+            'Terreno': terreno,
+            'Mapa claro': claro
+        };
+
         ruas.addTo(map);
 
-        L.control.layers(
-            {
-                'Mapa (ruas)': ruas,
-                'Satélite': satelite,
-                'Terreno': terreno,
-                'Mapa claro': claro
-            },
-            null,
-            { collapsed: true, position: 'topright' }
-        ).addTo(map);
+        map.on('baselayerchange', (evento) => {
+            const limite = evento.layer.options.maxZoom ?? 19;
+            map.setMaxZoom(limite);
+            if (map.getZoom() > limite) {
+                map.setZoom(limite);
+            }
+        });
+
+        L.control.layers(camadas, null, { collapsed: true, position: 'topright' }).addTo(map);
     }
 
     function criarMapa(elementId, center, zoom) {
-        const map = L.map(elementId, { scrollWheelZoom: true }).setView(center, zoom);
+        const map = L.map(elementId, {
+            scrollWheelZoom: true,
+            maxZoom: 19,
+            minZoom: 3
+        }).setView(center, zoom);
         adicionarCamadasMapa(map);
 
         const container = document.getElementById(elementId);
