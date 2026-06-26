@@ -5,7 +5,8 @@
     var temLocalizacao = Model.Latitude.HasValue && Model.Longitude.HasValue;
 }
 
-<div class="mk-toolbar">
+<div class="mk-localizacao-page">
+<div class="mk-toolbar mk-localizacao-toolbar">
     <div>
         <h1 class="mk-toolbar-title">@Model.Cliente.Nome</h1>
         <p class="text-muted small mb-0">
@@ -22,65 +23,70 @@
 
 @if (TempData["Sucesso"] is string sucesso)
 {
-    <div class="alert alert-success">@sucesso</div>
+    <div class="alert alert-success mb-3">@sucesso</div>
 }
 
-<div class="row g-3 mb-3">
-    <div class="col-md-4">
-        <div class="mk-kpi-card @(temLocalizacao ? "success" : "warning")">
-            <div class="mk-kpi-label">Status da instalação</div>
-            <div class="mk-kpi-value fs-5">@(temLocalizacao ? "Marcada" : "Pendente")</div>
-            @if (Model.Cliente.LocalizacaoInstalacaoEm.HasValue)
-            {
-                <div class="mk-kpi-meta text-muted">
-                    Atualizado em @Model.Cliente.LocalizacaoInstalacaoEm.Value.ToLocalTime().ToString("dd/MM/yyyy HH:mm")
-                </div>
-            }
+    <div class="row g-3 mb-3 mk-localizacao-header">
+        <div class="col-md-4">
+            <div class="mk-kpi-card @(temLocalizacao ? "success" : "warning")">
+                <div class="mk-kpi-label">Status da instalação</div>
+                <div class="mk-kpi-value fs-5">@(temLocalizacao ? "Marcada" : "Pendente")</div>
+                @if (Model.Cliente.LocalizacaoInstalacaoEm.HasValue)
+                {
+                    <div class="mk-kpi-meta text-muted">
+                        Atualizado em @Model.Cliente.LocalizacaoInstalacaoEm.Value.ToLocalTime().ToString("dd/MM/yyyy HH:mm")
+                    </div>
+                }
+            </div>
         </div>
-    </div>
-    <div class="col-md-8">
-        <div class="mk-panel h-100">
-            <div class="mk-panel-header">Como marcar</div>
-            <div class="mk-panel-body small text-muted mb-0">
-                <strong>GPS do dispositivo:</strong> use no celular ao ar livre; aguarde alguns segundos até a precisão melhorar (círculo azul no mapa).<br />
-                <strong>Manual:</strong> clique no mapa ou arraste o marcador para o ponto exato da instalação — recomendado se o GPS ficar impreciso.
+        <div class="col-md-8">
+            <div class="mk-panel h-100">
+                <div class="mk-panel-header">Como marcar</div>
+                <div class="mk-panel-body small text-muted mb-0">
+                    <strong>GPS do dispositivo:</strong> use no celular ao ar livre; aguarde alguns segundos até a precisão melhorar (círculo azul no mapa).<br />
+                    <strong>Manual:</strong> clique no mapa ou arraste o marcador para o ponto exato da instalação — recomendado se o GPS ficar impreciso.
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<form method="post" asp-route-id="@Model.Cliente.Id" id="formLocalizacao">
-    <input type="hidden" name="Latitude" id="inputLatitude" value="@(Model.Latitude?.ToString(System.Globalization.CultureInfo.InvariantCulture) ?? "")" />
-    <input type="hidden" name="Longitude" id="inputLongitude" value="@(Model.Longitude?.ToString(System.Globalization.CultureInfo.InvariantCulture) ?? "")" />
+    <form method="post" asp-route-id="@Model.Cliente.Id" id="formLocalizacao" class="mk-localizacao-form">
+        <input type="hidden" name="Latitude" id="inputLatitude" value="@(Model.Latitude?.ToString(System.Globalization.CultureInfo.InvariantCulture) ?? "")" />
+        <input type="hidden" name="Longitude" id="inputLongitude" value="@(Model.Longitude?.ToString(System.Globalization.CultureInfo.InvariantCulture) ?? "")" />
 
-    <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2" role="alert"></div>
+        <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2" role="alert"></div>
 
-    <div class="d-flex flex-wrap gap-2 mb-3">
-        <button type="button" class="btn btn-primary btn-sm" id="btnGps">
-            <i class="bi bi-geo-alt-fill me-1"></i>Usar minha localização (GPS)
-        </button>
-        <button type="button" class="btn btn-outline-primary btn-sm" id="btnManual">
-            <i class="bi bi-hand-index me-1"></i>Marcar manualmente no mapa
-        </button>
-        @if (temLocalizacao)
-        {
-            <button type="submit" asp-page-handler="Remover" class="btn btn-outline-danger btn-sm ms-auto"
-                    onclick="return confirm('Remover a localização deste cliente?');">
-                Remover marcação
+        <div class="d-flex flex-wrap gap-2 mb-2 mk-localizacao-controls">
+            <button type="button" class="btn btn-primary btn-sm" id="btnGps">
+                <i class="bi bi-geo-alt-fill me-1"></i>Usar minha localização (GPS)
             </button>
-        }
-    </div>
+            <button type="button" class="btn btn-outline-primary btn-sm" id="btnManual">
+                <i class="bi bi-hand-index me-1"></i>Marcar manualmente no mapa
+            </button>
+            @if (temLocalizacao)
+            {
+                <button type="submit" asp-page-handler="Remover" class="btn btn-outline-danger btn-sm ms-auto"
+                        onclick="return confirm('Remover a localização deste cliente?');">
+                    Remover marcação
+                </button>
+            }
+        </div>
 
-    <p id="mapaStatus" class="small text-muted mb-2">@(temLocalizacao ? "Arraste o marcador ou clique no mapa para ajustar." : "Nenhuma posição definida.")</p>
-    <p id="mapaCoordenadas" class="small fw-semibold mb-3"></p>
+        <p id="mapaStatus" class="small text-muted mb-1">@(temLocalizacao ? "Arraste o marcador ou clique no mapa para ajustar." : "Nenhuma posição definida.")</p>
+        <p id="mapaCoordenadas" class="small fw-semibold mb-2"></p>
 
-    <div id="mapaInstalacao" class="mk-map mb-3"></div>
+        <div class="mk-localizacao-map-wrap">
+            <div id="mapaInstalacao" class="mk-map mk-map-fill"></div>
+        </div>
 
-    <button type="submit" class="btn btn-success">
-        <i class="bi bi-check-lg me-1"></i>Salvar localização
-    </button>
-    <a asp-page="Index" class="btn btn-danger">Cancelar</a>
-</form>
+        <div class="mk-localizacao-actions">
+            <button type="submit" class="btn btn-success">
+                <i class="bi bi-check-lg me-1"></i>Salvar localização
+            </button>
+            <a asp-page="Index" class="btn btn-danger">Cancelar</a>
+        </div>
+    </form>
+</div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

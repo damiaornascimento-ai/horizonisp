@@ -889,6 +889,60 @@ a:hover .card-dashboard-link {
   min-height: calc(100vh - 280px);
 }
 
+.mk-content:has(.mk-localizacao-page) {
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100vh - var(--mk-topbar-height) - 3.25rem);
+  padding-bottom: 1rem;
+}
+
+.mk-localizacao-page {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+.mk-localizacao-toolbar {
+  flex-shrink: 0;
+}
+
+.mk-localizacao-header {
+  flex-shrink: 0;
+}
+
+.mk-localizacao-controls {
+  flex-shrink: 0;
+}
+
+.mk-localizacao-form {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+.mk-localizacao-map-wrap {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 280px;
+}
+
+.mk-map-fill {
+  position: absolute;
+  inset: 0;
+  min-height: 0;
+  height: auto;
+}
+
+.mk-localizacao-actions {
+  flex-shrink: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding-top: 0.75rem;
+}
+
 .leaflet-container {
   font-family: var(--bs-body-font-family);
   border-radius: var(--mk-radius);

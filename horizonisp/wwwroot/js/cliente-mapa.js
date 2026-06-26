@@ -24,6 +24,15 @@ window.horizonMapa = (function () {
             maxZoom: 19,
             attribution: '&copy; OpenStreetMap'
         }).addTo(map);
+
+        const container = document.getElementById(elementId);
+        if (container && typeof ResizeObserver !== 'undefined') {
+            const observer = new ResizeObserver(() => map.invalidateSize());
+            observer.observe(container);
+        }
+
+        window.addEventListener('resize', () => map.invalidateSize());
+
         return map;
     }
 
