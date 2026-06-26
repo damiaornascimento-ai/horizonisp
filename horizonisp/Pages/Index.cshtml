@@ -4,23 +4,18 @@
     ViewData["Title"] = "Painel";
 }
 
-<div class="d-flex justify-content-between align-items-start mb-4 flex-wrap gap-3">
-    <div class="mk-page-header mb-0">
-        <h1 class="h3 mb-1">Workspace</h1>
-        <p class="text-muted mb-0">Visão geral da operação do provedor</p>
-    </div>
-    <div class="card border-0 shadow-sm theme-picker-panel">
-        <div class="card-body py-2 px-3 d-flex align-items-center gap-2">
-            <span class="text-muted small fw-semibold text-nowrap">Cor do tema</span>
-            <partial name="_ThemePickerInline" />
-        </div>
-    </div>
-</div>
+<nav class="mk-tabs" aria-label="Workspace">
+    <span class="mk-tab active">Indicadores</span>
+    <a class="mk-tab" asp-page="/Chamados/Index">Atendimentos</a>
+    <a class="mk-tab" asp-page="/OrdensServico/Index">Ordens de serviço</a>
+    <a class="mk-tab" asp-page="/Clientes/Index">Clientes</a>
+</nav>
 
 <div class="row g-3 mb-4">
     <div class="col-md-4">
         <a asp-page="/Clientes/Index" class="text-decoration-none d-block h-100">
             <div class="mk-kpi-card">
+                <span class="mk-kpi-icon"><i class="bi bi-people-fill"></i></span>
                 <div class="mk-kpi-label">Clientes</div>
                 <div class="mk-kpi-value">@Model.Resumo.TotalClientes</div>
                 <div class="mk-kpi-meta text-success">@Model.Resumo.ClientesAtivos ativos</div>
@@ -30,6 +25,7 @@
     <div class="col-md-4">
         <a asp-page="/Assinaturas/Index" class="text-decoration-none d-block h-100">
             <div class="mk-kpi-card accent">
+                <span class="mk-kpi-icon"><i class="bi bi-wifi"></i></span>
                 <div class="mk-kpi-label">Assinaturas ativas</div>
                 <div class="mk-kpi-value">@Model.Resumo.AssinaturasAtivas</div>
             </div>
@@ -38,6 +34,7 @@
     <div class="col-md-4">
         <a asp-page="/Relatorios/Index" class="text-decoration-none d-block h-100">
             <div class="mk-kpi-card success">
+                <span class="mk-kpi-icon"><i class="bi bi-currency-dollar"></i></span>
                 <div class="mk-kpi-label">Receita do mês</div>
                 <div class="mk-kpi-value">@EnumHelper.Moeda(Model.Resumo.ReceitaMesAtual)</div>
             </div>
@@ -49,6 +46,7 @@
     <div class="col-md-4">
         <a asp-page="/Faturas/Index" asp-route-status="@StatusFatura.Pendente" class="text-decoration-none d-block h-100">
             <div class="mk-kpi-card">
+                <span class="mk-kpi-icon"><i class="bi bi-receipt"></i></span>
                 <div class="mk-kpi-label">Faturas pendentes</div>
                 <div class="mk-kpi-value">@Model.Resumo.FaturasPendentes</div>
             </div>
@@ -57,6 +55,7 @@
     <div class="col-md-4">
         <a asp-page="/Relatorios/Index" asp-fragment="inadimplentes" class="text-decoration-none d-block h-100">
             <div class="mk-kpi-card danger">
+                <span class="mk-kpi-icon"><i class="bi bi-exclamation-triangle-fill"></i></span>
                 <div class="mk-kpi-label">Faturas atrasadas</div>
                 <div class="mk-kpi-value text-danger">@Model.Resumo.FaturasAtrasadas</div>
             </div>
@@ -65,6 +64,7 @@
     <div class="col-md-4">
         <a asp-page="/Chamados/Index" class="text-decoration-none d-block h-100">
             <div class="mk-kpi-card warning">
+                <span class="mk-kpi-icon"><i class="bi bi-headset"></i></span>
                 <div class="mk-kpi-label">Atendimentos abertos</div>
                 <div class="mk-kpi-value">@Model.Resumo.ChamadosAbertos</div>
             </div>
@@ -76,6 +76,7 @@
     <div class="col-md-4">
         <a asp-page="/Rede/Index" class="text-decoration-none d-block h-100">
             <div class="mk-kpi-card warning">
+                <span class="mk-kpi-icon"><i class="bi bi-hdd-network-fill"></i></span>
                 <div class="mk-kpi-label">ONUs offline</div>
                 <div class="mk-kpi-value @(Model.Resumo.OnusOffline > 0 ? "text-warning" : "")">@Model.Resumo.OnusOffline</div>
             </div>
@@ -84,6 +85,7 @@
     <div class="col-md-4">
         <a asp-page="/OrdensServico/Index" class="text-decoration-none d-block h-100">
             <div class="mk-kpi-card">
+                <span class="mk-kpi-icon"><i class="bi bi-tools"></i></span>
                 <div class="mk-kpi-label">O.S. em aberto</div>
                 <div class="mk-kpi-value">@Model.Resumo.OrdensServicoAbertas</div>
             </div>
@@ -92,6 +94,7 @@
     <div class="col-md-4">
         <a asp-page="/Nfse/Index" class="text-decoration-none d-block h-100">
             <div class="mk-kpi-card accent">
+                <span class="mk-kpi-icon"><i class="bi bi-file-earmark-text"></i></span>
                 <div class="mk-kpi-label">NFS-e emitidas</div>
                 <div class="mk-kpi-value">@Model.Resumo.TotalNfse</div>
             </div>
@@ -145,15 +148,12 @@
 </div>
 
 <div class="mk-quick-actions">
+    <span class="text-muted small fw-semibold me-2 align-self-center">Ações rápidas:</span>
     <a class="btn btn-primary btn-sm" asp-page="/Clientes/Create"><i class="bi bi-person-plus me-1"></i>Novo cliente</a>
     <a class="btn btn-outline-primary btn-sm" asp-page="/Assinaturas/Create"><i class="bi bi-wifi me-1"></i>Nova assinatura</a>
     <a class="btn btn-outline-primary btn-sm" asp-page="/Faturas/Index"><i class="bi bi-receipt me-1"></i>Faturas</a>
     <a class="btn btn-outline-secondary btn-sm" asp-page="/Faturamento/Index">Faturamento</a>
-    <a class="btn btn-outline-secondary btn-sm" asp-page="/Nfse/Index">NFS-e</a>
-    <a class="btn btn-outline-secondary btn-sm" asp-page="/Relatorios/Index">Relatórios</a>
-    <a class="btn btn-outline-secondary btn-sm" asp-page="/Rede/Index">Rede FTTH</a>
     <a class="btn btn-outline-secondary btn-sm" asp-page="/Chamados/Index">Atendimentos</a>
-    <a class="btn btn-outline-secondary btn-sm" asp-page="/OrdensServico/Index">O.S.</a>
 </div>
 
 @section Scripts {
@@ -181,7 +181,7 @@
                     labels: ['Online', 'Offline', 'Bloqueados'],
                     datasets: [{
                         data: valores,
-                        backgroundColor: ['#198754', '#ffc107', '#dc3545'],
+                        backgroundColor: ['#0069b4', '#00a8e8', '#dc3545'],
                         borderWidth: 2,
                         borderColor: '#fff'
                     }]

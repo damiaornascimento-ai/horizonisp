@@ -4,10 +4,8 @@
     ViewData["Title"] = "Clientes";
 }
 
-<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
-    <div class="mk-page-header mb-0">
-        <h1 class="h3 mb-0">Clientes</h1>
-    </div>
+<div class="mk-toolbar">
+    <h1 class="mk-toolbar-title">Cadastro de clientes</h1>
     <a asp-page="Create" class="btn btn-primary"><i class="bi bi-person-plus me-1"></i>Novo cliente</a>
 </div>
 
@@ -20,8 +18,9 @@
     <div class="alert alert-danger">@erro</div>
 }
 
-<form method="get" class="card border-0 shadow-sm mb-4">
-    <div class="card-body">
+<form method="get" class="mk-panel mb-4">
+    <div class="mk-panel-header"><i class="bi bi-search me-2"></i>Buscar cliente</div>
+    <div class="mk-panel-body">
         <div class="row g-3 align-items-end">
             <div class="col-lg-6">
                 <label for="busca" class="form-label">Buscar cliente</label>
@@ -69,18 +68,20 @@
     </div>
 </div>
 
-<div class="d-flex flex-wrap gap-2 mb-3">
+<div class="mk-filter-bar">
+    <span class="text-muted small fw-semibold align-self-center me-1">Conexão:</span>
     <a asp-page="Index" asp-route-busca="@Model.Busca"
-       class="btn btn-sm @(Model.Categoria is null ? "btn-dark" : "btn-outline-dark")">Todos</a>
+       class="mk-filter-chip @(Model.Categoria is null ? "active" : "")">Todos</a>
     <a asp-page="Index" asp-route-busca="@Model.Busca" asp-route-categoria="@CategoriaConexaoCliente.Online"
-       class="btn btn-sm @(Model.Categoria == CategoriaConexaoCliente.Online ? "btn-success" : "btn-outline-success")">Online</a>
+       class="mk-filter-chip @(Model.Categoria == CategoriaConexaoCliente.Online ? "active" : "")">Online</a>
     <a asp-page="Index" asp-route-busca="@Model.Busca" asp-route-categoria="@CategoriaConexaoCliente.Offline"
-       class="btn btn-sm @(Model.Categoria == CategoriaConexaoCliente.Offline ? "btn-warning" : "btn-outline-warning")">Offline</a>
+       class="mk-filter-chip @(Model.Categoria == CategoriaConexaoCliente.Offline ? "active" : "")">Offline</a>
     <a asp-page="Index" asp-route-busca="@Model.Busca" asp-route-categoria="@CategoriaConexaoCliente.Bloqueado"
-       class="btn btn-sm @(Model.Categoria == CategoriaConexaoCliente.Bloqueado ? "btn-danger" : "btn-outline-danger")">Bloqueados</a>
+       class="mk-filter-chip @(Model.Categoria == CategoriaConexaoCliente.Bloqueado ? "active" : "")">Bloqueados</a>
 </div>
 
 <div class="mk-panel">
+    <div class="mk-panel-header">Lista de clientes</div>
     <div class="table-responsive">
         <table class="table table-hover mb-0 align-middle">
             <thead>

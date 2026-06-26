@@ -10,7 +10,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Horizon ISP</title>
+    <title>@ViewData["Title"] - Horizon ISP ERP</title>
     <partial name="_ThemeHead" />
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
@@ -20,10 +20,16 @@
     <div class="login-page-shell">
         <div class="login-page-brand d-none d-lg-flex">
             <div class="login-page-brand-content">
-                <h1>Horizon ISP</h1>
-                <p>Gestão completa para provedores de internet. Clientes, financeiro, rede e atendimento em uma única plataforma.</p>
+                <div class="mk-brand-login">
+                    <span class="mk-brand-logo">H</span>
+                    <div>
+                        <div class="mk-erp-tag">ERP</div>
+                        <h1 class="h3 mb-0">Horizon ISP</h1>
+                    </div>
+                </div>
+                <p>Gestão completa para provedores de internet — clientes, financeiro, rede e atendimento em uma única plataforma.</p>
                 <ul class="mk-login-features">
-                    <li><i class="bi bi-check-circle-fill"></i> Painel com indicadores em tempo real</li>
+                    <li><i class="bi bi-check-circle-fill"></i> Workspace com indicadores em tempo real</li>
                     <li><i class="bi bi-check-circle-fill"></i> Faturamento e cobrança integrados</li>
                     <li><i class="bi bi-check-circle-fill"></i> Rede FTTH e ordens de serviço</li>
                     <li><i class="bi bi-check-circle-fill"></i> Portal do assinante</li>
@@ -31,47 +37,13 @@
             </div>
         </div>
 
-<<<<<<< HEAD
         <div class="login-page-form">
             <div class="card">
                 <div class="card-body">
                     <div class="text-center mb-4">
-                        <div class="mk-sidebar-brand-title text-primary fs-4 fw-bold">Horizon ISP</div>
+                        <span class="mk-brand-logo d-inline-flex mb-2">H</span>
+                        <div class="mk-sidebar-brand-title text-primary fs-4 fw-bold">Horizon ISP ERP</div>
                         <p class="text-muted mb-0 mt-1">Acesse com sua conta de administrador ou cliente</p>
-=======
-                                @if (!string.IsNullOrEmpty(Model.Erro))
-                                {
-                                    <div class="alert alert-danger">@Model.Erro</div>
-                                }
-
-                                <form method="post">
-                                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
-                                    <div class="mb-3">
-                                        <label asp-for="Input.Identificador" class="form-label"></label>
-                                        <input asp-for="Input.Identificador" class="form-control" autocomplete="username" />
-                                        <span asp-validation-for="Input.Identificador" class="text-danger"></span>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label asp-for="Input.Senha" class="form-label"></label>
-                                        <input asp-for="Input.Senha" class="form-control" autocomplete="current-password" />
-                                        <span asp-validation-for="Input.Senha" class="text-danger"></span>
-                                    </div>
-                                    <button type="submit" class="btn btn-primary w-100">Entrar</button>
-                                </form>
-
-                                <div class="text-center mt-3">
-                                    <a asp-page="/Portal/EsqueciSenha" class="small">Esqueci minha senha</a>
-                                </div>
-
-                                <p class="text-muted small mt-4 mb-3 text-center">
-                                    Admin: admin@horizonisp.local / admin123<br />
-                                    Cliente: joao.silva@email.com / cliente123
-                                </p>
-
-                                <partial name="_ThemePickerInline" />
-                            </div>
-                        </div>
->>>>>>> 2d6fc2e8ed632242b5fb47108e6194926729736f
                     </div>
 
                     @if (!string.IsNullOrEmpty(Model.Erro))
@@ -97,7 +69,7 @@
                             </div>
                             <span asp-validation-for="Input.Senha" class="text-danger"></span>
                         </div>
-                        <button type="submit" class="btn btn-primary w-100">Entrar</button>
+                        <button type="submit" class="btn btn-primary w-100">Entrar no sistema</button>
                     </form>
 
                     <div class="text-center mt-3">

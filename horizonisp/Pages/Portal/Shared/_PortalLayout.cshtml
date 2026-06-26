@@ -26,54 +26,64 @@
 
     <aside class="mk-sidebar">
         <a class="mk-sidebar-brand" asp-page="/Portal/Index">
-            <div class="mk-sidebar-brand-title">Horizon ISP</div>
-            <div class="mk-sidebar-brand-sub">Área do assinante</div>
+            <span class="mk-brand-logo">H</span>
+            <span>
+                <div class="mk-sidebar-brand-title">Horizon ISP</div>
+                <div class="mk-sidebar-brand-sub">Portal do assinante</div>
+            </span>
         </a>
 
         <nav class="mk-sidebar-nav">
             <div class="mk-nav-section">
                 <div class="mk-nav-section-title">Minha conta</div>
                 <a class="@NavClass("/Portal/Index")" asp-page="/Portal/Index">
-                    <i class="bi bi-house-door-fill"></i>
+                    <span class="mk-nav-icon"><i class="bi bi-house-door-fill"></i></span>
                     <span>Início</span>
                 </a>
                 <a class="@NavClass("/Portal/Faturas")" asp-page="/Portal/Faturas/Index">
-                    <i class="bi bi-receipt"></i>
+                    <span class="mk-nav-icon"><i class="bi bi-receipt"></i></span>
                     <span>Minhas faturas</span>
                 </a>
                 <a class="@NavClass("/Portal/Conta")" asp-page="/Portal/Conta/Senha">
-                    <i class="bi bi-shield-lock-fill"></i>
+                    <span class="mk-nav-icon"><i class="bi bi-shield-lock-fill"></i></span>
                     <span>Minha conta</span>
                 </a>
                 <a class="@NavClass("/Portal/Chamados")" asp-page="/Portal/Chamados/Index">
-                    <i class="bi bi-headset"></i>
+                    <span class="mk-nav-icon"><i class="bi bi-headset"></i></span>
                     <span>Suporte</span>
                 </a>
             </div>
         </nav>
+
+        <div class="mk-sidebar-footer">
+            <span class="mk-erp-badge">CLIENTE</span>
+        </div>
     </aside>
 
     <div class="mk-main">
         <header class="mk-topbar">
-            <div class="d-flex align-items-center gap-3">
-                <button type="button" class="mk-sidebar-toggle" data-mk-sidebar-toggle aria-label="Abrir menu">
-                    <i class="bi bi-list"></i>
-                </button>
-                <div>
-                    <p class="mk-topbar-breadcrumb">Área do Cliente / @pageTitle</p>
-                    <h2 class="mk-topbar-title">@pageTitle</h2>
+            <div class="mk-topbar-accent" aria-hidden="true"></div>
+            <div class="mk-topbar-inner">
+                <div class="d-flex align-items-center gap-3">
+                    <button type="button" class="mk-sidebar-toggle" data-mk-sidebar-toggle aria-label="Abrir menu">
+                        <i class="bi bi-list"></i>
+                    </button>
+                    <div>
+                        <p class="mk-topbar-breadcrumb">Portal / @pageTitle</p>
+                        <h2 class="mk-topbar-title">@pageTitle</h2>
+                    </div>
                 </div>
-            </div>
-            <div class="mk-topbar-user">
-                <partial name="_ThemePickerInline" />
-                <div class="mk-user-pill d-none d-sm-flex">
-                    <span class="mk-user-avatar">@userInitial</span>
-                    <span>@User.Identity?.Name</span>
+                <div class="mk-topbar-user">
+                    <partial name="_ThemePickerInline" />
+                    <div class="mk-user-pill d-none d-sm-flex">
+                        <span class="mk-user-avatar">@userInitial</span>
+                        <span>@User.Identity?.Name</span>
+                    </div>
+                    <a asp-page="/Logout" class="btn btn-mk-ghost btn-sm">
+                        <i class="bi bi-box-arrow-right"></i>
+                        <span class="d-none d-md-inline ms-1">Sair</span>
+                    </a>
                 </div>
-                <a asp-page="/Logout" class="btn btn-outline-secondary btn-sm">
-                    <i class="bi bi-box-arrow-right"></i>
-                    <span class="d-none d-md-inline ms-1">Sair</span>
-                </a>
             </div>
         </header>
 
